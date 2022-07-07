@@ -18,33 +18,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-#include <termios.h>
+#include "minishell.h"
 
 // my mac : gcc main.c -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
-// hako cluster : gcc main.c -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/    hako/.brew/opt/readline/include
-
-typedef struct s_env {
-    char *value;
-    struct s_env *nxt;
-} t_env;
-
-char	*ft_strdup(const char *src)
-{
-	int		index;
-	char	*dest;
-
-	index = 0;
-	dest = (char *)malloc(strlen(src) * sizeof(char) + 1);
-	if (!dest)
-		return (0);
-	while (src[index])
-	{
-		dest[index] = src[index];
-		index++;
-	}
-	dest[index] = '\0';
-	return (dest);
-}
+// hako cluster : gcc main.c -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include
 
 void sig_int(int signal)
 {
@@ -100,7 +77,7 @@ int main(int ac, char **av, char **env)
     while (1)
     {
         str = readline("minishell$ ");
-        if (!str || strcmp(str, "exit") == 0) // 나중에 libft 함수로 바꾸기
+        if (!str)
         {
             printf("\033[1A"); // 커서를 위로 하나 올리기
             printf("\033[11C"); // 10만큼 앞으로
