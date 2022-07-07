@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "utils.h"
@@ -27,17 +28,6 @@ typedef struct s_token
     struct s_token *nxt;
     struct s_token *prev;
 } t_token;
-
-// enum e_builtin
-// {
-//     ECHO = 1,
-//     CD = 2,
-//     PWD = 3,
-//     EXPORT = 4,
-//     UNSET = 5,
-//     ENV = 6,
-//     EXIT = 7
-// };
 
 // typedef stuct s_mini{
 //     t_env *env;

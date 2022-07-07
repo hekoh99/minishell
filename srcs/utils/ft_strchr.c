@@ -1,22 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/07 17:00:25 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/07 17:01:15 by yubchoi          ###   ########.fr       */
+/*   Created: 2022/07/07 17:05:29 by yubchoi           #+#    #+#             */
+/*   Updated: 2022/07/07 17:15:51 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../includes/utils.h"
 
-int main(void)
+char *ft_strchr(char *s, int c)
 {
-    char path[PATH_MAX];
+    int i;
 
-    getcwd(path, PATH_MAX);
-    printf("%s\n", path);
-    return (0);
+    i = 0;
+    if (!s)
+        return (NULL);
+    while (s[i])
+    {
+        if (s[i] == (char)c)
+            return (&(s[i]));
+        ++i;
+    }
+    if (s[i] == (char)c)
+        return (&(s[i]));
+    return (NULL);
 }
