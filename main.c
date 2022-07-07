@@ -10,14 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h>
+
 #include "minishell.h"
 
 // my mac : gcc main.c -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
@@ -60,6 +53,7 @@ int main(int ac, char **av, char **env)
 {
     char *str;
     t_env *envp;
+    t_token *token;
 
     ac += 0;
     av += 0;
@@ -92,6 +86,12 @@ int main(int ac, char **av, char **env)
         {
             add_history(str);
             printf("%s\n", str);
+            token = trim_space(str);
+            while (token)
+            {
+                printf("token : $%s$\n", token->value);
+                token = token->nxt;
+            }
             free(str);
         }
     }

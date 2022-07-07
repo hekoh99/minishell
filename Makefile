@@ -23,6 +23,8 @@ SANITIZE = -g -fsanitize=address
 
 INCS =	./includes/
 
+SRCS = ./srcs/token.c 
+
 OBJS =	$(SRCS:.c=.o)
 
 CL_BOLD	 = \e[1m
@@ -46,13 +48,13 @@ all:	$(NAME)
 $(NAME) :	$(OBJS)
 		@make -C ./libft
 		@cp ./libft/libft.a libft.a
-		@$(CC) $(FLAGS) -I $(INCS) $(SRCS) main.c  libft.a -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include -o $(MINISHELL)
+		@$(CC) $(FLAGS) -I$(INCS) $(SRCS) main.c libft.a -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include -o $(MINISHELL)
 		@printf "$(LF)🎉 $(FG_TEXT)Successfully Created $(FG_TEXT_PRIMARY)$@ $(FG_TEXT)!\n$(NO_COLOR)"
 
 test : $(OBJS)
 		@make -C ./libft
 		@cp ./libft/libft.a libft.a
-		@$(CC) $(FLAGS) -I $(INCS) $(SRCS) main.c  libft.a -o $(MINISHELL) $(SANITIZE)
+		@$(CC) $(FLAGS) -I$(INCS) $(SRCS) main.c libft.a -o $(MINISHELL) $(SANITIZE)
 
 norme:
 				norminette $(SRCS) 
