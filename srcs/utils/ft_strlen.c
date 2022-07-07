@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/14 23:01:57 by hako              #+#    #+#             */
-/*   Updated: 2021/11/14 23:02:39 by hako             ###   ########.fr       */
+/*   Created: 2021/11/14 22:49:18 by hako              #+#    #+#             */
+/*   Updated: 2022/07/07 16:31:54 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/utils.h"
 
-char	*ft_strchr(const char *s, int c)
+size_t ft_strlen(const char *str)
 {
-	return (ft_memchr(s, c, ft_strlen(s) + 1));
+    int index;
+
+    index = 0;
+    while (str[index])
+        index++;
+    return (index);
 }
