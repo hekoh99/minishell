@@ -16,15 +16,14 @@ t_token *trim_space(char *line)
     {
         if (line[i] == '\'' && squote == 0 && dquote == 0)
             squote = 1;
-        if (line[i] == '\"' && squote == 0 && dquote == 0)
+        else if (line[i] == '\"' && squote == 0 && dquote == 0)
             dquote = 1;
-        if (line[i] == '\'' && squote == 1)
+        else if (line[i] == '\'' && squote == 1)
             squote = 0;
-        if (line[i] == '\"' && dquote == 1)
+        else if (line[i] == '\"' && dquote == 1)
             dquote = 0;
         if ((line[i] == ' ' || line[i] == '\0') && (squote == 0 && dquote == 0))
         {
-            printf("i : %d\n", i);
             if (i - start > 0)
             {
                 new = malloc(sizeof(t_token));
@@ -49,6 +48,11 @@ t_token *trim_space(char *line)
         }
         if (line[i] != '\0')
             i++;
+    }
+    if (squote == 1 || dquote == 1)
+    {
+        printf("open quotation error\n"); // + token free 해주기
+        return (0);
     }
     return (head);
 }

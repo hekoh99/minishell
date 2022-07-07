@@ -1,77 +1,46 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/12/23 10:09:42 by hako              #+#    #+#              #
-#    Updated: 2021/12/23 10:09:44 by hako             ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = minishell
-MINISHELL = minishell
 
-CC = gcc 
+UTILS = srcs/utils
 
-FLAGS =	-Wall -Wextra -Werror
+SRCS		=	main.c \
+	$(UTILS)/ft_strdup.c \
+	$(UTILS)/ft_strlen.c \
+	$(UTILS)/ft_substr.c \
+	srcs/token.c
 
-RM = rm -rf
+OBJS		= $(SRCS:%.c=%.o)
 
-SANITIZE = -g -fsanitize=address
+CC = gcc $(DEBUG)
+# CFLAGS = -Werror -Wall -Wextra
+SAN = -fsanitize=address -g3
+DEBUG = -g
+#READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
+#READLINE_INC	= -I/opt/homebrew/opt/readline/include
+READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
+READLINE_INC	= -I${HOME}/.brew/opt/readline/include
 
-INCS =	./includes/
+READLINE_HAKO_LIB = lreadline -L/opt/homebrew/opt/readline/lib
+READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 
-SRCS = ./srcs/token.c 
+.PHONY		:	all
+all			:	$(NAME)
 
-OBJS =	$(SRCS:.c=.o)
+$(NAME)		:	$(OBJS)
+		$(CC) -o $(NAME) $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
-CL_BOLD	 = \e[1m
-CL_DIM	= \e[2m
-CL_UDLINE = \e[4m
+$(HAKO)		:	$(OBJS)
+		$(CC) -o $(NAME) $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
-NO_COLOR = \e[0m
+%.o: %.c
+	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
 
-BG_TEXT = \e[48;2;45;55;72m
-BG_BLACK = \e[48;2;30;31;33m
+.PHONY		:	clean
+clean		:
+		rm -f $(OBJS)
 
-FG_WHITE = $(NO_COLOR)\e[0;37m
-FG_TEXT = $(NO_COLOR)\e[38;2;189;147;249m
-FG_TEXT_PRIMARY = $(NO_COLOR)$(CL_BOLD)\e[38;2;255;121;198m
+.PHONY		:	fclean
+fclean		:	clean
+		rm -f $(NAME)
 
-LF = \e[1K\r$(NO_COLOR)
-CRLF= \n$(LF)
-
-all:	$(NAME)
-
-$(NAME) :	$(OBJS)
-		@make -C ./libft
-		@cp ./libft/libft.a libft.a
-		@$(CC) $(FLAGS) -I$(INCS) $(SRCS) main.c libft.a -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include -o $(MINISHELL)
-		@printf "$(LF)🎉 $(FG_TEXT)Successfully Created $(FG_TEXT_PRIMARY)$@ $(FG_TEXT)!\n$(NO_COLOR)"
-
-test : $(OBJS)
-		@make -C ./libft
-		@cp ./libft/libft.a libft.a
-		@$(CC) $(FLAGS) -I$(INCS) $(SRCS) main.c libft.a -o $(MINISHELL) $(SANITIZE)
-
-norme:
-				norminette $(SRCS) 
-				norminette $(INCS)
-				norminette ./libft/
-
-clean:
-				@make --no-print-directory clean -C ./libft
-				@rm -f $(OBJS)
-				@printf "$(LF)🧹 $(FG_TEXT)Cleaning $(FG_TEXT_PRIMARY)$(NAME)'s Object files...\n"
-
-fclean:			clean
-				@make --no-print-directory fclean -C ./libft
-				@$(RM) libft.a
-				@$(RM) $(NAME)
-				@printf "$(LF)🧹 $(FG_TEXT)Cleaning $(FG_TEXT_PRIMARY)$(NAME)\n"
-
-re:				fclean all
-
-.PHONY:			all, clean, fclean, re
+.PHONY		:	re
+re			:	fclean all

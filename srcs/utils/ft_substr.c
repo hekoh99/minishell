@@ -1,18 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hako <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/14 23:01:57 by hako              #+#    #+#             */
-/*   Updated: 2021/11/14 23:02:39 by hako             ###   ########.fr       */
+/*   Created: 2021/11/14 22:36:38 by hako              #+#    #+#             */
+/*   Updated: 2021/11/14 22:37:16 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/utils.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	return (ft_memchr(s, c, ft_strlen(s) + 1));
+	char	*str;
+	size_t	s_len;
+	size_t	index;
+
+	if (!s)
+		return (0);
+	s_len = ft_strlen(s);
+	str = (char *)malloc(len * sizeof(char) + 1);
+	if (!str)
+		return (0);
+	index = 0;
+	while (index < len && index + start < s_len)
+	{
+		str[index] = s[start + index];
+		index++;
+	}
+	str[index] = '\0';
+	return (str);
 }
