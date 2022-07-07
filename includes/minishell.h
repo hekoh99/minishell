@@ -1,12 +1,15 @@
 #ifndef MINISHELL_H
-#define MINISHELL_H
-
+# define MINISHELL_H
+ 
+#include <signal.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdio.h>
+#include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <unistd.h>
+
 #include "utils.h"
 
 #define CMD 1
@@ -44,4 +47,6 @@ typedef struct s_token
 //     t_env *token;
 // } t_mini;
 
-#endif
+t_token *trim_space(char *line);
+
+ #endif
