@@ -98,6 +98,7 @@ int main(int ac, char **av, char **env)
                 continue;
             token = split_by_sep(token);
             token = expand(token, envp);
+            token = trim_quote(token);
             while (token)
             {
                 printf("[%s]", token->value);
