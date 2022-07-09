@@ -139,24 +139,10 @@ char *search_env(t_env *env, char *target)
     real_val = NULL;
     while (env)
     {
-        if (env->value[0] == target[0])
+        if (ft_strncmp(env->key, target, ft_strlen(target)) == 0) // 환경변수 찾음
         {
-            i = 0;
-            find = 1;
-            while (env->value[i] != '=')
-            {
-                if (env->value[i] != target[i])
-                {
-                    find = 0;
-                    break;
-                }
-                i++;
-            }
-            if (find == 1) // 환경변수 찾음
-            {
-                real_val = ft_substr(env->value, i+1, ft_strlen(env->value));
-                break;
-            }
+            real_val = ft_substr(env->value, 0, ft_strlen(env->value));
+            break;
         }
         env = env->nxt;
     }
@@ -232,6 +218,19 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
             }
             i++;
         }
+        tmp = tmp->nxt;
+    }
+    return (token);
+}
+
+t_token *form_str(t_token *token)
+{
+    t_token *tmp;
+    int i;
+
+    while (tmp)
+    {
+        while (tmp->value[i])
         tmp = tmp->nxt;
     }
     return (token);
