@@ -3,29 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/07 17:05:29 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/07 17:15:51 by yubchoi          ###   ########.fr       */
+/*   Created: 2022/07/09 15:58:04 by yubin             #+#    #+#             */
+/*   Updated: 2022/07/09 15:58:05 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/utils.h"
 
-char *ft_strchr(char *s, int c)
+void *ft_memchr(const void *src, int c, size_t n)
 {
-    int i;
+    size_t index;
 
-    i = 0;
-    if (!s)
-        return (NULL);
-    while (s[i])
+    index = 0;
+    while (index < n)
     {
-        if (s[i] == (char)c)
-            return (&(s[i]));
-        ++i;
+        if (((unsigned char *)src)[index] == (unsigned char)c)
+            return (((unsigned char *)src) + index);
+        index++;
     }
-    if (s[i] == (char)c)
-        return (&(s[i]));
-    return (NULL);
+    return (0);
+}
+
+char *ft_strchr(const char *s, int c)
+{
+    return (ft_memchr(s, c, ft_strlen(s) + 1));
 }

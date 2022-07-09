@@ -32,15 +32,21 @@ t_env *init_env(char **env)
     t_env *lst;
     t_env *new;
     t_env *tmp;
+    int j;
 
     lst = (t_env *)malloc(sizeof(t_env));
+    lst->key = ft_strdup(env[0]);
     lst->value = ft_strdup(env[0]);
     lst->nxt = NULL;
     tmp = lst;
     while (env[i])
     {
+        j = 0;
+        while (env[i][j] != '=')
+            j++;
         new = (t_env *)malloc(sizeof(t_env));
-        new->value = ft_strdup(env[i]);
+        new->key = ft_substr(env[i], 0, j);
+        new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
         new->nxt = NULL;
         tmp->nxt = new;
         tmp = tmp->nxt;
@@ -64,7 +70,7 @@ int main(int ac, char **av, char **env)
     envp = init_env(env);
     /* // env init check
     while (envp){
-        printf("out : %s\n", envp->value);
+        printf("%s = %s\n", envp->key, envp->value);
         envp = envp->nxt;
     }
     // */
@@ -88,6 +94,16 @@ int main(int ac, char **av, char **env)
             printf("%s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
             free(str);
+            if (token == 0)
+                continue;
+            token = split_by_sep(token);
+            token = expand(token, envp);
+            while (token)
+            {
+                printf("[%s]", token->value);
+                token = token->nxt;
+            }
+            printf("\n");
         }
     }
     return (0);
