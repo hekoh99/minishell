@@ -10,15 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "includes/minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h>
+
+#include "./includes/minishell.h"
 
 // my mac : gcc main.c -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
 // hako cluster : gcc main.c -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include
@@ -60,6 +53,7 @@ int main(int ac, char **av, char **env)
 {
     char *str;
     t_env *envp;
+    t_token *token;
 
     ac += 0;
     av += 0;
@@ -92,6 +86,7 @@ int main(int ac, char **av, char **env)
         {
             add_history(str);
             printf("%s\n", str);
+            token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
             free(str);
         }
     }

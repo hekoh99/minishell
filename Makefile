@@ -5,11 +5,13 @@ UTILS = srcs/utils
 SRCS		=	main.c \
 	$(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strlen.c \
+	$(UTILS)/ft_substr.c \
+	srcs/token.c
 
 OBJS		= $(SRCS:%.c=%.o)
 
 CC = gcc $(DEBUG)
-CFLAGS = -Werror -Wall -Wextra
+# CFLAGS = -Werror -Wall -Wextra
 SAN = -fsanitize=address -g3
 DEBUG = -g
 #READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
@@ -24,10 +26,10 @@ READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 all			:	$(NAME)
 
 $(NAME)		:	$(OBJS)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+		$(CC) -o $(NAME) $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)		:	$(OBJS)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
+		$(CC) -o $(NAME) $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
