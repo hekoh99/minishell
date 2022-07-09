@@ -48,5 +48,11 @@ typedef struct s_token
 // } t_mini;
 
 t_token *trim_space(char *line);
+t_token *split_by_sep(t_token *token);
+t_token *expand(t_token *token, t_env *env);
+
+// token utils
+t_token *ft_dellist(t_token *head, char *target);
+void free_token_all(t_token *head);
 
  #endif

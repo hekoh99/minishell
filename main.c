@@ -88,6 +88,16 @@ int main(int ac, char **av, char **env)
             printf("%s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
             free(str);
+            if (token == 0)
+                continue;
+            token = split_by_sep(token);
+            token = expand(token, envp);
+            while (token)
+            {
+                printf("[%s]", token->value);
+                token = token->nxt;
+            }
+            printf("\n");
         }
     }
     return (0);

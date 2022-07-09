@@ -1,11 +1,16 @@
 NAME = minishell
+HAKO = hako
 
 UTILS = srcs/utils
 
-SRCS		=	main.c \
-	$(UTILS)/ft_strdup.c \
+SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strlen.c \
 	$(UTILS)/ft_substr.c \
+	$(UTILS)/ft_strchr.c \
+	$(UTILS)/ft_strncmp.c \
+	$(UTILS)/token_free.c \
+	$(UTILS)/ft_strjoin.c \
+	$(UTILS)/ft_strlcpy.c \
 	srcs/token.c
 
 OBJS		= $(SRCS:%.c=%.o)
@@ -19,17 +24,17 @@ DEBUG = -g
 READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
 READLINE_INC	= -I${HOME}/.brew/opt/readline/include
 
-READLINE_HAKO_LIB = lreadline -L/opt/homebrew/opt/readline/lib
+READLINE_HAKO_LIB = -lreadline -L/opt/homebrew/opt/readline/lib
 READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 
 .PHONY		:	all
 all			:	$(NAME)
 
 $(NAME)		:	$(OBJS)
-		$(CC) -o $(NAME) $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+		$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)		:	$(OBJS)
-		$(CC) -o $(NAME) $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
+		$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
