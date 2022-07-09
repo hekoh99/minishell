@@ -19,6 +19,7 @@
 
 typedef struct s_env
 {
+    char *key;
     char *value;
     struct s_env *nxt;
 } t_env;
