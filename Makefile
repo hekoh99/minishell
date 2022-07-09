@@ -1,5 +1,8 @@
 NAME = minishell
 
+HAKO = hako
+YUB = yub
+
 UTILS = srcs/utils
 
 SRCS		=	main.c \
@@ -14,10 +17,13 @@ CC = gcc $(DEBUG)
 # CFLAGS = -Werror -Wall -Wextra
 SAN = -fsanitize=address -g3
 DEBUG = -g
-#READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
-#READLINE_INC	= -I/opt/homebrew/opt/readline/include
-READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
-READLINE_INC	= -I${HOME}/.brew/opt/readline/include
+
+# 맥북환경
+READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
+READLINE_INC	= -I/opt/homebrew/opt/readline/include
+# 클러스터환경
+# READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
+# READLINE_INC	= -I${HOME}/.brew/opt/readline/include
 
 READLINE_HAKO_LIB = lreadline -L/opt/homebrew/opt/readline/lib
 READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
