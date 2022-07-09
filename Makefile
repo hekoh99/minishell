@@ -9,7 +9,8 @@ SRCS		=	main.c \
 	$(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strlen.c \
 	$(UTILS)/ft_substr.c \
-	srcs/token.c
+	$(UTILS)/ft_system_call.c \
+	srcs/token.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 

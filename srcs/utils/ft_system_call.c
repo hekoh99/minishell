@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_system_call.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/14 22:36:38 by hako              #+#    #+#             */
-/*   Updated: 2022/07/09 15:43:56 by yubin            ###   ########.fr       */
+/*   Created: 2022/07/09 15:07:41 by yubin             #+#    #+#             */
+/*   Updated: 2022/07/09 15:08:20 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils.h"
+#include "../../includes/minishell.h"
 
-char *ft_substr(char const *s, unsigned int start, size_t len)
+void *ft_malloc(size_t size)
 {
-	char *str;
-	size_t s_len;
-	size_t index;
+    void *ptr;
 
-	if (!s)
-		return (0);
-	s_len = ft_strlen(s);
-	str = (char *)malloc(len * sizeof(char) + 1);
-	if (!str)
-		return (0);
-	index = 0;
-	while (index < len && index + start < s_len)
-	{
-		str[index] = s[start + index];
-		index++;
-	}
-	str[index] = '\0';
-	return (str);
+    ptr = malloc(size);
+    if (ptr == NULL)
+    {
+        printf("Error: malloc failed\n");
+        exit(1);
+    }
+    return (ptr);
 }

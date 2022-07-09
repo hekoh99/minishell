@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 12:57:34 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/09 13:24:28 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/09 15:26:34 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void do_env(t_env *envp)
     tmp = envp;
     while (tmp)
     {
-        printf("%s\n", tmp->value);
+        printf("%s=%s\n", tmp->key, tmp->value);
         tmp = tmp->nxt;
     }
 }

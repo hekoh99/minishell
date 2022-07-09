@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/07 17:22:43 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/09 15:55:04 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,54 @@ void check_export_syntax(int argc, char *str)
     }
 }
 
-void do_export(int argc, char *str, t_env *envp)
+t_env *sort_envp(t_env *envp)
 {
-    check_export_syntax(argc, str);
+    t_env *tmp;
+    t_env *left;
+    t_env *right;
 }
 
-void fork_and_execve(int argc, char **argv, t_env *envp)
+t_env *dup_env(t_env *envp)
 {
-    if (ft_strncmp(argv[1], "export", 6) && ft_strlen(argv[1]) == 6)
-        do_export(argc, argv, envp);
+    t_env *dup_env;
+
+    dup_env = (t_env *)ft_malloc(sizeof(t_env));
+    if (!envp)
+    {
+        dup_env->key = NULL;
+        dup_env->value = NULL;
+        dup_env->nxt = NULL;
+    }
     else
-        printf("command error\n");
+    {
+        dup_env->key = ft_strdup(envp->key);
+        dup_env->value = ft_strdup(envp->value);
+        dup_env->nxt = NULL;
+    }
+    return (dup_env);
+}
+
+t_env *dup_envp(t_env *envp)
+{
+    t_env *dup_envp;
+    t_env new;
+    t_env tmp;
+}
+
+void print_all_envp(t_env *envp)
+{
+    t_env *sorted_envp;
+    t_env *tmp;
+
+    tmp = dup_envp(envp);
+    sorted_envp = sort_envp(envp);
+}
+
+void do_export(int argc, char **argv, t_env *envp)
+{
+    if (argc == 1)
+        print_all_envp(envp);
+    check_export_syntax(argc, argv);
 }
 
 int main(int argc, char **argv, char **env)
@@ -67,5 +104,5 @@ int main(int argc, char **argv, char **env)
     t_env *envp;
 
     envp = init_env(env);
-    fork_and_execve(argc, argv, envp);
+    do_export(argc, argv, envp);
 }
