@@ -213,6 +213,15 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
                     free(head);
                     free(tail);
                 }
+                else
+                {
+                    head = ft_substr(tmp->value, 0, start - 1);
+                    tail = ft_substr(tmp->value, i, ft_strlen(tmp->value));
+                    free(tmp->value);
+                    tmp->value = ft_strjoin(head, tail);
+                    free(head);
+                    free(tail);
+                }
                 i--; // 반복문 후 i는 구분자 위치 또는 문자열의 끝에 위치
             }
             if (tmp->value[i] == '~' && ft_strlen(tmp->value) == 1 && squote == 0)
