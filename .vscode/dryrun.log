@@ -1,0 +1,15 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/yubchoi/minishell'
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strdup.c -o srcs/utils/ft_strdup.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strlen.c -o srcs/utils/ft_strlen.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_substr.c -o srcs/utils/ft_substr.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_system_call.c -o srcs/utils/ft_system_call.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strchr.c -o srcs/utils/ft_strchr.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strncmp.c -o srcs/utils/ft_strncmp.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/token_free.c -o srcs/utils/token_free.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strjoin.c -o srcs/utils/ft_strjoin.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/utils/ft_strlcpy.c -o srcs/utils/ft_strlcpy.o
+gcc -g  -I/opt/homebrew/opt/readline/include -c srcs/token.c -o srcs/token.o
+gcc -g -o minishell main.c srcs/utils/ft_strdup.o srcs/utils/ft_strlen.o srcs/utils/ft_substr.o srcs/utils/ft_system_call.o srcs/utils/ft_strchr.o srcs/utils/ft_strncmp.o srcs/utils/token_free.o srcs/utils/ft_strjoin.o srcs/utils/ft_strlcpy.o srcs/token.o -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
+make: Leaving directory `/Users/yubchoi/minishell'
+ 
