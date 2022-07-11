@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/11 20:52:35 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/11 22:15:05 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,14 +157,15 @@ void print_all_envp(t_env *envp, int has_prefix)
 {
     while (envp)
     {
-        if (ft_strlen(envp->key) == 1 && envp->key[0] == '_')
+        if (ft_strlen(envp->key) == 1 && envp->key[0] == '_' && has_prefix)
         {
             envp = envp->nxt;
             continue;
         }
         if (has_prefix)
-            printf("declare -x ");
-        printf("%s=\"%s\"\n", envp->key, envp->value);
+            printf("declare -x %s=\"%s\"\n", envp->key, envp->value);
+        else
+            printf("%s=%s\n", envp->key, envp->value);
         envp = envp->nxt;
     }
 }
@@ -299,11 +300,7 @@ int main(int argc, char **argv, char **env)
     ft_export(argc, argv, envp, &exit_status);
     // /*test
     printf("=============================\n");
-    while (envp)
-    {
-        printf("%s=%s\n", envp->key, envp->value);
-        envp = envp->nxt;
-    }
+    print_all_envp(envp, 0);
     // */
     exit(exit_status);
 }
