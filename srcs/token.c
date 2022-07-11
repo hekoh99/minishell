@@ -223,14 +223,66 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
     return (token);
 }
 
-t_token *form_str(t_token *token)
+t_token *trim_quote(t_token *token)
 {
     t_token *tmp;
     int i;
+    char *head;
+    char *tail;
+    char *str;
+    int squote;
+    int dquote;
+    int start;
 
+    tmp = token;
     while (tmp)
     {
-        while (tmp->value[i])
+        i = 0;
+        squote = 0;
+        dquote = 0;
+        start = 0;
+        while (tmp->value[i] != '\0')
+        {
+            if (tmp->value[i] == '\'' && squote == 0 && dquote == 0)
+            {
+                start = i;
+                squote = 1;
+            }
+            else if (tmp->value[i] == '\"' && squote == 0 && dquote == 0)
+            {
+                start = i;
+                dquote = 1;
+            }
+            else if (tmp->value[i] == '\'' && squote == 1)
+            {
+                squote = 0;
+                str = ft_substr(tmp->value, start + 1, i - start - 1);
+                head = ft_substr(tmp->value, 0, start);
+                tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
+                free(tmp->value);
+                tmp->value = ft_strjoin(head, str);
+                i = ft_strlen(tmp->value) - 1;
+                tmp->value = ft_strjoin(tmp->value, tail);
+                free(str);
+                free(head);
+                free(tail);
+            }
+            else if (tmp->value[i] == '\"' && dquote == 1)
+            {
+                dquote = 0;
+                str = ft_substr(tmp->value, start + 1, i - start - 1);
+                head = ft_substr(tmp->value, 0, start);
+                tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
+                free(tmp->value);
+                tmp->value = ft_strjoin(head, str);
+                i = ft_strlen(tmp->value) - 1;
+                tmp->value = ft_strjoin(tmp->value, tail);
+                free(str);
+                free(head);
+                free(tail);
+            }
+            i++;
+        }
         tmp = tmp->nxt;
     }
     return (token);
