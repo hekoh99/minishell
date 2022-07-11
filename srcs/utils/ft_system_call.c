@@ -6,11 +6,17 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 15:07:41 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/09 15:08:20 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/11 20:23:08 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void ft_free(void *str)
+{
+    free(str);
+    str = 0;
+}
 
 void *ft_malloc(size_t size)
 {

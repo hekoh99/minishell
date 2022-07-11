@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/11 18:08:16 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/11 20:52:35 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_env *init_env(char **env)
         j = 0;
         while (env[i][j] != '=')
             j++;
-        new = (t_env *)malloc(sizeof(t_env));
+        new = (t_env *)ft_malloc(sizeof(t_env));
         new->key = ft_substr(env[i], 0, j);
         new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
         new->nxt = NULL;
@@ -46,18 +46,26 @@ t_env *init_env(char **env)
     return (lst);
 }
 
-void check_export_syntax(int argc, char *str)
+int is_invalid_key(char *key, int *exit_status)
 {
-    int sep;
+    int i;
 
-    if (!ft_strchr(str, '=')) // 아무것도 하지 않음
-        exit(0);
-    else if (argc > 2 && ('0' > str[0] || str[0] > '9') && str[0] != '_')
+    *exit_status = 0;
+    if (ft_strlen(key) == 1 && key[0] == '_')
+        return (0);
+    i = -1;
+    while (key[++i])
     {
-        printf("bash: export: `%s': not a valid identifier", str);
-        free(str);
-        exit(1);
+        if (!ft_isalpha(key[i]) && key[i] != '_')
+        {
+            if (i > 0 && ft_isdigit(key[i]))
+                continue;
+            ft_free(key);
+            *exit_status = 1;
+            return (1);
+        }
     }
+    return (0);
 }
 
 int select_bigger(int a, int b)
@@ -169,26 +177,133 @@ void print_sorted_envp(t_env *envp)
     tmp = dup_envp(envp);
     tmp = sort_envp(tmp);
     print_all_envp(tmp, 1);
-    /* // test
-    while (tmp)
-    {
-        printf("%s=%s\n", tmp->key, tmp->value);
-        tmp = tmp->nxt;
-    }
-    // */
 }
 
-void ft_export(int argc, char **argv, t_env *envp)
+int find_sep(char *str, int sep)
 {
-    if (argc == 1)
+    int i;
+
+    i = 0;
+    while (str && str[i])
+    {
+        if (str[i] == sep)
+            return (i);
+        ++i;
+    }
+    return (-1);
+}
+
+t_env *make_env(char *key, char *value)
+{
+    t_env *env;
+
+    env = (t_env *)ft_malloc(sizeof(t_env));
+    env->key = ft_strdup(key);
+    env->value = ft_strdup(value);
+    env->nxt = NULL;
+    return (env);
+}
+
+t_env *add_env(t_env *envp, t_env *env)
+{
+    t_env *tmp;
+
+    tmp = envp;
+    while (tmp->nxt)
+        tmp = tmp->nxt;
+    tmp->nxt = env;
+    return (envp);
+}
+
+int is_duplicate_envp(t_env *envp, char *key)
+{
+    t_env *tmp;
+
+    tmp = envp;
+    while (tmp)
+    {
+        if (ft_strncmp(tmp->key, key, select_bigger(ft_strlen(tmp->key), ft_strlen(key))) == 0)
+            return (1);
+        tmp = tmp->nxt;
+    }
+    return (0);
+}
+
+t_env *update_env(t_env *envp, char *key, char *value)
+{
+    while (envp)
+    {
+        if (ft_strncmp(envp->key, key, select_bigger(ft_strlen(envp->key), ft_strlen(key))) == 0)
+        {
+            ft_free(envp->value);
+            envp->value = ft_strdup(value);
+            break;
+        }
+        envp = envp->nxt;
+    }
+    return (envp);
+}
+
+t_env *ft_set(t_env *envp, char *key, char *value)
+{
+    if (is_duplicate_envp(envp, key))
+        envp = update_env(envp, key, value);
+    else
+        envp = add_env(envp, make_env(key, value));
+    ft_free(key);
+    ft_free(value);
+    return (envp);
+}
+
+t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
+{
+    int i;
+    int sep;
+    char *key;
+    char *value;
+
+    i = 0;
+    sep = 1;
+    while (argv[++i])
+    {
+        sep = find_sep(argv[i], '=');
+        if (sep == -1)
+            continue;
+        key = ft_substr(argv[i], 0, sep);
+        if (is_invalid_key(key, exit_status))
+        {
+            printf("bash: export: `%s': not a valid identifier\n", argv[i]);
+            continue;
+        }
+        value = ft_substr(argv[i], sep + 1, ft_strlen(argv[i]));
+        envp = ft_set(envp, key, value);
+    }
+    return (envp);
+}
+
+void ft_export(int argc, char **argv, t_env *envp, int *status)
+{
+    if (argc == 1) // export만 입력되었을 때
         print_sorted_envp(envp);
-    // check_export_syntax(argc, argv);
+    else
+        envp = update_envp(argc, argv, envp, status);
 }
 
 int main(int argc, char **argv, char **env)
 {
     t_env *envp;
+    int exit_status;
 
+    exit_status = 0;
     envp = init_env(env);
-    ft_export(argc, argv, envp);
+    ft_export(argc, argv, envp, &exit_status);
+    // /*test
+    printf("=============================\n");
+    while (envp)
+    {
+        printf("%s=%s\n", envp->key, envp->value);
+        envp = envp->nxt;
+    }
+    // */
+    exit(exit_status);
 }

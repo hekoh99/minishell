@@ -9,6 +9,7 @@ UTILS = srcs/utils
 SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strlen.c \
 	$(UTILS)/ft_substr.c \
+	$(UTILS)/ft_isalphadigit.c \
 	$(UTILS)/ft_system_call.c \
 	$(UTILS)/ft_strchr.c \
 	$(UTILS)/ft_strncmp.c \
