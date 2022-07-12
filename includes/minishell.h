@@ -73,4 +73,4 @@ t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
 void free_node_all (t_node *head);
 
- #endif
+#endif

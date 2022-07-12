@@ -361,8 +361,8 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
     new->cmd[iter] = NULL;
     new->nxt = NULL;
-    new->infile = 0;
-    new->outfile = 1;
+    new->infile = -1;
+    new->outfile = -1;
     while (i < iter)
     {
         new->cmd[i] = ft_strdup(target->value);
@@ -419,6 +419,8 @@ t_node *get_fd(t_node *node)
     t_node *target;
     int flag;
 
+    node->infile = 0;
+    node->outfile = 1;
     tmp = node;
     prev = NULL;
     while (tmp)
@@ -432,7 +434,15 @@ t_node *get_fd(t_node *node)
                 if (tmp->infile != -1 && tmp->infile != 0)
                     close(tmp->infile);
                 if (tmp->type == INPUT)
+                {
                     tmp->infile = open(tmp->cmd[1], O_RDONLY);
+                    if (tmp->infile == -1)
+                    {
+                        printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
+                        free_node_all(node); // free token??
+                        return (0);
+                    }
+                }   
                 else
                     tmp->infile = get_heredoc_fd(tmp);
                 prev = tmp;
@@ -452,7 +462,15 @@ t_node *get_fd(t_node *node)
                 if (target->infile != -1 && target->infile != 0)
                     close(target->infile);
                 if (tmp->type == INPUT)
+                {        
                     target->infile = open(tmp->cmd[1], O_RDONLY);
+                    if (tmp->infile == -1)
+                    {
+                        printf("minishell: %s: No such file or directory", tmp->cmd[1]);
+                        free_node_all(node); // free token??
+                        return (0);
+                    }
+                }
                 else
                     target->infile = get_heredoc_fd(tmp);
                 prev = tmp;
