@@ -72,7 +72,7 @@ int check_duple_sep(char *token, int pos)
             size = 2;
         else
         {
-            printf("minishell: syntax error near unexpected token '%c%c'", token[pos], token[pos]);
+            printf("minishell: syntax error near unexpected token '%c%c'\n", token[pos], token[pos]);
             size = 0;
         }
     }
@@ -209,7 +209,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
             else if (tmp->value[i] == '\"' && dquote == 1)
                 dquote = 0;
             if (tmp->value[i] == '$' && squote == 0)
-            {   
+            {
                 start = i + 1;
                 i++;
                 while (ft_strchr(sep, tmp->value[i]) == 0 && tmp->value[i] != '\0')    
@@ -218,7 +218,13 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
                 replaced = search_env(env, target);
                 free(target);
 
-                if (replaced != NULL) // NULL 일 때 - 못 찾았을 때 처리하기
+                if(tmp->value[start] == '?') // status 나중에 실제값으로 대체
+                {
+                    int status = 0;
+                    replaced = ft_strdup(ft_itoa(status));
+                    i = start + 1;
+                }
+                if (replaced != NULL)
                 {
                     head = ft_substr(tmp->value, 0, start - 1);
                     tail = ft_substr(tmp->value, i, ft_strlen(tmp->value));
@@ -229,7 +235,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
                     free(head);
                     free(tail);
                 }
-                else
+                else // NULL 일 때 - 못 찾았을 때
                 {
                     head = ft_substr(tmp->value, 0, start - 1);
                     tail = ft_substr(tmp->value, i, ft_strlen(tmp->value));
@@ -361,8 +367,8 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
     new->cmd[iter] = NULL;
     new->nxt = NULL;
-    new->infile = -1;
-    new->outfile = -1;
+    new->infile = 0;
+    new->outfile = 1;
     while (i < iter)
     {
         new->cmd[i] = ft_strdup(target->value);
@@ -392,6 +398,8 @@ int get_heredoc_fd(t_node *node) // EOF 처리도 해야함
     while (1)
     {
         str = readline("> ");
+        if (!str)
+            break;
         if (ft_strncmp(str, node->cmd[1], ft_strlen(str)) == 0)
         {
             free(str);
@@ -419,8 +427,6 @@ t_node *get_fd(t_node *node)
     t_node *target;
     int flag;
 
-    node->infile = 0;
-    node->outfile = 1;
     tmp = node;
     prev = NULL;
     while (tmp)
@@ -431,8 +437,8 @@ t_node *get_fd(t_node *node)
             flag = 0;
             while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
             {
-                if (tmp->infile != -1 && tmp->infile != 0)
-                    close(tmp->infile);
+                // if (tmp->infile != -1 && tmp->infile != 0)
+                //     close(tmp->infile);
                 if (tmp->type == INPUT)
                 {
                     tmp->infile = open(tmp->cmd[1], O_RDONLY);
@@ -454,19 +460,23 @@ t_node *get_fd(t_node *node)
             flag = 0;
             target = tmp;
             if (prev && (prev->type == INPUT || prev->type == HEREDOC))
+            {       
                 target->infile = prev->infile;
+                target->outfile = prev->outfile;
+            }
             prev = tmp;
             tmp = tmp->nxt; // target 다음
             while (tmp && (tmp->type ==  INPUT || tmp->type ==  HEREDOC))
             {
-                if (target->infile != -1 && target->infile != 0)
-                    close(target->infile);
+                // if (target->infile != -1 && target->infile != 0)
+                //     close(target->infile);
                 if (tmp->type == INPUT)
-                {        
+                {
                     target->infile = open(tmp->cmd[1], O_RDONLY);
-                    if (tmp->infile == -1)
+                    printf("[%s, %d]\n", tmp->cmd[1], target->infile);
+                    if (target->infile == -1)
                     {
-                        printf("minishell: %s: No such file or directory", tmp->cmd[1]);
+                        printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
                         free_node_all(node); // free token??
                         return (0);
                     }
@@ -478,8 +488,8 @@ t_node *get_fd(t_node *node)
             } // INPUT 다음
             while (tmp && (tmp->type == TRUNC || tmp->type == APPEND))
             {
-                if (target->outfile != -1 && target->outfile != 1)
-                    close(target->outfile);
+                // if (target->outfile != -1 && target->outfile != 1)
+                //     close(target->outfile);
                 if (tmp->type == APPEND)
                     target->outfile = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
                 else if (tmp->type == TRUNC)
