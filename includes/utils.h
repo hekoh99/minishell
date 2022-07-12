@@ -14,6 +14,7 @@ char *ft_strjoin(char const *s1, char const *s2);
 
 int ft_isdigit(int c);
 int ft_isalpha(int c);
+char    *ft_itoa(int n);
 
 // system call
 void *ft_malloc(size_t size);

@@ -44,11 +44,47 @@ void free_token_all(t_token *head)
 {
     t_token *tmp;
 
+    if (!head)
+        return ;
     tmp = head;
-    while (tmp)
+    while (tmp && tmp->nxt)
     {
         tmp = tmp->nxt;
         free(tmp->prev->value);
         free(tmp->prev);
+    }
+    free(tmp->value);
+    free(tmp);
+}
+
+void free_node_all (t_node *head)
+{
+    t_node *tmp;
+    t_node *target;
+    int i;
+
+    if (!head)
+        return ;
+
+    tmp = head;
+    while (tmp)
+    {
+        target = tmp;
+        if (target->infile != -1 && target->infile != 0)
+            close(target->infile);
+        if (target->outfile != -1 && target->outfile != 1)
+            close(target->outfile);
+        if (target->cmd)
+        {
+            i = 0;
+            while (target->cmd[i])
+            {
+                free(target->cmd[i]);
+                i++;
+            }
+            free(target->cmd);
+        }
+        tmp = tmp->nxt;
+        free(target);
     }
 }
