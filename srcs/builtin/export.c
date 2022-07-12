@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/12 14:13:49 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/12 15:56:50 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ t_env *sort_envp(t_env *envp)
         right = tmp->nxt;
         while (right)
         {
-            if (ft_strncmp(left->key, right->key, select_bigger(ft_strlen(left->key), ft_strlen(right->key))) > 0)
+            if (ft_strncmp(left->key, right->key, select_longer(left->key, right->key)) > 0)
                 swap_envp_var(left, right);
             right = right->nxt;
         }
@@ -193,7 +193,7 @@ int is_duplicate_envp(t_env *envp, char *key)
     tmp = envp;
     while (tmp)
     {
-        if (ft_strncmp(tmp->key, key, select_bigger(ft_strlen(tmp->key), ft_strlen(key))) == 0)
+        if (ft_strncmp(tmp->key, key, select_longer(tmp->key, key)) == 0)
             return (1);
         tmp = tmp->nxt;
     }
@@ -204,7 +204,7 @@ t_env *update_env(t_env *envp, char *key, char *value)
 {
     while (envp)
     {
-        if (ft_strncmp(envp->key, key, select_bigger(ft_strlen(envp->key), ft_strlen(key))) == 0)
+        if (ft_strncmp(envp->key, key, select_longer(envp->key, key)) == 0)
         {
             ft_free(envp->value);
             envp->value = ft_strdup(value);

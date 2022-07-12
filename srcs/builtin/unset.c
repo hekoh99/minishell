@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/12 14:14:25 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/12 15:57:06 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_env *ft_unset_env(t_env *envp, char *key)
     prev = NULL;
     while (tmp)
     {
-        if (ft_strncmp(tmp->key, key, select_bigger(ft_strlen(tmp->key), ft_strlen(key))) == 0)
+        if (ft_strncmp(tmp->key, key, select_longer(tmp->key, key)) == 0)
         {
             if (prev)
                 prev->nxt = tmp->nxt;

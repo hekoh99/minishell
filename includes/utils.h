@@ -21,6 +21,6 @@ void ft_free(void *str);
 
 // builtin utils
 int is_invalid_key(char *key, int *exit_status);
-int select_bigger(int a, int b);
+int select_longer(char *str1, char *str2);
 
 #endif
