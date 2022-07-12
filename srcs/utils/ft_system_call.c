@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_system_call.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/14 22:36:38 by hako              #+#    #+#             */
-/*   Updated: 2022/07/11 18:39:57 by yubin            ###   ########.fr       */
+/*   Created: 2022/07/09 15:07:41 by yubin             #+#    #+#             */
+/*   Updated: 2022/07/11 20:23:08 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils.h"
+#include "../../includes/minishell.h"
 
-char *ft_substr(char const *s, unsigned int start, size_t len)
+void ft_free(void *str)
 {
-	char *str;
-	size_t s_len;
-	size_t index;
+    free(str);
+    str = 0;
+}
 
-	if (!s)
-		return (0);
-	s_len = ft_strlen(s);
-	str = (char *)ft_malloc(len * sizeof(char) + 1);
-	index = 0;
-	while (index < len && index + start < s_len)
-	{
-		str[index] = s[start + index];
-		index++;
-	}
-	str[index] = '\0';
-	return (str);
+void *ft_malloc(size_t size)
+{
+    void *ptr;
+
+    ptr = malloc(size);
+    if (ptr == NULL)
+    {
+        printf("Error: malloc failed\n");
+        exit(1);
+    }
+    return (ptr);
 }

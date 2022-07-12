@@ -1,9 +1,10 @@
 #ifndef MINISHELL_H
-# define MINISHELL_H
- 
+#define MINISHELL_H
+
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <readline/readline.h>
@@ -32,17 +33,6 @@ typedef struct s_token
     struct s_token *prev;
 } t_token;
 
-// enum e_builtin
-// {
-//     ECHO = 1,
-//     CD = 2,
-//     PWD = 3,
-//     EXPORT = 4,
-//     UNSET = 5,
-//     ENV = 6,
-//     EXIT = 7
-// };
-
 // typedef stuct s_mini{
 //     t_env *env;
 //     t_env *token;
@@ -57,4 +47,4 @@ t_token *trim_quote(t_token *token);
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
 
- #endif
+#endif
