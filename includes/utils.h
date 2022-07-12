@@ -19,4 +19,8 @@ int ft_isalpha(int c);
 void *ft_malloc(size_t size);
 void ft_free(void *str);
 
+// builtin utils
+int is_invalid_key(char *key, int *exit_status);
+int select_bigger(int a, int b);
+
 #endif

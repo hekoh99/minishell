@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/11 22:15:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/12 14:13:49 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,36 +44,6 @@ t_env *init_env(char **env)
         i++;
     }
     return (lst);
-}
-
-int is_invalid_key(char *key, int *exit_status)
-{
-    int i;
-
-    *exit_status = 0;
-    if (ft_strlen(key) == 1 && key[0] == '_')
-        return (0);
-    i = -1;
-    while (key[++i])
-    {
-        if (!ft_isalpha(key[i]) && key[i] != '_')
-        {
-            if (i > 0 && ft_isdigit(key[i]))
-                continue;
-            ft_free(key);
-            *exit_status = 1;
-            return (1);
-        }
-    }
-    return (0);
-}
-
-int select_bigger(int a, int b)
-{
-    if (a > b)
-        return a;
-    else
-        return b;
 }
 
 t_env *dup_env(t_env *env)
@@ -273,6 +243,7 @@ t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
         key = ft_substr(argv[i], 0, sep);
         if (is_invalid_key(key, exit_status))
         {
+            ft_free(key);
             printf("bash: export: `%s': not a valid identifier\n", argv[i]);
             continue;
         }
