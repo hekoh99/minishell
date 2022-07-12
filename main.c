@@ -28,16 +28,13 @@ void sig_int(int signal)
 
 t_env *init_env(char **env)
 {
-    int i = 1;
+    int i = 0;
     t_env *lst;
     t_env *new;
     t_env *tmp;
     int j;
 
-    lst = (t_env *)malloc(sizeof(t_env));
-    lst->key = ft_strdup(env[0]);
-    lst->value = ft_strdup(env[0]);
-    lst->nxt = NULL;
+    lst = NULL;
     tmp = lst;
     while (env[i])
     {
@@ -48,11 +45,57 @@ t_env *init_env(char **env)
         new->key = ft_substr(env[i], 0, j);
         new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
         new->nxt = NULL;
-        tmp->nxt = new;
+        if (!lst)
+        {
+            lst = new;
+            tmp = lst;
+            i++;
+            continue;
+        }
+        else
+            tmp->nxt = new;
         tmp = tmp->nxt;
         i++;
     }
     return (lst);
+}
+
+// test code
+void print_token(t_token *token, int flag)
+{
+    char type[7][10] = {"CMD", "PIPE", "TRUNC", "APPEND", "INPUT", "HEREDOC", "END"};
+    while (token && flag == 1)
+    {
+        printf("[%s : %s]", token->value, type[token->type - 1]);
+        token = token->nxt;
+    }
+    while (token && flag == 0)
+    {
+        printf("[%s]", token->value);
+        token = token->nxt;
+    }
+    printf("\n");
+}
+
+// test code
+void print_node(t_node *node)
+{
+    int i;
+    char type[7][10] = {"CMD", "PIPE", "TRUNC", "APPEND", "INPUT", "HEREDOC", "END"};
+
+    while (node)
+    {
+        i = 0;
+        printf("-------- %s ----------\n", type[node->type - 1]);
+        while (node->cmd && node->cmd[i])
+        {
+            printf("%s\n", node->cmd[i]);
+            i++;
+        }
+        printf("infile : %d\n", node->infile);
+        printf("outfile : %d\n", node->outfile);
+        node = node->nxt;
+    }
 }
 
 int main(int ac, char **av, char **env)
@@ -60,12 +103,10 @@ int main(int ac, char **av, char **env)
     char *str;
     t_env *envp;
     t_token *token;
+    t_node *node;
 
     ac += 0;
     av += 0;
-
-    signal(SIGINT, sig_int);
-    signal(SIGQUIT, SIG_IGN);
 
     envp = init_env(env);
     /* // env init check
@@ -76,6 +117,8 @@ int main(int ac, char **av, char **env)
     // */
     while (1)
     {
+        signal(SIGINT, sig_int);
+        signal(SIGQUIT, SIG_IGN);
         str = readline("minishell$ ");
         if (!str)
         {
@@ -91,21 +134,21 @@ int main(int ac, char **av, char **env)
         else
         {
             add_history(str);
-            printf("%s\n", str);
+            // printf("parrot : %s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
             free(str);
             if (token == 0)
                 continue;
             token = split_by_sep(token);
+            token = add_type(token);
             token = expand(token, envp);
             token = trim_quote(token);
-            while (token)
-            {
-                printf("[%s]", token->value);
-                token = token->nxt;
-            }
-            printf("\n");
+            node = exec_unit(token);
+            //print_token(token, 1);
+            print_node(node);
         }
+        free_token_all(token);
+        free_node_all(node);
     }
     return (0);
 }
