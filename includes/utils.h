@@ -13,6 +13,7 @@ int ft_strncmp(const char *s1, const char *s2, size_t n);
 size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char *ft_strjoin(char const *s1, char const *s2);
 int ft_atoi(const char *str);
+long long ft_atoll(const char *str);
 
 int ft_isdigit(int c);
 int ft_isalpha(int c);
