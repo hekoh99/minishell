@@ -125,7 +125,7 @@ t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
                     tmp = tmp->nxt; // 구분자 블록
                     // 구분자 후단
                     seperated = malloc(sizeof(t_token));
-                    seperated->value = ft_substr(tmp->prev->value, i+sep_size, size);
+                    seperated->value = ft_substr(tmp->prev->value, i + sep_size, size);
                     seperated->nxt = tmp->nxt;
                     tmp->nxt->prev = seperated;
                     tmp->nxt = seperated;
@@ -142,7 +142,7 @@ t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
                     seperated->nxt = NULL;
                     tmp = tmp->nxt;
                     seperated = malloc(sizeof(t_token));
-                    seperated->value = ft_substr(tmp->prev->value, i+sep_size, size);
+                    seperated->value = ft_substr(tmp->prev->value, i + sep_size, size);
                     tmp->nxt = seperated;
                     seperated->prev = tmp;
                     seperated->nxt = NULL;
@@ -169,7 +169,7 @@ char *search_env(t_env *env, char *target)
     real_val = NULL;
     while (env)
     {
-        if (ft_strncmp(env->key, target, ft_strlen(env->key)) == 0) // 환경변수 찾음
+        if (ft_strncmp(env->key, target, select_longer(env->key, target)) == 0) // 환경변수 찾음
         {
             real_val = ft_substr(env->value, 0, ft_strlen(env->value));
             break;
@@ -212,13 +212,13 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
             {
                 start = i + 1;
                 i++;
-                while (ft_strchr(sep, tmp->value[i]) == 0 && tmp->value[i] != '\0')    
+                while (ft_strchr(sep, tmp->value[i]) == 0 && tmp->value[i] != '\0')
                     i++;
                 target = ft_substr(tmp->value, start, i - start);
                 replaced = search_env(env, target);
                 free(target);
 
-                if(tmp->value[start] == '?') // status 나중에 실제값으로 대체
+                if (tmp->value[start] == '?') // status 나중에 실제값으로 대체
                 {
                     int status = 0;
                     replaced = ft_strdup(ft_itoa(status));
@@ -266,7 +266,7 @@ t_token *add_type(t_token *token)
     t_token *tmp;
 
     tmp = token;
-    while(tmp)
+    while (tmp)
     {
         if (tmp->value[0] == '>')
         {
@@ -448,7 +448,7 @@ t_node *get_fd(t_node *node)
                         free_node_all(node); // free token??
                         return (0);
                     }
-                }   
+                }
                 else
                     tmp->infile = get_heredoc_fd(tmp);
                 prev = tmp;
@@ -460,13 +460,13 @@ t_node *get_fd(t_node *node)
             flag = 0;
             target = tmp;
             if (prev && (prev->type == INPUT || prev->type == HEREDOC))
-            {       
+            {
                 target->infile = prev->infile;
                 target->outfile = prev->outfile;
             }
             prev = tmp;
             tmp = tmp->nxt; // target 다음
-            while (tmp && (tmp->type ==  INPUT || tmp->type ==  HEREDOC))
+            while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
             {
                 // if (target->infile != -1 && target->infile != 0)
                 //     close(target->infile);
