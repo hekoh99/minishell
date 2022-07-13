@@ -23,14 +23,11 @@ char    *ft_itoa(int n);
 void *ft_malloc(size_t size);
 void ft_free(void *str);
 
-<<<<<<< HEAD
 // test
 char	*get_next_line(int fd);
-=======
 // builtin utils
 void printf_invalid_identifier(char *key, int *status);
 int is_invalid_key(char *key, int *exit_status);
 int select_longer(char *str1, char *str2);
->>>>>>> main
 
 #endif
