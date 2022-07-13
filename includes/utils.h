@@ -17,6 +17,7 @@ long long ft_atoll(const char *str);
 
 int ft_isdigit(int c);
 int ft_isalpha(int c);
+char    *ft_itoa(int n);
 
 // system call
 void *ft_malloc(size_t size);
