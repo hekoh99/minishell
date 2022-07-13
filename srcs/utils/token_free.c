@@ -43,18 +43,21 @@ t_token *ft_dellist(t_token *head, char *target)
 void free_token_all(t_token *head)
 {
     t_token *tmp;
+    t_token *target;
 
     if (!head)
         return ;
     tmp = head;
-    while (tmp && tmp->nxt)
+    while (tmp)
     {
+        target = tmp;
+        if (target->value)
+        {
+            free(target->value);
+        }
         tmp = tmp->nxt;
-        free(tmp->prev->value);
-        free(tmp->prev);
+        free(target);
     }
-    free(tmp->value);
-    free(tmp);
 }
 
 void free_node_all (t_node *head)

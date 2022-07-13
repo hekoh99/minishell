@@ -98,6 +98,32 @@ void print_node(t_node *node)
     }
 }
 
+// test code 
+void print_heredoc(t_node *node)
+{
+    char *line;
+
+    if (!node)
+        return ;
+    
+    while (node)
+    {
+        if (node->type == HEREDOC)
+        {
+            line = get_next_line(node->infile);
+            printf("------- heredoc -------\n");
+            while (line)
+            {
+                printf("line : %s\n", line);
+                free(line);
+                line = get_next_line(node->infile);
+            }
+        }
+        if (node)
+            node = node->nxt;
+    }
+}
+
 int main(int ac, char **av, char **env)
 {
     char *str;
@@ -154,9 +180,13 @@ int main(int ac, char **av, char **env)
             node = exec_unit(token);
             //print_token(token, 1);
             print_node(node);
+            // print_heredoc(node);
         }
-        free_token_all(token);
-        free_node_all(node);
+        if (node)
+        {
+            free_token_all(token);
+            free_node_all(node);
+        }
     }
     return (0);
 }
