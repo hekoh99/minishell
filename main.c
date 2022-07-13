@@ -12,18 +12,23 @@
 
 
 #include "./includes/minishell.h"
+#include <sys/ioctl.h>
+#include <termios.h>
 
 // my mac : gcc main.c -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
 // hako cluster : gcc main.c -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include
+
+int g_stat;
 
 void sig_int(int signal)
 {
     if (signal != SIGINT)
         return;
-    printf("minishell$ \n");
+    g_stat = INTERRUPT;
+    ioctl(STDIN_FILENO, TIOCSTI, "\n");
     rl_on_new_line();       // 개행이 나온 후 수행되어야함
     rl_replace_line("", 1); // 버퍼 비우고
-    rl_redisplay();         // prompt
+    // rl_redisplay();         // prompt
 }
 
 t_env *init_env(char **env)
@@ -92,9 +97,35 @@ void print_node(t_node *node)
             printf("%s\n", node->cmd[i]);
             i++;
         }
-        printf("infile : %d\n", node->infile);
-        printf("outfile : %d\n", node->outfile);
+        printf("infile : %d\n", node->fd[IN]);
+        printf("outfile : %d\n", node->fd[OUT]);
         node = node->nxt;
+    }
+}
+
+// test code 
+void print_heredoc(t_node *node)
+{
+    char *line;
+
+    if (!node)
+        return ;
+    
+    while (node)
+    {
+        if (node->type == HEREDOC)
+        {
+            line = get_next_line(node->fd[IN]);
+            printf("------- heredoc -------\n");
+            while (line)
+            {
+                printf("line : %s\n", line);
+                free(line);
+                line = get_next_line(node->fd[IN]);
+            }
+        }
+        if (node)
+            node = node->nxt;
     }
 }
 
@@ -104,6 +135,8 @@ int main(int ac, char **av, char **env)
     t_env *envp;
     t_token *token;
     t_node *node;
+    struct termios attributes;
+	struct termios saved;
 
     ac += 0;
     av += 0;
@@ -117,8 +150,14 @@ int main(int ac, char **av, char **env)
     // */
     while (1)
     {
+        token = NULL;
+        node = NULL;
         signal(SIGINT, sig_int);
         signal(SIGQUIT, SIG_IGN);
+        tcgetattr(STDIN_FILENO, &saved);
+        tcgetattr(STDIN_FILENO, &attributes);
+        attributes.c_lflag &= (~ECHOCTL);
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
         str = readline("minishell$ ");
         if (!str)
         {
@@ -136,16 +175,14 @@ int main(int ac, char **av, char **env)
             add_history(str);
             // printf("parrot : %s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
-            free(str);
-            if (token == 0)
-                continue;
             token = split_by_sep(token);
             token = add_type(token);
             token = expand(token, envp);
             token = trim_quote(token);
-            node = exec_unit(token);
+            node = exec_unit(&token);
             //print_token(token, 1);
             print_node(node);
+            // print_heredoc(node);
         }
         free_token_all(token);
         free_node_all(node);

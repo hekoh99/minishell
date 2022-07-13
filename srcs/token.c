@@ -249,10 +249,13 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
             if (tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
             {
                 replaced = search_env(env, "HOME");
+                if (!replaced) // HOME 없을 때
+                    replaced = ft_strdup(getenv("HOME"));
                 tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
                 free(tmp->value);
                 tmp->value = ft_strjoin(replaced, tail);
                 free(tail);
+                free(replaced);
             }
             i++;
         }
@@ -367,8 +370,8 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
     new->cmd[iter] = NULL;
     new->nxt = NULL;
-    new->infile = 0;
-    new->outfile = 1;
+    new->fd[IN] = 0;
+    new->fd[OUT] = 1;
     while (i < iter)
     {
         new->cmd[i] = ft_strdup(target->value);
@@ -441,8 +444,8 @@ t_node *get_fd(t_node *node)
                 //     close(tmp->infile);
                 if (tmp->type == INPUT)
                 {
-                    tmp->infile = open(tmp->cmd[1], O_RDONLY);
-                    if (tmp->infile == -1)
+                    tmp->fd[IN] = open(tmp->cmd[1], O_RDONLY);
+                    if (tmp->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
                         free_node_all(node); // free token??
@@ -450,7 +453,7 @@ t_node *get_fd(t_node *node)
                     }
                 }
                 else
-                    tmp->infile = get_heredoc_fd(tmp);
+                    tmp->fd[IN] = get_heredoc_fd(tmp);
                 prev = tmp;
                 tmp = tmp->nxt; // < 다음 node 위치
             }
@@ -461,8 +464,8 @@ t_node *get_fd(t_node *node)
             target = tmp;
             if (prev && (prev->type == INPUT || prev->type == HEREDOC))
             {
-                target->infile = prev->infile;
-                target->outfile = prev->outfile;
+                target->fd[IN] = prev->fd[IN];
+                target->fd[OUT] = prev->fd[OUT];
             }
             prev = tmp;
             tmp = tmp->nxt; // target 다음
@@ -472,9 +475,9 @@ t_node *get_fd(t_node *node)
                 //     close(target->infile);
                 if (tmp->type == INPUT)
                 {
-                    target->infile = open(tmp->cmd[1], O_RDONLY);
-                    printf("[%s, %d]\n", tmp->cmd[1], target->infile);
-                    if (target->infile == -1)
+                    target->fd[IN] = open(tmp->cmd[1], O_RDONLY);
+                    printf("[%s, %d]\n", tmp->cmd[1], target->fd[IN]);
+                    if (target->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
                         free_node_all(node); // free token??
@@ -482,7 +485,7 @@ t_node *get_fd(t_node *node)
                     }
                 }
                 else
-                    target->infile = get_heredoc_fd(tmp);
+                    target->fd[IN] = get_heredoc_fd(tmp);
                 prev = tmp;
                 tmp = tmp->nxt;
             } // INPUT 다음
@@ -491,9 +494,9 @@ t_node *get_fd(t_node *node)
                 // if (target->outfile != -1 && target->outfile != 1)
                 //     close(target->outfile);
                 if (tmp->type == APPEND)
-                    target->outfile = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
                 else if (tmp->type == TRUNC)
-                    target->outfile = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
                 prev = tmp;
                 tmp = tmp->nxt;
             }
@@ -507,15 +510,17 @@ t_node *get_fd(t_node *node)
     return (node);
 }
 
-t_node *exec_unit(t_token *token)
+t_node *exec_unit(t_token **token)
 {
     t_node *head;
+    t_token *token_head;
     t_token *tmp;
     t_token *start;
     int i = 0;
 
     head = NULL;
-    tmp = token;
+    tmp = *token;
+    token_head = *token;
     while (tmp)
     {
         i = 0;
@@ -539,6 +544,15 @@ t_node *exec_unit(t_token *token)
             if (!tmp->nxt)
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
+                free_token_all(token_head);
+                *token = NULL;
+                return (0);
+            }
+            if (tmp->nxt->type > 2)
+            {
+                printf("minishell: syntax error near unexpected token `%s'\n", tmp->nxt->value);
+                free_token_all(token_head);
+                *token = NULL;
                 return (0);
             }
             head = add_node(head, start, 2, tmp->type);

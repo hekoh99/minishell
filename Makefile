@@ -18,6 +18,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strjoin.c \
 	$(UTILS)/ft_strlcpy.c \
 	$(UTILS)/ft_itoa.c \
+	$(UTILS)/gnl.c \
 	srcs/token.c
 
 OBJS		= $(SRCS:%.c=%.o)
@@ -28,11 +29,11 @@ SAN = -fsanitize=address -g3
 DEBUG = -g
 
 # 맥북환경
-READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
-READLINE_INC	= -I/opt/homebrew/opt/readline/include
+# READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
+# READLINE_INC	= -I/opt/homebrew/opt/readline/include
 # 클러스터환경
-# READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
-# READLINE_INC	= -I${HOME}/.brew/opt/readline/include
+READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
+READLINE_INC	= -I${HOME}/.brew/opt/readline/include
 
 READLINE_HAKO_LIB = -lreadline -L/opt/homebrew/opt/readline/lib
 READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include

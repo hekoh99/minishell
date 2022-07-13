@@ -21,6 +21,16 @@
 # define HEREDOC 6
 # define END 7
 
+// exit status
+# define SYNTAX 258
+# define CMD_NOT_FOUND 127
+# define INTERRUPT 130
+# define PERM 126
+# define ETC 1
+
+# define IN 0
+# define OUT 1
+
 typedef struct s_env
 {
     char *key;
@@ -40,8 +50,7 @@ typedef struct s_node
 {
     char **cmd;
     int type;
-    int infile;
-    int outfile;
+    int fd[2];
     struct s_node *nxt;
 } t_node;
 
@@ -66,7 +75,7 @@ t_token *split_by_sep(t_token *token);
 t_token *expand(t_token *token, t_env *env);
 t_token *trim_quote(t_token *token);
 t_token *add_type(t_token *token);
-t_node *exec_unit(t_token *token);
+t_node *exec_unit(t_token **token);
 
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
