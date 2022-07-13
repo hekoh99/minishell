@@ -28,6 +28,9 @@
 # define PERM 126
 # define ETC 1
 
+# define IN 0
+# define OUT 1
+
 typedef struct s_env
 {
     char *key;
@@ -47,15 +50,9 @@ typedef struct s_node
 {
     char **cmd;
     int type;
-    int infile;
-    int outfile;
+    int fd[2];
     struct s_node *nxt;
 } t_node;
-
-typedef struct s_status
-{
-    int stat;
-} t_status;
 
 // enum e_builtin
 // {
@@ -84,7 +81,5 @@ t_node *exec_unit(t_token **token);
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
 void free_node_all (t_node *head);
-
-extern t_status g_stat;
 
 #endif

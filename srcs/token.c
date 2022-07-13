@@ -370,8 +370,8 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
     new->cmd[iter] = NULL;
     new->nxt = NULL;
-    new->infile = 0;
-    new->outfile = 1;
+    new->fd[IN] = 0;
+    new->fd[OUT] = 1;
     while (i < iter)
     {
         new->cmd[i] = ft_strdup(target->value);
@@ -444,8 +444,8 @@ t_node *get_fd(t_node *node)
                 //     close(tmp->infile);
                 if (tmp->type == INPUT)
                 {
-                    tmp->infile = open(tmp->cmd[1], O_RDONLY);
-                    if (tmp->infile == -1)
+                    tmp->fd[IN] = open(tmp->cmd[1], O_RDONLY);
+                    if (tmp->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
                         free_node_all(node); // free token??
@@ -453,7 +453,7 @@ t_node *get_fd(t_node *node)
                     }
                 }
                 else
-                    tmp->infile = get_heredoc_fd(tmp);
+                    tmp->fd[IN] = get_heredoc_fd(tmp);
                 prev = tmp;
                 tmp = tmp->nxt; // < 다음 node 위치
             }
@@ -464,8 +464,8 @@ t_node *get_fd(t_node *node)
             target = tmp;
             if (prev && (prev->type == INPUT || prev->type == HEREDOC))
             {
-                target->infile = prev->infile;
-                target->outfile = prev->outfile;
+                target->fd[IN] = prev->fd[IN];
+                target->fd[OUT] = prev->fd[OUT];
             }
             prev = tmp;
             tmp = tmp->nxt; // target 다음
@@ -475,9 +475,9 @@ t_node *get_fd(t_node *node)
                 //     close(target->infile);
                 if (tmp->type == INPUT)
                 {
-                    target->infile = open(tmp->cmd[1], O_RDONLY);
-                    printf("[%s, %d]\n", tmp->cmd[1], target->infile);
-                    if (target->infile == -1)
+                    target->fd[IN] = open(tmp->cmd[1], O_RDONLY);
+                    printf("[%s, %d]\n", tmp->cmd[1], target->fd[IN]);
+                    if (target->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
                         free_node_all(node); // free token??
@@ -485,7 +485,7 @@ t_node *get_fd(t_node *node)
                     }
                 }
                 else
-                    target->infile = get_heredoc_fd(tmp);
+                    target->fd[IN] = get_heredoc_fd(tmp);
                 prev = tmp;
                 tmp = tmp->nxt;
             } // INPUT 다음
@@ -494,9 +494,9 @@ t_node *get_fd(t_node *node)
                 // if (target->outfile != -1 && target->outfile != 1)
                 //     close(target->outfile);
                 if (tmp->type == APPEND)
-                    target->outfile = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
                 else if (tmp->type == TRUNC)
-                    target->outfile = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
                 prev = tmp;
                 tmp = tmp->nxt;
             }

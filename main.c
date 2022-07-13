@@ -18,13 +18,13 @@
 // my mac : gcc main.c -lreadline -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include
 // hako cluster : gcc main.c -lreadline -L/Users/hako/.brew/opt/readline/lib -I/Users/hako/.brew/opt/readline/include
 
-t_status g_stat;
+int g_stat;
 
 void sig_int(int signal)
 {
     if (signal != SIGINT)
         return;
-    g_stat.stat = INTERRUPT;
+    g_stat = INTERRUPT;
     ioctl(STDIN_FILENO, TIOCSTI, "\n");
     rl_on_new_line();       // 개행이 나온 후 수행되어야함
     rl_replace_line("", 1); // 버퍼 비우고
@@ -97,8 +97,8 @@ void print_node(t_node *node)
             printf("%s\n", node->cmd[i]);
             i++;
         }
-        printf("infile : %d\n", node->infile);
-        printf("outfile : %d\n", node->outfile);
+        printf("infile : %d\n", node->fd[IN]);
+        printf("outfile : %d\n", node->fd[OUT]);
         node = node->nxt;
     }
 }
@@ -115,13 +115,13 @@ void print_heredoc(t_node *node)
     {
         if (node->type == HEREDOC)
         {
-            line = get_next_line(node->infile);
+            line = get_next_line(node->fd[IN]);
             printf("------- heredoc -------\n");
             while (line)
             {
                 printf("line : %s\n", line);
                 free(line);
-                line = get_next_line(node->infile);
+                line = get_next_line(node->fd[IN]);
             }
         }
         if (node)

@@ -73,10 +73,10 @@ void free_node_all (t_node *head)
     while (tmp)
     {
         target = tmp;
-        if (target->infile != -1 && target->infile != 0)
-            close(target->infile);
-        if (target->outfile != -1 && target->outfile != 1)
-            close(target->outfile);
+        if (target->fd[IN] != -1 && target->fd[IN] != 0)
+            close(target->fd[IN]);
+        if (target->fd[OUT] != -1 && target->fd[OUT] != 1)
+            close(target->fd[OUT]);
         if (target->cmd)
         {
             i = 0;
