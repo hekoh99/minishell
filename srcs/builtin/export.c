@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/11 22:15:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/13 14:48:57 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,36 +44,6 @@ t_env *init_env(char **env)
         i++;
     }
     return (lst);
-}
-
-int is_invalid_key(char *key, int *exit_status)
-{
-    int i;
-
-    *exit_status = 0;
-    if (ft_strlen(key) == 1 && key[0] == '_')
-        return (0);
-    i = -1;
-    while (key[++i])
-    {
-        if (!ft_isalpha(key[i]) && key[i] != '_')
-        {
-            if (i > 0 && ft_isdigit(key[i]))
-                continue;
-            ft_free(key);
-            *exit_status = 1;
-            return (1);
-        }
-    }
-    return (0);
-}
-
-int select_bigger(int a, int b)
-{
-    if (a > b)
-        return a;
-    else
-        return b;
 }
 
 t_env *dup_env(t_env *env)
@@ -144,7 +114,7 @@ t_env *sort_envp(t_env *envp)
         right = tmp->nxt;
         while (right)
         {
-            if (ft_strncmp(left->key, right->key, select_bigger(ft_strlen(left->key), ft_strlen(right->key))) > 0)
+            if (ft_strncmp(left->key, right->key, select_longer(left->key, right->key)) > 0)
                 swap_envp_var(left, right);
             right = right->nxt;
         }
@@ -191,7 +161,7 @@ int find_sep(char *str, int sep)
             return (i);
         ++i;
     }
-    return (-1);
+    return (i);
 }
 
 t_env *make_env(char *key, char *value)
@@ -223,7 +193,7 @@ int is_duplicate_envp(t_env *envp, char *key)
     tmp = envp;
     while (tmp)
     {
-        if (ft_strncmp(tmp->key, key, select_bigger(ft_strlen(tmp->key), ft_strlen(key))) == 0)
+        if (ft_strncmp(tmp->key, key, select_longer(tmp->key, key)) == 0)
             return (1);
         tmp = tmp->nxt;
     }
@@ -234,7 +204,7 @@ t_env *update_env(t_env *envp, char *key, char *value)
 {
     while (envp)
     {
-        if (ft_strncmp(envp->key, key, select_bigger(ft_strlen(envp->key), ft_strlen(key))) == 0)
+        if (ft_strncmp(envp->key, key, select_longer(envp->key, key)) == 0)
         {
             ft_free(envp->value);
             envp->value = ft_strdup(value);
@@ -256,7 +226,7 @@ t_env *ft_set(t_env *envp, char *key, char *value)
     return (envp);
 }
 
-t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
+t_env *update_envp(int argc, char **argv, t_env *envp, int *status)
 {
     int i;
     int sep;
@@ -268,14 +238,14 @@ t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
     while (argv[++i])
     {
         sep = find_sep(argv[i], '=');
-        if (sep == -1)
-            continue;
-        key = ft_substr(argv[i], 0, sep);
-        if (is_invalid_key(key, exit_status))
+        if (sep == 0)
         {
-            printf("bash: export: `%s': not a valid identifier\n", argv[i]);
+            printf_invalid_identifier(ft_strdup(argv[i]), status);
             continue;
         }
+        key = ft_substr(argv[i], 0, sep);
+        if (is_invalid_key(key, status) || sep == ft_strlen(argv[i]))
+            continue;
         value = ft_substr(argv[i], sep + 1, ft_strlen(argv[i]));
         envp = ft_set(envp, key, value);
     }
