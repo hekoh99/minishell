@@ -510,7 +510,7 @@ t_node *get_fd(t_node *node)
     return (node);
 }
 
-t_node *exec_unit(t_token *token)
+t_node *exec_unit(t_token **token)
 {
     t_node *head;
     t_token *token_head;
@@ -519,8 +519,8 @@ t_node *exec_unit(t_token *token)
     int i = 0;
 
     head = NULL;
-    tmp = token;
-    token_head = token;
+    tmp = *token;
+    token_head = *token;
     while (tmp)
     {
         i = 0;
@@ -545,12 +545,14 @@ t_node *exec_unit(t_token *token)
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
                 free_token_all(token_head);
+                *token = NULL;
                 return (0);
             }
             if (tmp->nxt->type > 2)
             {
                 printf("minishell: syntax error near unexpected token `%s'\n", tmp->nxt->value);
                 free_token_all(token_head);
+                *token = NULL;
                 return (0);
             }
             head = add_node(head, start, 2, tmp->type);
