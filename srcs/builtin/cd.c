@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/12 16:06:54 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/13 12:52:27 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ int main(int argc, char **argv, char **env)
 
     // test
     char path[PATH_MAX];
-
     getcwd(path, PATH_MAX);
     printf("%s\n", path);
     // */
