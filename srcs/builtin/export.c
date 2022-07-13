@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/12 15:56:50 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/13 14:21:45 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ int find_sep(char *str, int sep)
             return (i);
         ++i;
     }
-    return (-1);
+    return (i);
 }
 
 t_env *make_env(char *key, char *value)
@@ -226,7 +226,7 @@ t_env *ft_set(t_env *envp, char *key, char *value)
     return (envp);
 }
 
-t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
+t_env *update_envp(int argc, char **argv, t_env *envp, int *status)
 {
     int i;
     int sep;
@@ -238,15 +238,9 @@ t_env *update_envp(int argc, char **argv, t_env *envp, int *exit_status)
     while (argv[++i])
     {
         sep = find_sep(argv[i], '=');
-        if (sep == -1)
-            continue;
         key = ft_substr(argv[i], 0, sep);
-        if (is_invalid_key(key, exit_status))
-        {
-            ft_free(key);
-            printf("bash: export: `%s': not a valid identifier\n", argv[i]);
+        if (is_invalid_key(key, status) || sep == ft_strlen(argv[i]))
             continue;
-        }
         value = ft_substr(argv[i], sep + 1, ft_strlen(argv[i]));
         envp = ft_set(envp, key, value);
     }
