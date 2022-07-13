@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/13 14:21:45 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/13 14:48:57 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,11 @@ t_env *update_envp(int argc, char **argv, t_env *envp, int *status)
     while (argv[++i])
     {
         sep = find_sep(argv[i], '=');
+        if (sep == 0)
+        {
+            printf_invalid_identifier(ft_strdup(argv[i]), status);
+            continue;
+        }
         key = ft_substr(argv[i], 0, sep);
         if (is_invalid_key(key, status) || sep == ft_strlen(argv[i]))
             continue;

@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/12 15:57:06 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/13 14:19:05 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ t_env *ft_unset(t_env *envp, char **argv, int *status)
     i = 0;
     while (argv && argv[++i])
     {
-        if (is_invalid_key(argv[i], status))
+        if (is_invalid_key(ft_strdup(argv[i]), status))
             continue;
         envp = ft_unset_env(envp, argv[i]);
     }
