@@ -17,6 +17,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strjoin.c \
 	$(UTILS)/ft_strlcpy.c \
 	$(UTILS)/ft_itoa.c \
+	$(UTILS)/gnl.c \
 	srcs/token.c
 
 OBJS		= $(SRCS:%.c=%.o)

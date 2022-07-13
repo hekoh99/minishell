@@ -249,10 +249,13 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
             if (tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
             {
                 replaced = search_env(env, "HOME");
+                if (!replaced) // HOME 없을 때
+                    replaced = ft_strdup(getenv("HOME"));
                 tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
                 free(tmp->value);
                 tmp->value = ft_strjoin(replaced, tail);
                 free(tail);
+                free(replaced);
             }
             i++;
         }
@@ -510,12 +513,14 @@ t_node *get_fd(t_node *node)
 t_node *exec_unit(t_token *token)
 {
     t_node *head;
+    t_token *token_head;
     t_token *tmp;
     t_token *start;
     int i = 0;
 
     head = NULL;
     tmp = token;
+    token_head = token;
     while (tmp)
     {
         i = 0;
@@ -539,6 +544,13 @@ t_node *exec_unit(t_token *token)
             if (!tmp->nxt)
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
+                free_token_all(token_head);
+                return (0);
+            }
+            if (tmp->nxt->type > 2)
+            {
+                printf("minishell: syntax error near unexpected token `%s'\n", tmp->nxt->value);
+                free_token_all(token_head);
                 return (0);
             }
             head = add_node(head, start, 2, tmp->type);

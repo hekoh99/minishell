@@ -20,4 +20,7 @@ char    *ft_itoa(int n);
 void *ft_malloc(size_t size);
 void ft_free(void *str);
 
+// test
+char	*get_next_line(int fd);
+
 #endif
