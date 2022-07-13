@@ -87,6 +87,14 @@ int main(int ac, char **av, char **env)
             add_history(str);
             printf("%s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
+            if (token != 0)
+            {
+                while (token){
+                    printf("[%s]", token->value);
+                    token = token->nxt;
+                }
+                printf("\n");
+            }
             free(str);
         }
     }
