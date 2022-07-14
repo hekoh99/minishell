@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/14 12:21:47 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 12:35:46 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ void print_tmpfiles()
 
 int main(int ac, char **av, char **env)
 {
+    t_mini mini;
     char *str;
     t_env *envp;
     t_token *token;
@@ -192,13 +193,16 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token);
-            // print_token(token, 1);
-            print_node(node);
+            mini.envp = envp;
+            mini.node = node;
             // ft_execute(node);
+            // print_token(token, 1);
+            print_node(mini.node);
             // print_heredoc(node);
+            // print_tmpfiles();
         }
         free_token_all(token);
-        free_node_all(node);
+        free_node_all(mini.node);
         tmp_files(NULL, DEL);
     }
     return (0);

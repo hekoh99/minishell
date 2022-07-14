@@ -64,6 +64,12 @@ typedef struct s_list
     struct s_list *nxt;
 } t_list;
 
+typedef struct s_mini
+{
+    t_env *envp;
+    t_node *node;
+}   t_mini;
+
 // enum e_builtin
 // {
 //     ECHO = 1,
