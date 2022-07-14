@@ -10,21 +10,23 @@ char *ft_strdup(const char *src);
 char *ft_substr(char const *s, unsigned int start, size_t len);
 char *ft_strchr(const char *s, int c);
 int ft_strncmp(const char *s1, const char *s2, size_t n);
+int ft_strcmp(const char *s1, const char *s2);
 size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char *ft_strjoin(char const *s1, char const *s2);
 int ft_atoi(const char *str);
 long long ft_atoll(const char *str);
+void error_exit(char *msg, int status);
 
 int ft_isdigit(int c);
 int ft_isalpha(int c);
-char    *ft_itoa(int n);
+char *ft_itoa(int n);
 
 // system call
 void *ft_malloc(size_t size);
 void ft_free(void *str);
 
 // test
-char	*get_next_line(int fd);
+char *get_next_line(int fd);
 // builtin utils
 void printf_invalid_identifier(char *key, int *status);
 int is_invalid_key(char *key, int *exit_status);

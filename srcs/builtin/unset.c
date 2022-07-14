@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/13 14:19:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/14 11:41:10 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int g_stat;
 
 t_env *init_env(char **env)
 {
@@ -72,16 +74,16 @@ t_env *ft_unset_env(t_env *envp, char *key)
     return (envp);
 }
 
-t_env *ft_unset(t_env *envp, char **argv, int *status)
+t_env *ft_unset(t_node *node)
 {
     int i;
 
-    i = 0;
-    while (argv && argv[++i])
+    i = -1;
+    while (node->cmd && node->cmd[++i])
     {
-        if (is_invalid_key(ft_strdup(argv[i]), status))
+        if (is_invalid_key(ft_strdup(node->cmd[i]), g_stat))
             continue;
-        envp = ft_unset_env(envp, argv[i]);
+        env = ft_unset_env(envp, node->cmd[i]);
     }
     return (envp);
 }

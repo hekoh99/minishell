@@ -6,10 +6,9 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/07 16:35:48 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 11:26:29 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "./includes/minishell.h"
 #include <sys/ioctl.h>
@@ -103,14 +102,14 @@ void print_node(t_node *node)
     }
 }
 
-// test code 
+// test code
 void print_heredoc(t_node *node)
 {
     char *line;
 
     if (!node)
-        return ;
-    
+        return;
+
     while (node)
     {
         if (node->type == HEREDOC)
@@ -136,7 +135,7 @@ int main(int ac, char **av, char **env)
     t_token *token;
     t_node *node;
     struct termios attributes;
-	struct termios saved;
+    struct termios saved;
 
     ac += 0;
     av += 0;
@@ -180,8 +179,9 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token);
-            //print_token(token, 1);
+            // print_token(token, 1);
             print_node(node);
+            // ft_execute(node);
             // print_heredoc(node);
         }
         free_token_all(token);

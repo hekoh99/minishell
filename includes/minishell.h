@@ -1,35 +1,35 @@
 #ifndef MINISHELL_H
-# define MINISHELL_H
- 
-# include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <fcntl.h>
+#define MINISHELL_H
 
-# include "utils.h"
+#include <signal.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-# define CMD 1
-# define PIPE 2
-# define TRUNC 3
-# define APPEND 4
-# define INPUT 5
-# define HEREDOC 6
-# define END 7
+#include "utils.h"
+
+#define CMD 1
+#define PIPE 2
+#define TRUNC 3
+#define APPEND 4
+#define INPUT 5
+#define HEREDOC 6
+#define END 7
 
 // exit status
-# define SYNTAX 258
-# define CMD_NOT_FOUND 127
-# define INTERRUPT 130
-# define PERM 126
-# define ETC 1
+#define SYNTAX 258
+#define CMD_NOT_FOUND 127
+#define INTERRUPT 130
+#define PERM 126
+#define ETC 1
 
-# define IN 0
-# define OUT 1
+#define IN 0
+#define OUT 1
 
 typedef struct s_env
 {
@@ -80,6 +80,6 @@ t_node *exec_unit(t_token **token);
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
-void free_node_all (t_node *head);
+void free_node_all(t_node *head);
 
 #endif
