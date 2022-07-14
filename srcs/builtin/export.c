@@ -3,48 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/13 14:48:57 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/14 14:35:53 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-t_env *init_env(char **env)
-{
-    int i = 0;
-    t_env *lst;
-    t_env *new;
-    t_env *tmp;
-    int j;
-
-    lst = NULL;
-    tmp = lst;
-    while (env[i])
-    {
-        j = 0;
-        while (env[i][j] != '=')
-            j++;
-        new = (t_env *)ft_malloc(sizeof(t_env));
-        new->key = ft_substr(env[i], 0, j);
-        new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
-        new->nxt = NULL;
-        if (!lst)
-        {
-            lst = new;
-            tmp = lst;
-            i++;
-            continue;
-        }
-        else
-            tmp->nxt = new;
-        tmp = tmp->nxt;
-        i++;
-    }
-    return (lst);
-}
 
 t_env *dup_env(t_env *env)
 {
@@ -202,31 +168,33 @@ int is_duplicate_envp(t_env *envp, char *key)
 
 t_env *update_env(t_env *envp, char *key, char *value)
 {
-    while (envp)
+    t_env *tmp;
+
+    tmp = envp;
+    while (tmp)
     {
-        if (ft_strncmp(envp->key, key, select_longer(envp->key, key)) == 0)
+        if (ft_strcmp(tmp->key, key) == 0)
         {
-            ft_free(envp->value);
-            envp->value = ft_strdup(value);
+            ft_free(tmp->value);
+            tmp->value = ft_strdup(value);
             break;
         }
-        envp = envp->nxt;
+        tmp = tmp->nxt;
     }
+    if (!tmp)
+        envp = add_env(envp, make_env(key, value));
     return (envp);
 }
 
 t_env *ft_set(t_env *envp, char *key, char *value)
 {
-    if (is_duplicate_envp(envp, key))
-        envp = update_env(envp, key, value);
-    else
-        envp = add_env(envp, make_env(key, value));
+    envp = update_env(envp, key, value);
     ft_free(key);
     ft_free(value);
     return (envp);
 }
 
-t_env *update_envp(int argc, char **argv, t_env *envp, int *status)
+t_env *update_envp(t_mini *mini)
 {
     int i;
     int sep;
@@ -235,42 +203,28 @@ t_env *update_envp(int argc, char **argv, t_env *envp, int *status)
 
     i = 0;
     sep = 1;
-    while (argv[++i])
+    while (mini->node->cmd[++i])
     {
-        sep = find_sep(argv[i], '=');
+        sep = find_sep(mini->node->cmd[i], '=');
         if (sep == 0)
         {
-            printf_invalid_identifier(ft_strdup(argv[i]), status);
+            printf_invalid_identifier(ft_strdup(mini->node->cmd[i]));
             continue;
         }
-        key = ft_substr(argv[i], 0, sep);
-        if (is_invalid_key(key, status) || sep == ft_strlen(argv[i]))
+        key = ft_substr(mini->node->cmd[i], 0, sep);
+        if (is_invalid_key(key) || sep == ft_strlen(mini->node->cmd[i]))
             continue;
-        value = ft_substr(argv[i], sep + 1, ft_strlen(argv[i]));
-        envp = ft_set(envp, key, value);
+        value = ft_substr(mini->node->cmd[i], sep + 1, ft_strlen(mini->node->cmd[i]));
+        mini->envp = ft_set(mini->envp, key, value);
     }
-    return (envp);
+    return (mini->envp);
 }
 
-void ft_export(int argc, char **argv, t_env *envp, int *status)
+t_env *ft_export(t_mini *mini)
 {
-    if (argc == 1) // export만 입력되었을 때
-        print_sorted_envp(envp);
+    if (mini->node->cmd[1] == NULL)
+        print_sorted_envp(mini->envp);
     else
-        envp = update_envp(argc, argv, envp, status);
-}
-
-int main(int argc, char **argv, char **env)
-{
-    t_env *envp;
-    int exit_status;
-
-    exit_status = 0;
-    envp = init_env(env);
-    ft_export(argc, argv, envp, &exit_status);
-    // /*test
-    printf("=============================\n");
-    print_all_envp(envp, 0);
-    // */
-    exit(exit_status);
+        mini->envp = update_envp(mini);
+    return (mini->envp);
 }
