@@ -28,6 +28,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(BUILTIN)/env.c \
 	$(BUILTIN)/exit.c \
 	$(BUILTIN)/export.c \
+	$(BUILTIN)/pwd.c \
 	$(EXECUTE)/execute.c \
 	srcs/token.c \
 

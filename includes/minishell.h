@@ -95,5 +95,6 @@ void ft_env(t_env *envp);
 void ft_exit(t_node *node);
 t_env *ft_export(t_mini *mini);
 t_env *update_env(t_env *envp, char *key, char *value);
+void ft_pwd(void);
 
 #endif

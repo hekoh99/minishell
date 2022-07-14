@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 14:25:21 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 14:42:14 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void ft_buitlin(t_mini *mini)
 		ft_exit(mini->node);
 	else if (ft_strcmp(mini->node->cmd[0], "export") == 0)
 		mini->envp = ft_export(mini);
-	// else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
-	// 	ft_pwd(mini->node);
+	else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
+		ft_pwd();
 	// else if (ft_strcmp(mini->node->cmd[0], "unset") == 0)
 	// 	ft_unset(mini->node, mini->envp);
 }
