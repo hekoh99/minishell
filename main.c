@@ -140,7 +140,7 @@ void print_tmpfiles()
 
 int main(int ac, char **av, char **env)
 {
-    t_mini mini;
+    // t_mini mini;
     char *str;
     t_env *envp;
     t_token *token;
@@ -163,8 +163,6 @@ int main(int ac, char **av, char **env)
         g_stat = 0;
         token = NULL;
         node = NULL;
-        mini.node = NULL;
-        mini.envp = NULL;
         signal(SIGINT, sig_int);
         signal(SIGQUIT, SIG_IGN);
         tcgetattr(STDIN_FILENO, &saved);
@@ -177,6 +175,7 @@ int main(int ac, char **av, char **env)
             printf("\033[1A");  // 커서를 위로 하나 올리기
             printf("\033[11C"); // 10만큼 앞으로
             printf("exit\n");
+            free_env_all(envp);
             exit(0);
         }
         else if (*str == '\0')
@@ -192,12 +191,10 @@ int main(int ac, char **av, char **env)
             token = add_type(token);
             token = expand(token, envp);
             token = trim_quote(token);
-            node = exec_unit(&token);
-            mini.envp = envp;
-            mini.node = node;
-
+            node = exec_unit(&token, envp);
+           
             //print_token(token, 1);
-            print_node(mini.node);
+            print_node(node);
             //print_heredoc(node);
             //print_tmpfiles();
             // ft_execute(&mini);
@@ -207,12 +204,11 @@ int main(int ac, char **av, char **env)
             // print_tmpfiles();
         }
         free_token_all(token);
-        free_node_all(mini.node);
+        free_node_all(node);
         tmp_files(NULL, DEL);
         // if (tmp_files(NULL, GET) == NULL)
         //     printf("yes\n");
         printf("stat : %d\n", g_stat);
     }
-    free_env_all(mini.envp);
     return (0);
 }
