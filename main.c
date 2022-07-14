@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/14 11:26:29 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 12:21:47 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void print_heredoc(t_node *node)
         if (node->type == HEREDOC)
         {
             line = get_next_line(node->fd[IN]);
+            printf("%d\n", node->fd[IN]);
             printf("------- heredoc -------\n");
             while (line)
             {
@@ -125,6 +126,18 @@ void print_heredoc(t_node *node)
         }
         if (node)
             node = node->nxt;
+    }
+}
+
+// test code
+void print_tmpfiles()
+{
+    t_list *tmp = tmp_files(NULL, GET);
+    printf("------ tmps files ------\n");
+    while (tmp)
+    {
+        printf("%s\n", tmp->value);
+        tmp = tmp->nxt;
     }
 }
 
@@ -186,6 +199,7 @@ int main(int ac, char **av, char **env)
         }
         free_token_all(token);
         free_node_all(node);
+        tmp_files(NULL, DEL);
     }
     return (0);
 }

@@ -21,6 +21,10 @@
 #define HEREDOC 6
 #define END 7
 
+# define GET 0
+# define ADD 1
+# define DEL 2
+
 // exit status
 #define SYNTAX 258
 #define CMD_NOT_FOUND 127
@@ -54,6 +58,12 @@ typedef struct s_node
     struct s_node *nxt;
 } t_node;
 
+typedef struct s_list
+{
+    char *value;
+    struct s_list *nxt;
+} t_list;
+
 // enum e_builtin
 // {
 //     ECHO = 1,
@@ -76,6 +86,8 @@ t_token *expand(t_token *token, t_env *env);
 t_token *trim_quote(t_token *token);
 t_token *add_type(t_token *token);
 t_node *exec_unit(t_token **token);
+t_list *tmp_files();
+void delete_files();
 
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
