@@ -3,48 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/13 14:19:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/14 14:48:41 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_env *init_env(char **env)
-{
-    int i = 0;
-    t_env *lst;
-    t_env *new;
-    t_env *tmp;
-    int j;
-
-    lst = NULL;
-    tmp = lst;
-    while (env[i])
-    {
-        j = 0;
-        while (env[i][j] != '=')
-            j++;
-        new = (t_env *)ft_malloc(sizeof(t_env));
-        new->key = ft_substr(env[i], 0, j);
-        new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
-        new->nxt = NULL;
-        if (!lst)
-        {
-            lst = new;
-            tmp = lst;
-            i++;
-            continue;
-        }
-        else
-            tmp->nxt = new;
-        tmp = tmp->nxt;
-        i++;
-    }
-    return (lst);
-}
+extern int g_stat;
 
 t_env *ft_unset_env(t_env *envp, char *key)
 {
@@ -72,34 +40,17 @@ t_env *ft_unset_env(t_env *envp, char *key)
     return (envp);
 }
 
-t_env *ft_unset(t_env *envp, char **argv, int *status)
+t_env *ft_unset(t_node *node, t_env *envp)
 {
     int i;
 
     i = 0;
-    while (argv && argv[++i])
+    while (node && node->cmd && node->cmd[++i])
     {
-        if (is_invalid_key(ft_strdup(argv[i]), status))
+        if (is_invalid_key(ft_strdup(node->cmd[i])))
             continue;
-        envp = ft_unset_env(envp, argv[i]);
+        printf("%s\n", node->cmd[i]);
+        envp = ft_unset_env(envp, node->cmd[i]);
     }
     return (envp);
-}
-
-int main(int argc, char **argv, char **env)
-{
-    t_env *envp;
-    int exit_status;
-
-    exit_status = 0;
-    envp = init_env(env);
-    envp = ft_unset(envp, argv, &exit_status);
-    // // test
-    // while (envp)
-    // {
-    //     printf("%s=%s\n", envp->key, envp->value);
-    //     envp = envp->nxt;
-    // }
-    // // */
-    return (exit_status);
 }

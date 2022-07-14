@@ -1,39 +1,40 @@
 #ifndef MINISHELL_H
-# define MINISHELL_H
- 
-# include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <fcntl.h>
+#define MINISHELL_H
 
-# include "utils.h"
+#include <signal.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-# define CMD 1
-# define PIPE 2
-# define TRUNC 3
-# define APPEND 4
-# define INPUT 5
-# define HEREDOC 6
-# define END 7
+#include "utils.h"
 
-# define GET 0
-# define ADD 1
-# define DEL 2
+#define CMD 1
+#define PIPE 2
+#define TRUNC 3
+#define APPEND 4
+#define INPUT 5
+#define HEREDOC 6
+#define END 7
+
+#define GET 0
+#define ADD 1
+#define DEL 2
 
 // exit status
-# define SYNTAX 258
-# define CMD_NOT_FOUND 127
-# define INTERRUPT 130
-# define PERM 126
-# define ETC 1
+#define SYNTAX 258
+#define CMD_NOT_FOUND 127
+#define INTERRUPT 130
+#define PERM 126
+#define ETC 1
 
-# define IN 0
-# define OUT 1
+#define IN 0
+#define OUT 1
 
 typedef struct s_env
 {
@@ -68,23 +69,7 @@ typedef struct s_mini
 {
     t_env *envp;
     t_node *node;
-}   t_mini;
-
-// enum e_builtin
-// {
-//     ECHO = 1,
-//     CD = 2,
-//     PWD = 3,
-//     EXPORT = 4,
-//     UNSET = 5,
-//     ENV = 6,
-//     EXIT = 7
-// };
-
-// typedef stuct s_mini{
-//     t_env *env;
-//     t_env *token;
-// } t_mini;
+} t_mini;
 
 t_token *trim_space(char *line);
 t_token *split_by_sep(t_token *token);
@@ -99,7 +84,24 @@ void delete_files();
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
+<<<<<<< HEAD
 void free_node_all (t_node *head);
 void free_env_all(t_env *head);
+=======
+void free_node_all(t_node *head);
+
+// execute
+void ft_execute(t_mini *mini);
+
+// builtin
+t_env *ft_cd(t_mini *mini);
+void ft_echo(t_mini *mini);
+void ft_env(t_env *envp);
+void ft_exit(t_node *node);
+t_env *ft_export(t_mini *mini);
+t_env *update_env(t_env *envp, char *key, char *value);
+void ft_pwd(void);
+t_env *ft_unset(t_node *node, t_env *envp);
+>>>>>>> main
 
 #endif

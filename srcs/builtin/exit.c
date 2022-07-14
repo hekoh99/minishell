@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 13:00:56 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/13 15:43:14 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/14 13:56:20 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int g_stat;
 
 void validate_exit_code(char *code)
 {
@@ -29,37 +31,30 @@ void validate_exit_code(char *code)
     }
 }
 
-void validate_argc(int argc, long long *status)
+void validate_argc(char **argv)
 {
-    if (argc > 2)
+    if (argv[2] != NULL)
     {
         printf("exit: too many arguments\n");
-        *status = 1;
+        g_stat = 1;
     }
 }
 
-void ft_exit(int argc, char **argv, long long *status)
+void ft_exit(t_node *node)
 {
-    /* 명령어가 하나라면 */
-    if (1) // TODO: cmd->nxt == NULL로 변경
-        printf("exit\n");
-    if (argc == 1)
+    long long status_ll;
+
+    printf("exit\n"); // 명령어가 하나일 때 출력
+    if (node->cmd[1] == NULL)
         exit(0);
-    validate_exit_code(argv[1]);
-    *status = ft_atoll(argv[1]);
-    *status %= 256 + 256 * (*status < 0);
-    validate_argc(argc, status);
-}
-
-int main(int argc, char **argv)
-{
-    long long exit_status;
-
-    exit_status = 0;
-    ft_exit(argc, argv, &exit_status);
-    /* 부모 프로세스 */
-    if (exit_status == 1)
-        return (exit_status);
+    validate_exit_code(node->cmd[1]);
+    status_ll = ft_atoll(node->cmd[1]);
+    g_stat = status_ll % 256 + 256 * (status_ll < 0);
+    if (node->cmd[2] != NULL)
+    {
+        printf("exit: too many arguments\n");
+        g_stat = 1;
+    }
     else
-        exit(exit_status);
+        exit(g_stat);
 }
