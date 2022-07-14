@@ -84,10 +84,8 @@ void delete_files();
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
-<<<<<<< HEAD
 void free_node_all (t_node *head);
 void free_env_all(t_env *head);
-=======
 void free_node_all(t_node *head);
 
 // execute
@@ -102,6 +100,5 @@ t_env *ft_export(t_mini *mini);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
 t_env *ft_unset(t_node *node, t_env *envp);
->>>>>>> main
 
 #endif
