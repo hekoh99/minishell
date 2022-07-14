@@ -390,14 +390,25 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     return (head);
 }
 
-int get_heredoc_fd(t_node *node) // EOF 처리도 해야함
+int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 미
 {
-    int fd[2];
+    int fd;
     char *here_str = ft_strdup("");
     char *str;
     char *tmp;
+    char *file;
+    int num;
 
-    pipe(fd);
+    num = 1;
+    file = ft_strdup("tmp");
+    fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
+    while (fd == -1)
+    {
+        free(file);
+        file = ft_strjoin("tmp", ft_itoa(num));
+        fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
+        num++;
+    }
     while (1)
     {
         str = readline("> ");
@@ -414,13 +425,14 @@ int get_heredoc_fd(t_node *node) // EOF 처리도 해야함
         free(tmp);
         free(str);
     }
-    write(fd[1], here_str, ft_strlen(here_str));
+    write(fd, here_str, ft_strlen(here_str));
+    close(fd);
+    fd = open(file, O_RDONLY, 0666);
     /* // test code
     printf("--- heredoc  \n%s", here_str);
     // */
     free(here_str);
-    close(fd[1]);
-    return (fd[0]);
+    return (fd);
 }
 
 t_node *get_fd(t_node *node)
@@ -499,7 +511,21 @@ t_node *get_fd(t_node *node)
                     target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
                 prev = tmp;
                 tmp = tmp->nxt;
+                if (tmp && tmp->type == PIPE) // > 또는 >> 이후에 바로 파이프가 나오면 파이프에 쓰지 않음
+                    continue ;
             }
+            if (tmp && tmp->type == PIPE) // pipe 앞 단 cmd의 out을 pipe 쓰는 쪽으로
+            {
+                pipe(tmp->fd);
+                target->fd[OUT] = tmp->fd[1];
+            }
+        }
+        if (tmp && (tmp->type == PIPE)) // 파이프 뒷 단 cmd의 in에 pipe 읽는 부분 연결
+        {
+            if (tmp->fd[OUT] == 1)
+                pipe(tmp->fd);
+            if (tmp->nxt)
+                tmp->nxt->fd[IN] = tmp->fd[0];
         }
         if (flag)
         {
@@ -534,8 +560,27 @@ t_node *exec_unit(t_token **token)
             }
             head = add_node(head, start, i, CMD);
         }
-        else if (tmp->type == PIPE || tmp->type == END)
+        else if (tmp->type == PIPE)
         {
+            if (!tmp->nxt || tmp->nxt->type == PIPE)
+            {
+                printf("minishell: syntax error near unexpected token `|'\n");
+                free_token_all(token_head);
+                *token = NULL;
+                return (0);
+            }
+            head = add_node(head, start, 1, tmp->type);
+            tmp = tmp->nxt;
+        }
+        else if (tmp->type == END)
+        {
+            if (tmp->nxt && tmp->nxt->type == END)
+            {
+                printf("minishell: syntax error near unexpected token `;'\n");
+                free_token_all(token_head);
+                *token = NULL;
+                return (0);
+            }
             head = add_node(head, start, 1, tmp->type);
             tmp = tmp->nxt;
         }

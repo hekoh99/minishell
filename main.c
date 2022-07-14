@@ -116,6 +116,7 @@ void print_heredoc(t_node *node)
         if (node->type == HEREDOC)
         {
             line = get_next_line(node->fd[IN]);
+            printf("%d\n", node->fd[IN]);
             printf("------- heredoc -------\n");
             while (line)
             {
@@ -182,7 +183,7 @@ int main(int ac, char **av, char **env)
             node = exec_unit(&token);
             //print_token(token, 1);
             print_node(node);
-            // print_heredoc(node);
+            //print_heredoc(node);
         }
         free_token_all(token);
         free_node_all(node);
