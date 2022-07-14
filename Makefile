@@ -42,7 +42,7 @@ READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 all			:	$(NAME)
 
 $(NAME)		:	$(OBJS)
-		$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+		$(CC) -o $(NAME) -fsanitize=address -g main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)		:	$(OBJS)
 		$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
