@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 12:16:39 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 12:34:20 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,30 @@ int has_pipe(t_node *node)
 	return (0);
 }
 
+void ft_exec(t_node *node)
+{
+}
+
 void ft_command(t_node *node)
 {
-	if (is_builtin(node))
-		ft_buitlin(node);
+	pid_t pid;
+
+	pid = fork();
+	if (pid == -1)
+		error_exit("fork error", 1);
+	else if (pid == 0)
+	{
+		if (is_builtin(node))
+			ft_buitlin(node);
+		else
+			ft_exec(node);
+	}
 	else
-		ft_exec(node);
+		;
+}
+
+void ft_pipe(t_node *node)
+{
 }
 
 int ft_execute(t_node *node)
@@ -65,15 +83,11 @@ int ft_execute(t_node *node)
 	while (node)
 	{
 		if (node->type == CMD)
-		{
-			pid = fork();
-			if (pid == -1)
-				error_exit("fork error", 1);
-			else if (pid == 0)
-				ft_command(node);
-			else
-				do_parent();
-		}
+			ft_command(node);
+		else if (node->type == PIPE)
+			ft_pipe(node);
 		node = node->nxt;
 	}
+	while (wait((int *)0) != -1)
+		;
 }
