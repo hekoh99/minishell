@@ -6,11 +6,13 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:44:10 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 12:24:05 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 14:12:33 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/utils.h"
+
+extern int g_stat;
 
 int select_longer(char *str1, char *str2)
 {
@@ -24,14 +26,14 @@ int select_longer(char *str1, char *str2)
     return (str2_len);
 }
 
-void printf_invalid_identifier(char *key, int *status)
+void printf_invalid_identifier(char *key)
 {
-    *status = 1;
+    g_stat = 1;
     printf("export: `%s': not a valid identifier\n", key);
     ft_free(key);
 }
 
-int is_invalid_key(char *key, int *status)
+int is_invalid_key(char *key)
 {
     int i;
 
@@ -44,7 +46,7 @@ int is_invalid_key(char *key, int *status)
         {
             if (i > 0 && ft_isdigit(key[i]))
                 continue;
-            printf_invalid_identifier(key, status);
+            printf_invalid_identifier(key);
             return (1);
         }
     }

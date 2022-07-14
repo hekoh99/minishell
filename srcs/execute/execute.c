@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 13:50:14 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 14:25:21 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@ extern int g_stat;
 void ft_buitlin(t_mini *mini)
 {
 	if (ft_strcmp(mini->node->cmd[0], "cd") == 0)
-		ft_cd(mini);
+		mini->envp = ft_cd(mini);
 	else if (ft_strcmp(mini->node->cmd[0], "echo") == 0)
 		ft_echo(mini);
 	else if (ft_strcmp(mini->node->cmd[0], "env") == 0)
 		ft_env(mini->envp);
 	else if (ft_strcmp(mini->node->cmd[0], "exit") == 0)
 		ft_exit(mini->node);
+	else if (ft_strcmp(mini->node->cmd[0], "export") == 0)
+		mini->envp = ft_export(mini);
 	// else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
 	// 	ft_pwd(mini->node);
 	// else if (ft_strcmp(mini->node->cmd[0], "unset") == 0)
@@ -34,7 +36,8 @@ int is_builtin(t_node *node)
 {
 	if (!ft_strcmp(node->cmd[0], "cd") || !ft_strcmp(node->cmd[0], "echo") ||
 		!ft_strcmp(node->cmd[0], "env") || !ft_strcmp(node->cmd[0], "exit") ||
-		!ft_strcmp(node->cmd[0], "pwd") || !ft_strcmp(node->cmd[0], "unset"))
+		!ft_strcmp(node->cmd[0], "export") || !ft_strcmp(node->cmd[0], "pwd") ||
+		!ft_strcmp(node->cmd[0], "unset"))
 		return (1);
 	return (0);
 }
