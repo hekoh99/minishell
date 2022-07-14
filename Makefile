@@ -24,9 +24,9 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \
+	$(BUILTIN)/env.c \
 	$(EXECUTE)/execute.c \
 	srcs/token.c \
-	# $(BUILTIN)/env.c \
 	# $(BUILTIN)/exit.c \
 	# $(BUILTIN)/pwd.c \
 	# $(BUILTIN)/unset.c \

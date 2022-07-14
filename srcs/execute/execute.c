@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 13:14:55 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 13:32:18 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void ft_buitlin(t_mini *mini)
 		ft_cd(mini);
 	else if (ft_strcmp(mini->node->cmd[0], "echo") == 0)
 		ft_echo(mini);
-	// else if (ft_strcmp(mini->node->cmd[0], "env") == 0)
-	// 	ft_env(mini->node);
+	else if (ft_strcmp(mini->node->cmd[0], "env") == 0)
+		ft_env(mini->envp);
 	// else if (ft_strcmp(mini->node->cmd[0], "exit") == 0)
 	// 	ft_exit(mini->node);
 	// else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
