@@ -130,6 +130,18 @@ void print_heredoc(t_node *node)
     }
 }
 
+// test code
+void print_tmpfiles()
+{
+    t_list *tmp = tmp_files(NULL, GET);
+    printf("------ tmps files ------\n");
+    while (tmp)
+    {
+        printf("%s\n", tmp->value);
+        tmp = tmp->nxt;
+    }
+}
+
 int main(int ac, char **av, char **env)
 {
     char *str;
@@ -181,12 +193,15 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token);
+            
             //print_token(token, 1);
             print_node(node);
             //print_heredoc(node);
+            //print_tmpfiles();
         }
         free_token_all(token);
         free_node_all(node);
+        tmp_files(NULL, DEL);
     }
     return (0);
 }

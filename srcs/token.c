@@ -1,5 +1,55 @@
 #include "../includes/minishell.h"
 
+t_list *tmp_files(char *filename, int cmd)
+{
+    static t_list* head;
+    t_list *newfile;
+    t_list *tmp;
+
+    if (cmd == GET)
+        return (head);
+    else if (cmd == ADD)
+    {
+        printf("---> %s\n", filename);
+        newfile = (t_list *)malloc(sizeof(t_list));
+        newfile->value = filename;
+        newfile->nxt = NULL;
+        if (head == NULL)
+            head = newfile;
+        else
+        {
+            tmp = head;
+            while (tmp && tmp->nxt)
+                tmp = tmp->nxt;
+            tmp->nxt = newfile;
+        }
+        return (head);
+    }
+    else if (cmd == DEL)
+    {
+        delete_files(head);
+        head = NULL;
+        return head;
+    }
+    return (head);
+}
+
+void delete_files(t_list *head)
+{
+    t_list *target;
+    t_list  *tmp;
+
+    tmp = head;
+    while (tmp)
+    {
+        target = tmp;
+        unlink(target->value);
+        free(target->value);
+        tmp = tmp->nxt;
+        free(target);
+    }
+}
+
 t_token *trim_space(char *line)
 {
     t_token *head;
@@ -428,6 +478,7 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 미
     write(fd, here_str, ft_strlen(here_str));
     close(fd);
     fd = open(file, O_RDONLY, 0666);
+    tmp_files(file, ADD); // need to delete
     /* // test code
     printf("--- heredoc  \n%s", here_str);
     // */
