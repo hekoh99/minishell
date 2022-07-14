@@ -6,47 +6,13 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 12:46:35 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 14:27:19 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 extern int g_stat;
-
-t_env *init_env(char **env)
-{
-    int i = 0;
-    t_env *lst;
-    t_env *new;
-    t_env *tmp;
-    int j;
-
-    lst = NULL;
-    tmp = lst;
-    while (env[i])
-    {
-        j = 0;
-        while (env[i][j] != '=')
-            j++;
-        new = (t_env *)ft_malloc(sizeof(t_env));
-        new->key = ft_substr(env[i], 0, j);
-        new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
-        new->nxt = NULL;
-        if (!lst)
-        {
-            lst = new;
-            tmp = lst;
-            i++;
-            continue;
-        }
-        else
-            tmp->nxt = new;
-        tmp = tmp->nxt;
-        i++;
-    }
-    return (lst);
-}
 
 t_env *ft_unset_env(t_env *envp, char *key)
 {

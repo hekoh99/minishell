@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 13:09:59 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 14:33:24 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,20 @@ void ft_cd_home(t_env *envp)
     {
         printf("cd: HOME not set\n");
         g_stat = 1;
-        return;
     }
-    if (chdir(home_path) == -1)
+    else if (chdir(home_path) == -1)
     {
         printf("cd: %s: no such file or directory\n", home_path);
         g_stat = 1;
-        return;
     }
 }
 
-void ft_cd(t_mini *mini)
+t_env *ft_cd(t_mini *mini)
 {
-    printf("\n==========CD==============\n");
+    char *old_pwd;
+    char *pwd;
+
+    old_pwd = getcwd(0, PATH_MAX);
     if (mini->node->cmd[1] == NULL)
         ft_cd_home(mini->envp);
     else
@@ -65,9 +66,8 @@ void ft_cd(t_mini *mini)
             g_stat = 1;
         }
     }
-    // test
-    char path[PATH_MAX];
-    getcwd(path, PATH_MAX);
-    printf("%s\n", path);
-    // */
+    pwd = getcwd(0, PATH_MAX);
+    mini->envp = update_env(mini->envp, "OLDPWD", old_pwd);
+    mini->envp = update_env(mini->envp, "PWD", pwd);
+    return (mini->envp);
 }

@@ -28,8 +28,8 @@ void ft_free(void *str);
 // test
 char *get_next_line(int fd);
 // builtin utils
-void printf_invalid_identifier(char *key, int *status);
-int is_invalid_key(char *key, int *exit_status);
+void printf_invalid_identifier(char *key);
+int is_invalid_key(char *key);
 int select_longer(char *str1, char *str2);
 
 #endif

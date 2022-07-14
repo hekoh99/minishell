@@ -89,9 +89,11 @@ void free_node_all(t_node *head);
 void ft_execute(t_mini *mini);
 
 // builtin
-void ft_cd(t_mini *mini);
+t_env *ft_cd(t_mini *mini);
 void ft_echo(t_mini *mini);
 void ft_env(t_env *envp);
 void ft_exit(t_node *node);
+t_env *ft_export(t_mini *mini);
+t_env *update_env(t_env *envp, char *key, char *value);
 
 #endif
