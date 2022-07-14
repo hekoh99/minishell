@@ -92,5 +92,6 @@ void ft_execute(t_mini *mini);
 void ft_cd(t_mini *mini);
 void ft_echo(t_mini *mini);
 void ft_env(t_env *envp);
+void ft_exit(t_node *node);
 
 #endif

@@ -6,11 +6,13 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 13:32:18 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 13:50:14 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int g_stat;
 
 void ft_buitlin(t_mini *mini)
 {
@@ -20,8 +22,8 @@ void ft_buitlin(t_mini *mini)
 		ft_echo(mini);
 	else if (ft_strcmp(mini->node->cmd[0], "env") == 0)
 		ft_env(mini->envp);
-	// else if (ft_strcmp(mini->node->cmd[0], "exit") == 0)
-	// 	ft_exit(mini->node);
+	else if (ft_strcmp(mini->node->cmd[0], "exit") == 0)
+		ft_exit(mini->node);
 	// else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
 	// 	ft_pwd(mini->node);
 	// else if (ft_strcmp(mini->node->cmd[0], "unset") == 0)
@@ -65,6 +67,7 @@ void ft_command(t_mini *mini)
 			ft_buitlin(mini);
 		else
 			ft_execve(mini);
+		exit(g_stat);
 	}
 	else
 		;

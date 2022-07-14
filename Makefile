@@ -20,16 +20,15 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strjoin.c \
 	$(UTILS)/ft_strlcpy.c \
 	$(UTILS)/ft_itoa.c \
+	$(UTILS)/ft_atoi.c \
 	$(UTILS)/error_exit.c \
 	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \
 	$(BUILTIN)/env.c \
+	$(BUILTIN)/exit.c \
 	$(EXECUTE)/execute.c \
 	srcs/token.c \
-	# $(BUILTIN)/exit.c \
-	# $(BUILTIN)/pwd.c \
-	# $(BUILTIN)/unset.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
