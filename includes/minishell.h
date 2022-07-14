@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
@@ -21,9 +22,9 @@
 #define HEREDOC 6
 #define END 7
 
-# define GET 0
-# define ADD 1
-# define DEL 2
+#define GET 0
+#define ADD 1
+#define DEL 2
 
 // exit status
 #define SYNTAX 258
@@ -68,23 +69,7 @@ typedef struct s_mini
 {
     t_env *envp;
     t_node *node;
-}   t_mini;
-
-// enum e_builtin
-// {
-//     ECHO = 1,
-//     CD = 2,
-//     PWD = 3,
-//     EXPORT = 4,
-//     UNSET = 5,
-//     ENV = 6,
-//     EXIT = 7
-// };
-
-// typedef stuct s_mini{
-//     t_env *env;
-//     t_env *token;
-// } t_mini;
+} t_mini;
 
 t_token *trim_space(char *line);
 t_token *split_by_sep(t_token *token);
@@ -99,5 +84,11 @@ void delete_files();
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
 void free_node_all(t_node *head);
+
+// execute
+void ft_execute(t_mini *mini);
+
+// builtin
+void ft_cd(t_mini *mini);
 
 #endif
