@@ -78,11 +78,14 @@ t_token *trim_quote(t_token *token);
 t_token *add_type(t_token *token);
 t_node *exec_unit(t_token **token);
 t_list *tmp_files();
+t_list *add_files(t_list *head, char *filename);
 void delete_files();
 
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
+void free_node_all (t_node *head);
+void free_env_all(t_env *head);
 void free_node_all(t_node *head);
 
 // execute

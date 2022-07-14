@@ -91,3 +91,24 @@ void free_node_all (t_node *head)
         free(target);
     }
 }
+
+void free_env_all(t_env *head)
+{
+    t_env *tmp;
+    t_env *target;
+
+    if (!head)
+        return ;
+    
+    tmp = head;
+    while (tmp)
+    {
+        target = tmp;
+        if (target->key)
+            free(target->key);
+        if (target->value)
+            free(target->value);
+        tmp = tmp->nxt;
+        free(target);
+    }
+}
