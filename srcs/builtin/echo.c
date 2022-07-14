@@ -6,11 +6,13 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 16:59:25 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/07 17:00:07 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/14 13:23:11 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int g_stat;
 
 int is_option_n(char *opt)
 {
@@ -29,27 +31,29 @@ int is_option_n(char *opt)
     return (1);
 }
 
-int main(int ac, char **av)
+void ft_echo(t_mini *mini)
 {
     int i;
     int option;
+    t_node *node;
 
     i = 0;
     option = 0;
-    while (++i < ac)
+    node = mini->node;
+    while (node->cmd[++i])
     {
-        if (av[i][0] == '-' && is_option_n(av[i]))
+        if (node->cmd[i][0] == '-' && is_option_n(node->cmd[i]))
             ++option;
         else
             break;
     }
-    while (i < ac)
+    while (node->cmd[i])
     {
-        printf("%s", av[i++]);
-        if (i != ac)
+        printf("%s", node->cmd[i++]);
+        if (node->cmd[i] != NULL)
             printf(" ");
     }
     if (!option)
         printf("\n");
-    return (0);
+    g_stat = 0;
 }

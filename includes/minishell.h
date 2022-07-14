@@ -90,5 +90,6 @@ void ft_execute(t_mini *mini);
 
 // builtin
 void ft_cd(t_mini *mini);
+void ft_echo(t_mini *mini);
 
 #endif
