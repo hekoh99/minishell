@@ -144,6 +144,7 @@ void print_tmpfiles()
 
 int main(int ac, char **av, char **env)
 {
+    t_mini mini;
     char *str;
     t_env *envp;
     t_token *token;
@@ -193,14 +194,16 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token);
+            mini.envp = envp;
+            mini.node = node;
             
             //print_token(token, 1);
-            print_node(node);
+            print_node(mini.node);
             //print_heredoc(node);
             //print_tmpfiles();
         }
         free_token_all(token);
-        free_node_all(node);
+        free_node_all(mini.node);
         tmp_files(NULL, DEL);
     }
     return (0);
