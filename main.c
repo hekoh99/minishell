@@ -199,8 +199,8 @@ int main(int ac, char **av, char **env)
             //print_token(token, 1);
             print_node(mini.node);
             //print_heredoc(node);
-            print_tmpfiles();
-            ft_execute(&mini);
+            //print_tmpfiles();
+            // ft_execute(&mini);
             // print_token(token, 1);
             // print_node(mini.node);
             // print_heredoc(node);
