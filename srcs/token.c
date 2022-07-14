@@ -1,35 +1,43 @@
 #include "../includes/minishell.h"
 
+extern int g_stat;
+
 t_list *tmp_files(char *filename, int cmd)
 {
     static t_list* head;
-    t_list *newfile;
-    t_list *tmp;
 
     if (cmd == GET)
         return (head);
     else if (cmd == ADD)
     {
-        printf("---> %s\n", filename);
-        newfile = (t_list *)malloc(sizeof(t_list));
-        newfile->value = filename;
-        newfile->nxt = NULL;
-        if (head == NULL)
-            head = newfile;
-        else
-        {
-            tmp = head;
-            while (tmp && tmp->nxt)
-                tmp = tmp->nxt;
-            tmp->nxt = newfile;
-        }
-        return (head);
+        // printf("---> %s\n", filename);
+        head = add_files(head, filename);
     }
     else if (cmd == DEL)
     {
         delete_files(head);
         head = NULL;
         return head;
+    }
+    return (head);
+}
+
+t_list *add_files(t_list *head, char *filename)
+{
+    t_list *newfile;
+    t_list *tmp;
+
+    newfile = (t_list *)malloc(sizeof(t_list));
+    newfile->value = filename;
+    newfile->nxt = NULL;
+    if (head == NULL)
+        head = newfile;
+    else
+    {
+        tmp = head;
+        while (tmp && tmp->nxt)
+            tmp = tmp->nxt;
+        tmp->nxt = newfile;
     }
     return (head);
 }
@@ -50,11 +58,47 @@ void delete_files(t_list *head)
     }
 }
 
+void check_quote(char target, int *sq, int *dq)
+{
+    if (target == '\'' && *sq == 0 && *dq == 0)
+            *sq = 1;
+    else if (target == '\"' && *sq == 0 && *dq == 0)
+        *dq = 1;
+    else if (target == '\'' && *sq == 1)
+        *sq = 0;
+    else if (target == '\"' && *dq == 1)
+        *dq = 0;
+}
+
+t_token *add_token(t_token *head, char *value)
+{
+    t_token *new;
+    t_token *tmp;
+
+    new = (t_token *)malloc(sizeof(t_token));
+    new->value = value;
+    new->nxt = NULL;
+    if (head == NULL)
+    {
+        head = new;
+        head->prev = NULL;
+        tmp = head;
+    }
+    else
+    {
+        tmp = head;
+        while (tmp->nxt)
+            tmp = tmp->nxt;
+        tmp->nxt = new;
+        new->prev = tmp;
+    }
+
+    return (head);
+}
+
 t_token *trim_space(char *line)
 {
     t_token *head;
-    t_token *new;
-    t_token *tmp;
     int squote = 0;
     int dquote = 0;
     int start;
@@ -64,33 +108,27 @@ t_token *trim_space(char *line)
     head = NULL;
     while ((line[i] != '\0' || i - start > 0))
     {
-        if (line[i] == '\'' && squote == 0 && dquote == 0)
-            squote = 1;
-        else if (line[i] == '\"' && squote == 0 && dquote == 0)
-            dquote = 1;
-        else if (line[i] == '\'' && squote == 1)
-            squote = 0;
-        else if (line[i] == '\"' && dquote == 1)
-            dquote = 0;
+        check_quote(line[i], &squote, &dquote);
         if ((line[i] == ' ' || line[i] == '\0') && (squote == 0 && dquote == 0))
         {
             if (i - start > 0)
             {
-                new = malloc(sizeof(t_token));
-                new->value = ft_substr(line, start, i - start);
-                new->nxt = NULL;
-                if (head == NULL)
-                {
-                    head = new;
-                    head->prev = NULL;
-                    tmp = head;
-                }
-                else
-                {
-                    tmp->nxt = new;
-                    new->prev = tmp;
-                    tmp = new;
-                }
+                head = add_token(head, ft_substr(line, start, i - start));
+                // new = (t_token *)malloc(sizeof(t_token));
+                // new->value = ft_substr(line, start, i - start);
+                // new->nxt = NULL;
+                // if (head == NULL)
+                // {
+                //     head = new;
+                //     head->prev = NULL;
+                //     tmp = head;
+                // }
+                // else
+                // {
+                //     tmp->nxt = new;
+                //     new->prev = tmp;
+                //     tmp = new;
+                // }
             }
             start = i + 1;
             if (line[i] == '\0')
@@ -103,7 +141,8 @@ t_token *trim_space(char *line)
     }
     if (squote == 1 || dquote == 1)
     {
-        printf("open quotation error\n");
+        printf("minishell: open quotation syntax error\n");
+        g_stat = SYNTAX;
         free_token_all(head);
         head = NULL;
     }
@@ -123,10 +162,16 @@ int check_duple_sep(char *token, int pos)
         else
         {
             printf("minishell: syntax error near unexpected token '%c%c'\n", token[pos], token[pos]);
+            g_stat = SYNTAX;
             size = 0;
         }
     }
     return (size);
+}
+
+void check_sep() // split_by_sep 조각
+{
+
 }
 
 t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
@@ -147,14 +192,7 @@ t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
         size = ft_strlen(tmp->value);
         while (tmp->value[i] != '\0')
         {
-            if (tmp->value[i] == '\'' && squote == 0 && dquote == 0)
-                squote = 1;
-            else if (tmp->value[i] == '\"' && squote == 0 && dquote == 0)
-                dquote = 1;
-            else if (tmp->value[i] == '\'' && squote == 1)
-                squote = 0;
-            else if (tmp->value[i] == '\"' && dquote == 1)
-                dquote = 0;
+            check_quote(tmp->value[i], &squote, &dquote);
             if (ft_strchr(sep, tmp->value[i]) != 0 && squote == 0 && dquote == 0)
             {
                 sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
@@ -250,14 +288,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
         dquote = 0;
         while (tmp->value[i] != '\0')
         {
-            if (tmp->value[i] == '\'' && squote == 0 && dquote == 0)
-                squote = 1;
-            else if (tmp->value[i] == '\"' && squote == 0 && dquote == 0)
-                dquote = 1;
-            else if (tmp->value[i] == '\'' && squote == 1)
-                squote = 0;
-            else if (tmp->value[i] == '\"' && dquote == 1)
-                dquote = 0;
+            check_quote(tmp->value[i], &squote, &dquote);
             if (tmp->value[i] == '$' && squote == 0)
             {
                 start = i + 1;
@@ -344,6 +375,27 @@ t_token *add_type(t_token *token)
     return (token);
 }
 
+char *inside_quote(char *value, int start, int *mid)
+{
+    char *inside;
+    char *head;
+    char *tail;
+    char *str;
+
+    str = ft_substr(value, start + 1, *mid - start - 1);
+    head = ft_substr(value, 0, start);
+    tail = ft_substr(value, *mid + 1, ft_strlen(value));
+    free(value);
+    inside = ft_strjoin(head, str);
+    *mid = ft_strlen(inside) - 1;
+    inside = ft_strjoin(inside, tail);
+    free(str);
+    free(head);
+    free(tail);
+
+    return (inside);
+}
+
 t_token *trim_quote(t_token *token)
 {
     t_token *tmp;
@@ -377,30 +429,32 @@ t_token *trim_quote(t_token *token)
             else if (tmp->value[i] == '\'' && squote == 1)
             {
                 squote = 0;
-                str = ft_substr(tmp->value, start + 1, i - start - 1);
-                head = ft_substr(tmp->value, 0, start);
-                tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
-                free(tmp->value);
-                tmp->value = ft_strjoin(head, str);
-                i = ft_strlen(tmp->value) - 1;
-                tmp->value = ft_strjoin(tmp->value, tail);
-                free(str);
-                free(head);
-                free(tail);
+                tmp->value = inside_quote(tmp->value, start, &i);
+                // str = ft_substr(tmp->value, start + 1, i - start - 1);
+                // head = ft_substr(tmp->value, 0, start);
+                // tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
+                // free(tmp->value);
+                // tmp->value = ft_strjoin(head, str);
+                // i = ft_strlen(tmp->value) - 1;
+                // tmp->value = ft_strjoin(tmp->value, tail);
+                // free(str);
+                // free(head);
+                // free(tail);
             }
             else if (tmp->value[i] == '\"' && dquote == 1)
             {
                 dquote = 0;
-                str = ft_substr(tmp->value, start + 1, i - start - 1);
-                head = ft_substr(tmp->value, 0, start);
-                tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
-                free(tmp->value);
-                tmp->value = ft_strjoin(head, str);
-                i = ft_strlen(tmp->value) - 1;
-                tmp->value = ft_strjoin(tmp->value, tail);
-                free(str);
-                free(head);
-                free(tail);
+                tmp->value = inside_quote(tmp->value, start, &i);
+                // str = ft_substr(tmp->value, start + 1, i - start - 1);
+                // head = ft_substr(tmp->value, 0, start);
+                // tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
+                // free(tmp->value);
+                // tmp->value = ft_strjoin(head, str);
+                // i = ft_strlen(tmp->value) - 1;
+                // tmp->value = ft_strjoin(tmp->value, tail);
+                // free(str);
+                // free(head);
+                // free(tail);
             }
             i++;
         }
@@ -440,7 +494,7 @@ t_node *add_node(t_node *head, t_token *target, int iter, int type)
     return (head);
 }
 
-int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 미
+int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
 {
     int fd;
     char *here_str = ft_strdup("");
@@ -511,6 +565,7 @@ t_node *get_fd(t_node *node)
                     if (tmp->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
+                        g_stat = ETC;
                         free_node_all(node); // free token??
                         return (0);
                     }
@@ -543,6 +598,7 @@ t_node *get_fd(t_node *node)
                     if (target->fd[IN] == -1)
                     {
                         printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
+                        g_stat = ETC;
                         free_node_all(node); // free token??
                         return (0);
                     }
@@ -613,9 +669,18 @@ t_node *exec_unit(t_token **token)
         }
         else if (tmp->type == PIPE)
         {
+            if (!tmp->prev || tmp->prev->type != CMD)
+            {
+                printf("minishell: syntax error near unexpected token `|'\n");
+                g_stat = SYNTAX;
+                free_token_all(token_head);
+                *token = NULL;
+                return (0);
+            }
             if (!tmp->nxt || tmp->nxt->type == PIPE)
             {
                 printf("minishell: syntax error near unexpected token `|'\n");
+                g_stat = SYNTAX;
                 free_token_all(token_head);
                 *token = NULL;
                 return (0);
@@ -625,9 +690,18 @@ t_node *exec_unit(t_token **token)
         }
         else if (tmp->type == END)
         {
+            if (!tmp->prev || tmp->prev->type != CMD)
+            {
+                printf("minishell: syntax error near unexpected token `;'\n");
+                g_stat = SYNTAX;
+                free_token_all(token_head);
+                *token = NULL;
+                return (0);
+            }
             if (tmp->nxt && tmp->nxt->type == END)
             {
                 printf("minishell: syntax error near unexpected token `;'\n");
+                g_stat = SYNTAX;
                 free_token_all(token_head);
                 *token = NULL;
                 return (0);
@@ -640,13 +714,15 @@ t_node *exec_unit(t_token **token)
             if (!tmp->nxt)
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
+                g_stat = SYNTAX;
                 free_token_all(token_head);
                 *token = NULL;
                 return (0);
             }
-            if (tmp->nxt->type > 2)
+            if (tmp->nxt->type > 1)
             {
                 printf("minishell: syntax error near unexpected token `%s'\n", tmp->nxt->value);
+                g_stat = SYNTAX;
                 free_token_all(token_head);
                 *token = NULL;
                 return (0);

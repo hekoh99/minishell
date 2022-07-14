@@ -164,8 +164,11 @@ int main(int ac, char **av, char **env)
     // */
     while (1)
     {
+        g_stat = 0;
         token = NULL;
         node = NULL;
+        mini.node = NULL;
+        mini.envp = NULL;
         signal(SIGINT, sig_int);
         signal(SIGQUIT, SIG_IGN);
         tcgetattr(STDIN_FILENO, &saved);
@@ -196,15 +199,19 @@ int main(int ac, char **av, char **env)
             node = exec_unit(&token);
             mini.envp = envp;
             mini.node = node;
-            
+
             //print_token(token, 1);
             print_node(mini.node);
             //print_heredoc(node);
-            //print_tmpfiles();
+            print_tmpfiles();
         }
         free_token_all(token);
         free_node_all(mini.node);
         tmp_files(NULL, DEL);
+        // if (tmp_files(NULL, GET) == NULL)
+        //     printf("yes\n");
+        printf("stat : %d\n", g_stat);
     }
+    free_env_all(mini.envp);
     return (0);
 }
