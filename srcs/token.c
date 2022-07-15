@@ -112,24 +112,7 @@ t_token *trim_space(char *line)
         if ((line[i] == ' ' || line[i] == '\0') && (squote == 0 && dquote == 0))
         {
             if (i - start > 0)
-            {
                 head = add_token(head, ft_substr(line, start, i - start));
-                // new = (t_token *)malloc(sizeof(t_token));
-                // new->value = ft_substr(line, start, i - start);
-                // new->nxt = NULL;
-                // if (head == NULL)
-                // {
-                //     head = new;
-                //     head->prev = NULL;
-                //     tmp = head;
-                // }
-                // else
-                // {
-                //     tmp->nxt = new;
-                //     new->prev = tmp;
-                //     tmp = new;
-                // }
-            }
             start = i + 1;
             if (line[i] == '\0')
                 break;
@@ -169,15 +152,55 @@ int check_duple_sep(char *token, int pos)
     return (size);
 }
 
-void check_sep() // split_by_sep 조각
+t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size) // tmp, sep_size, i, strlen
 {
+    t_token *seperated;
 
+    seperated = malloc(sizeof(t_token) * sep_size);
+    seperated->value = ft_substr(pos->value, *index, sep_size);
+
+    if (pos->nxt != NULL)
+    {
+        // 첫번째 구분자 복사 후 리스트 병합
+        seperated->nxt = pos->nxt;
+        pos->nxt->prev = seperated;
+        pos->nxt = seperated;
+        seperated->prev = pos;
+        pos = pos->nxt; // 구분자 블록
+        // 구분자 후단
+        seperated = malloc(sizeof(t_token));
+        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+        seperated->nxt = pos->nxt;
+        pos->nxt->prev = seperated;
+        pos->nxt = seperated;
+        seperated->prev = pos;
+        // 구분자 전단
+        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+        if (sep_size == 2)
+            (*index)++;
+    }
+    else
+    {
+        pos->nxt = seperated;
+        seperated->prev = pos;
+        seperated->nxt = NULL;
+        pos = pos->nxt;
+        seperated = malloc(sizeof(t_token));
+        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+        pos->nxt = seperated;
+        seperated->prev = pos;
+        seperated->nxt = NULL;
+        // 구분자 전단
+        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+        if (sep_size == 2)
+            (*index)++;
+    }
+    return (pos);
 }
 
 t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
 {
     int i;
-    t_token *seperated;
     t_token *tmp;
     int size;
     char *sep = ";|><";
@@ -201,44 +224,7 @@ t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
                     free_token_all(token);
                     return (NULL);
                 }
-                seperated = malloc(sizeof(t_token) * sep_size);
-                seperated->value = ft_substr(tmp->value, i, sep_size);
-                if (tmp->nxt != NULL)
-                {
-                    // 첫번째 구분자 복사 후 리스트 병합
-                    seperated->nxt = tmp->nxt;
-                    tmp->nxt->prev = seperated;
-                    tmp->nxt = seperated;
-                    seperated->prev = tmp;
-                    tmp = tmp->nxt; // 구분자 블록
-                    // 구분자 후단
-                    seperated = malloc(sizeof(t_token));
-                    seperated->value = ft_substr(tmp->prev->value, i + sep_size, size);
-                    seperated->nxt = tmp->nxt;
-                    tmp->nxt->prev = seperated;
-                    tmp->nxt = seperated;
-                    seperated->prev = tmp;
-                    // 구분자 전단
-                    tmp->prev->value = ft_substr(tmp->prev->value, 0, i);
-                    if (sep_size == 2)
-                        i++;
-                }
-                else
-                {
-                    tmp->nxt = seperated;
-                    seperated->prev = tmp;
-                    seperated->nxt = NULL;
-                    tmp = tmp->nxt;
-                    seperated = malloc(sizeof(t_token));
-                    seperated->value = ft_substr(tmp->prev->value, i + sep_size, size);
-                    tmp->nxt = seperated;
-                    seperated->prev = tmp;
-                    seperated->nxt = NULL;
-                    // 구분자 전단
-                    tmp->prev->value = ft_substr(tmp->prev->value, 0, i);
-                    if (sep_size == 2)
-                        i++;
-                }
+                tmp = do_split_by_seps(tmp, sep_size, &i, size);
             }
             i++;
         }
@@ -430,31 +416,11 @@ t_token *trim_quote(t_token *token)
             {
                 squote = 0;
                 tmp->value = inside_quote(tmp->value, start, &i);
-                // str = ft_substr(tmp->value, start + 1, i - start - 1);
-                // head = ft_substr(tmp->value, 0, start);
-                // tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
-                // free(tmp->value);
-                // tmp->value = ft_strjoin(head, str);
-                // i = ft_strlen(tmp->value) - 1;
-                // tmp->value = ft_strjoin(tmp->value, tail);
-                // free(str);
-                // free(head);
-                // free(tail);
             }
             else if (tmp->value[i] == '\"' && dquote == 1)
             {
                 dquote = 0;
                 tmp->value = inside_quote(tmp->value, start, &i);
-                // str = ft_substr(tmp->value, start + 1, i - start - 1);
-                // head = ft_substr(tmp->value, 0, start);
-                // tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
-                // free(tmp->value);
-                // tmp->value = ft_strjoin(head, str);
-                // i = ft_strlen(tmp->value) - 1;
-                // tmp->value = ft_strjoin(tmp->value, tail);
-                // free(str);
-                // free(head);
-                // free(tail);
             }
             i++;
         }
@@ -463,19 +429,20 @@ t_token *trim_quote(t_token *token)
     return (token);
 }
 
-t_node *add_node(t_node *head, t_token *target, int iter, int type)
+t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
 {
     int i = 0;
     t_node *new;
     t_node *tmp;
 
     new = (t_node *)malloc(sizeof(t_node));
-    new->type = type;
+    new->type = target->type;
     new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
     new->cmd[iter] = NULL;
     new->nxt = NULL;
     new->fd[IN] = 0;
     new->fd[OUT] = 1;
+    new->envp = envp;
     while (i < iter)
     {
         new->cmd[i] = ft_strdup(target->value);
@@ -518,7 +485,7 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
         str = readline("> ");
         if (!str)
             break;
-        if (ft_strncmp(str, node->cmd[1], ft_strlen(str)) == 0)
+        if (ft_strcmp(str, node->cmd[1]) == 0)
         {
             free(str);
             break;
@@ -643,7 +610,7 @@ t_node *get_fd(t_node *node)
     return (node);
 }
 
-t_node *exec_unit(t_token **token)
+t_node *exec_unit(t_token **token, t_env *envp)
 {
     t_node *head;
     t_token *token_head;
@@ -665,7 +632,7 @@ t_node *exec_unit(t_token **token)
                 tmp = tmp->nxt;
                 i++;
             }
-            head = add_node(head, start, i, CMD);
+            head = add_node(head, start, i, envp);
         }
         else if (tmp->type == PIPE)
         {
@@ -685,7 +652,7 @@ t_node *exec_unit(t_token **token)
                 *token = NULL;
                 return (0);
             }
-            head = add_node(head, start, 1, tmp->type);
+            head = add_node(head, start, 1, envp);
             tmp = tmp->nxt;
         }
         else if (tmp->type == END)
@@ -706,7 +673,7 @@ t_node *exec_unit(t_token **token)
                 *token = NULL;
                 return (0);
             }
-            head = add_node(head, start, 1, tmp->type);
+            head = add_node(head, start, 1, envp);
             tmp = tmp->nxt;
         }
         else if (tmp->type == TRUNC || tmp->type == APPEND || tmp->type == INPUT || tmp->type == HEREDOC)
@@ -727,7 +694,7 @@ t_node *exec_unit(t_token **token)
                 *token = NULL;
                 return (0);
             }
-            head = add_node(head, start, 2, tmp->type);
+            head = add_node(head, start, 2, envp);
             tmp = tmp->nxt;
             tmp = tmp->nxt;
         }

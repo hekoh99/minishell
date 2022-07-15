@@ -56,6 +56,7 @@ typedef struct s_node
     char **cmd;
     int type;
     int fd[2];
+    t_env *envp;
     struct s_node *nxt;
 } t_node;
 
@@ -65,18 +66,12 @@ typedef struct s_list
     struct s_list *nxt;
 } t_list;
 
-typedef struct s_mini
-{
-    t_env *envp;
-    t_node *node;
-} t_mini;
-
 t_token *trim_space(char *line);
 t_token *split_by_sep(t_token *token);
 t_token *expand(t_token *token, t_env *env);
 t_token *trim_quote(t_token *token);
 t_token *add_type(t_token *token);
-t_node *exec_unit(t_token **token);
+t_node *exec_unit(t_token **token, t_env *envp);
 t_list *tmp_files();
 t_list *add_files(t_list *head, char *filename);
 void delete_files();
@@ -89,14 +84,14 @@ void free_env_all(t_env *head);
 void free_node_all(t_node *head);
 
 // execute
-void ft_execute(t_mini *mini);
+// void ft_execute(t_mini *mini);
 
 // builtin
-t_env *ft_cd(t_mini *mini);
-void ft_echo(t_mini *mini);
-void ft_env(t_env *envp);
-void ft_exit(t_node *node);
-t_env *ft_export(t_mini *mini);
+// t_env *ft_cd(t_mini *mini);
+// void ft_echo(t_mini *mini);
+// void ft_env(t_env *envp);
+// void ft_exit(t_node *node);
+// t_env *ft_export(t_mini *mini);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
 t_env *ft_unset(t_node *node, t_env *envp);
