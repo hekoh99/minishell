@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/15 13:51:02 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 14:41:45 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ extern int g_stat;
 void ft_buitlin(t_node *node)
 {
 	if (ft_strcmp(node->cmd[0], "cd") == 0)
-		node->envp = ft_cd(node);
+		ft_cd(node);
 	else if (ft_strcmp(node->cmd[0], "echo") == 0)
 		ft_echo(node);
 	else if (ft_strcmp(node->cmd[0], "env") == 0)
@@ -25,7 +25,7 @@ void ft_buitlin(t_node *node)
 	else if (ft_strcmp(node->cmd[0], "exit") == 0)
 		ft_exit(node);
 	else if (ft_strcmp(node->cmd[0], "export") == 0)
-		node->envp = ft_export(node);
+		ft_export(node);
 	else if (ft_strcmp(node->cmd[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(node->cmd[0], "unset") == 0)
@@ -53,11 +53,11 @@ int has_pipe(t_node *node)
 	return (0);
 }
 
-void ft_execve(t_mini *mini)
+void ft_execve(t_node *node)
 {
 }
 
-void ft_command(t_mini *mini)
+void ft_command(t_node *node)
 {
 	pid_t pid;
 
@@ -66,34 +66,37 @@ void ft_command(t_mini *mini)
 		error_exit("fork error", 1);
 	else if (pid == 0)
 	{
-		if (is_builtin(mini->node))
-			ft_buitlin(mini);
+		// dup2
+		if (is_builtin(node))
+			ft_buitlin(node);
 		else
-			ft_execve(mini);
+			ft_execve(node);
 		exit(g_stat);
 	}
 	else
-		;
+	{
+		close(node->fd[IN]);
+		if (node->nxt)
+			close(node->fd[OUT]);
+	}
 }
 
 void ft_pipe(t_node *node)
 {
 }
 
-void ft_execute(t_mini *mini)
+void ft_execute(t_node *node)
 {
 	pid_t pid;
-	t_node *node;
 
-	node = mini->node;
 	if (!has_pipe(node) && is_builtin(node))
-		ft_buitlin(mini);
+		ft_buitlin(node);
 	else
 	{
 		while (node)
 		{
 			if (node->type == CMD)
-				ft_command(mini);
+				ft_command(node);
 			else if (node->type == PIPE)
 				ft_pipe(node);
 			node = node->nxt;

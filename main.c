@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/15 13:23:01 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 17:13:53 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,12 +192,12 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token, envp);
-           
-            //print_token(token, 1);
+
+            // print_token(token, 1);
             print_node(node);
-            //print_heredoc(node);
-            //print_tmpfiles();
-            // ft_execute(node); // node ? &node ?
+            // print_heredoc(node);
+            // print_tmpfiles();
+            ft_execute(node); // node ? &node ?
             // print_token(token, 1);
             // print_node(mini.node);
             // print_heredoc(node);
