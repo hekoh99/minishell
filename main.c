@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/14 13:07:26 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 13:23:01 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ int main(int ac, char **av, char **env)
             print_node(mini.node);
             //print_heredoc(node);
             //print_tmpfiles();
-            // ft_execute(&mini);
+            // ft_execute(node); // node ? &node ?
             // print_token(token, 1);
             // print_node(mini.node);
             // print_heredoc(node);

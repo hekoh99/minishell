@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 14:45:40 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 13:26:09 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,22 @@
 
 extern int g_stat;
 
-void ft_buitlin(t_mini *mini)
+void ft_buitlin(t_node *node)
 {
-	if (ft_strcmp(mini->node->cmd[0], "cd") == 0)
-		mini->envp = ft_cd(mini);
-	else if (ft_strcmp(mini->node->cmd[0], "echo") == 0)
-		ft_echo(mini);
-	else if (ft_strcmp(mini->node->cmd[0], "env") == 0)
-		ft_env(mini->envp);
-	else if (ft_strcmp(mini->node->cmd[0], "exit") == 0)
+	if (ft_strcmp(node->cmd[0], "cd") == 0)
+		node->envp = ft_cd(node);
+	else if (ft_strcmp(node->cmd[0], "echo") == 0)
+		ft_echo(node);
+	else if (ft_strcmp(node->cmd[0], "env") == 0)
+		ft_env(node->envp);
+	else if (ft_strcmp(node->cmd[0], "exit") == 0)
 		ft_exit(mini->node);
-	else if (ft_strcmp(mini->node->cmd[0], "export") == 0)
-		mini->envp = ft_export(mini);
-	else if (ft_strcmp(mini->node->cmd[0], "pwd") == 0)
+	else if (ft_strcmp(node->cmd[0], "export") == 0)
+		node->envp = ft_export(node);
+	else if (ft_strcmp(node->cmd[0], "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp(mini->node->cmd[0], "unset") == 0)
-		mini->envp = ft_unset(mini->node, mini->envp);
+	else if (ft_strcmp(node->cmd[0], "unset") == 0)
+		node->envp = ft_unset(node);
 }
 
 int is_builtin(t_node *node)
