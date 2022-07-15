@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/15 13:26:09 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 13:51:02 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ void ft_buitlin(t_node *node)
 	else if (ft_strcmp(node->cmd[0], "env") == 0)
 		ft_env(node->envp);
 	else if (ft_strcmp(node->cmd[0], "exit") == 0)
-		ft_exit(mini->node);
+		ft_exit(node);
 	else if (ft_strcmp(node->cmd[0], "export") == 0)
 		node->envp = ft_export(node);
 	else if (ft_strcmp(node->cmd[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(node->cmd[0], "unset") == 0)
-		node->envp = ft_unset(node);
+		ft_unset(node);
 }
 
 int is_builtin(t_node *node)
