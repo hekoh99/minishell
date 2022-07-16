@@ -35,6 +35,9 @@
 #define IN 0
 #define OUT 1
 
+#define SINGLE_CMD 1
+#define MULTI_CMD 0
+
 typedef struct s_env
 {
     char *key;
@@ -65,6 +68,13 @@ typedef struct s_list
     struct s_list *nxt;
 } t_list;
 
+typedef struct s_exec_arg
+{
+    char **argv;
+    char *file;
+    char **envp;
+} t_exec_arg;
+
 t_token *trim_space(char *line);
 t_token *split_by_sep(t_token *token);
 t_token *expand(t_token *token, t_env *env);
@@ -84,15 +94,17 @@ void free_node_all(t_node *head);
 
 // execute
 void ft_execute(t_node *node);
+void do_execve(t_node *node);
 
 // builtin
 void ft_cd(t_node *node);
 void ft_echo(t_node *node);
 void ft_env(t_env *envp);
-void ft_exit(t_node *node);
+void ft_exit(int single_cmd, t_node *node);
 void ft_export(t_node *node);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
 void ft_unset(t_node *node);
+char	**ft_split(char *s, char c);
 
 #endif

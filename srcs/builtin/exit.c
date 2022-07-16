@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 13:00:56 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 13:56:20 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 12:07:40 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,12 @@ void validate_argc(char **argv)
     }
 }
 
-void ft_exit(t_node *node)
+void ft_exit(int single_cmd, t_node *node)
 {
     long long status_ll;
 
-    printf("exit\n"); // 명령어가 하나일 때 출력
+    if (single_cmd)
+        printf("exit\n");
     if (node->cmd[1] == NULL)
         exit(0);
     validate_exit_code(node->cmd[1]);
