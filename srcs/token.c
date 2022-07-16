@@ -530,81 +530,157 @@ t_node *get_fd(t_node *node)
 {
     t_node *tmp;
     t_node *prev;
-    t_node *target;
-    int flag;
+    t_node *cmd;
 
     tmp = node;
     prev = NULL;
     while (tmp)
     {
-        flag = 1;
         if (tmp->type == INPUT || tmp->type == HEREDOC)
         {
-            flag = 0;
-            while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
-            {
-                // if (tmp->infile != -1 && tmp->infile != 0)
-                //     close(tmp->infile);
-                if (set_input_fd(node, tmp, tmp) == 0)
-                    return (0);
-                prev = tmp;
-                tmp = tmp->nxt; // < 다음 node 위치
-            }
+            if (set_input_fd(node, tmp, tmp) == 0) // <, << node의 in에 파일 fd set
+                return (0);
         }
-        if (tmp && tmp->type == CMD)
+        else if (tmp->type == TRUNC || tmp->type == APPEND) // >, >> node의 int에 파일 fd set
         {
-            flag = 0;
-            target = tmp;
-            if (prev && (prev->type == INPUT || prev->type == HEREDOC))
-            {
-                target->fd[IN] = prev->fd[IN];
-                target->fd[OUT] = prev->fd[OUT];
-            }
-            prev = tmp;
-            tmp = tmp->nxt; // target 다음
-            while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
-            {
-                // if (target->infile != -1 && target->infile != 0)
-                //     close(target->infile);
-                if (set_input_fd(node, tmp, target) == 0)
-                    return (0);
-                prev = tmp;
-                tmp = tmp->nxt;
-            } // INPUT 다음
-            while (tmp && (tmp->type == TRUNC || tmp->type == APPEND))
-            {
-                // if (target->outfile != -1 && target->outfile != 1)
-                //     close(target->outfile);
-                if (tmp->type == APPEND)
-                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
-                else if (tmp->type == TRUNC)
-                    target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-                prev = tmp;
-                tmp = tmp->nxt;
-                if (tmp && tmp->type == PIPE) // > 또는 >> 이후에 바로 파이프가 나오면 파이프에 쓰지 않음
-                    continue ;
-            }
-            if (prev && (prev->type != TRUNC && prev->type != APPEND) && tmp && tmp->type == PIPE) // pipe 앞 단 cmd의 out을 pipe 쓰는 쪽으로 이전 타입이 >, >> 가 아닐 경우만
-            {
-                pipe(tmp->fd);
-                target->fd[OUT] = tmp->fd[1];
-            }
+            if (tmp->type == APPEND)
+                tmp->fd[OUT] =  open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+            else if (tmp->type == TRUNC)
+                tmp->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
         }
-        if (tmp && (tmp->type == PIPE)) // 파이프 뒷 단 cmd의 in에 pipe 읽는 부분 연결
+        else if (tmp->type == PIPE)
         {
-            if (tmp->fd[OUT] == 1)
-                pipe(tmp->fd);
-            if (tmp->nxt)
-                tmp->nxt->fd[IN] = tmp->fd[0];
+            pipe(tmp->fd);
+            tmp->nxt->fd[IN] = tmp->fd[IN];
         }
-        if (flag)
+        prev = tmp;
+        tmp = tmp->nxt;
+    }
+    tmp = node;
+    prev = NULL;
+    cmd = NULL;
+    while (tmp)
+    {
+        if (prev && prev->type == END)
+            prev = NULL;
+        if (tmp->type == CMD)
         {
-            prev = tmp;
-            tmp = tmp->nxt;
+            cmd = tmp;
+            if (prev)
+            {
+                tmp->fd[IN] = prev->fd[IN];
+                tmp->fd[OUT] = prev->fd[OUT];
+            }
         }
+        if (cmd && (tmp->type == INPUT || tmp->type == HEREDOC))
+        {
+            cmd->fd[IN] = tmp->fd[IN];
+        }
+        if (cmd && (tmp->type == TRUNC || tmp->type == APPEND))
+        {
+            cmd->fd[OUT] = tmp->fd[OUT];
+        }
+        if (prev && tmp->type == PIPE)
+        {
+            prev->fd[OUT] = tmp->fd[OUT];
+            cmd = NULL;
+        }
+        prev = tmp;
+        tmp = tmp->nxt;
     }
     return (node);
 }
+
+// t_node *get_fd(t_node *node)
+// {
+//     t_node *tmp;
+//     t_node *prev;
+//     t_node *target;
+//     int flag;
+
+//     tmp = node;
+//     prev = NULL;
+//     while (tmp)
+//     {
+//         flag = 1;
+//         if (tmp->type == INPUT || tmp->type == HEREDOC)
+//         {
+//             flag = 0;
+//             while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
+//             {
+//                 // if (tmp->infile != -1 && tmp->infile != 0)
+//                 //     close(tmp->infile);
+//                 if (set_input_fd(node, tmp, tmp) == 0)
+//                     return (0);
+//                 prev = tmp;
+//                 tmp = tmp->nxt; // < 다음 node 위치
+//             }
+//         }
+//         if (tmp && tmp->type == CMD)
+//         {
+//             flag = 0;
+//             target = tmp;
+//             if (prev && (prev->type == INPUT || prev->type == HEREDOC))
+//             {
+//                 target->fd[IN] = prev->fd[IN];
+//                 target->fd[OUT] = prev->fd[OUT];
+//             }
+//             prev = tmp;
+//             tmp = tmp->nxt; // target 다음
+//             while (tmp && (tmp->type == INPUT || tmp->type == HEREDOC))
+//             {
+//                 // if (target->infile != -1 && target->infile != 0)
+//                 //     close(target->infile);
+//                 if (set_input_fd(node, tmp, target) == 0)
+//                     return (0);
+//                 prev = tmp;
+//                 tmp = tmp->nxt;
+//             } // INPUT 다음
+//             while (tmp && (tmp->type == TRUNC || tmp->type == APPEND))
+//             {
+//                 // if (target->outfile != -1 && target->outfile != 1)
+//                 //     close(target->outfile);
+//                 if (tmp->type == APPEND)
+//                 {
+//                     target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+//                     tmp->fd[IN] = target->fd[OUT];
+//                 }
+//                 else if (tmp->type == TRUNC)
+//                 {
+//                     target->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+//                     tmp->fd[IN] = target->fd[OUT];
+//                 }
+//                 prev = tmp;
+//                 tmp = tmp->nxt;
+//                 if (tmp && tmp->type == PIPE) // > 또는 >> 이후에 바로 파이프가 나오면 파이프에 쓰지 않음
+//                     continue ;
+//             }
+//             if (tmp && tmp->type == PIPE) // pipe 앞 단 cmd의 out을 pipe 쓰는 쪽으로
+//             {
+//                 pipe(tmp->fd);
+//                 if (prev && (prev->type == APPEND || prev->type == TRUNC)) // redir일 경우 redir의 출력을 pipe 쓰는 쪽으로
+//                 {
+//                     prev->fd[OUT] = tmp->fd[1];
+//                 }
+//                 else
+//                     target->fd[OUT] = tmp->fd[1];
+//             }
+//         }
+//         if (tmp && (tmp->type == PIPE)) // 파이프 뒷 단 cmd의 in에 pipe 읽는 부분 연결
+//         {
+//             // if (tmp->fd[OUT] == 1)
+//             //     pipe(tmp->fd);
+//             if (tmp->nxt)
+//                 tmp->nxt->fd[IN] = tmp->fd[0];
+//         }
+//         if (flag)
+//         {
+//             prev = tmp;
+//             tmp = tmp->nxt;
+//         }
+//     }
+//     return (node);
+// }
 
 t_node *exec_unit(t_token **token, t_env *envp)
 {
