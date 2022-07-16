@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:44:10 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 14:12:33 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 15:38:10 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,7 @@ int select_longer(char *str1, char *str2)
     return (str2_len);
 }
 
-void printf_invalid_identifier(char *key)
-{
-    g_stat = 1;
-    printf("export: `%s': not a valid identifier\n", key);
-    ft_free(key);
-}
-
-int is_invalid_key(char *key)
+int is_invalid_key(char *function, char *key)
 {
     int i;
 
@@ -46,7 +39,7 @@ int is_invalid_key(char *key)
         {
             if (i > 0 && ft_isdigit(key[i]))
                 continue;
-            printf_invalid_identifier(key);
+            print_error2(ft_strjoin(function, ": `"), ft_strjoin(key, "': not a valid identifier\n"), 1);
             return (1);
         }
     }

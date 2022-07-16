@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 12:15:16 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 15:23:13 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ void ft_command(t_node *node)
 	else
 	{
 		if (node->fd[IN] != 0)
-			close(node->fd[IN]);
+			ft_close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
-			close(node->fd[OUT]);
+			ft_close(node->fd[OUT]);
 	}
 }
 
@@ -85,6 +85,7 @@ void ft_execute(t_node *node)
 	pid_t pid;
 	int tmp;
 
+	g_stat = 0;
 	if (!has_pipe(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else

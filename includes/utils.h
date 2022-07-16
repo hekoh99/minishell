@@ -16,6 +16,9 @@ size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char *ft_strjoin(char const *s1, char const *s2);
 int ft_atoi(const char *str);
 long long ft_atoll(const char *str);
+
+void print_error(char *msg, int status);
+void print_error2(char *function, char *msg, int status);
 void error_exit(char *msg, int status);
 void free_matrix(char **matrix);
 
@@ -34,8 +37,7 @@ void	ft_execve(char *file, char **argv, char **envp);
 // test
 char *get_next_line(int fd);
 // builtin utils
-void printf_invalid_identifier(char *key);
-int is_invalid_key(char *key);
+int is_invalid_key(char *function, char *key);
 int select_longer(char *str1, char *str2);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/15 14:12:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/16 15:52:15 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,15 @@ char *search_env_value(t_env *env, char *target)
     return (value);
 }
 
-void ft_cd_home(t_env *envp)
+void ft_cd_home(t_node *node)
 {
     char *home_path;
 
-    home_path = search_env_value(envp, "HOME");
+    home_path = search_env_value(node->envp, "HOME");
     if (!home_path)
-    {
-        printf("cd: HOME not set\n");
-        g_stat = 1;
-    }
+        print_error2(ft_strdup("cd: "), ft_strjoin(node->cmd[1], "HOME not set\n"), 1);
     else if (chdir(home_path) == -1)
-    {
-        printf("cd: %s: no such file or directory\n", home_path);
-        g_stat = 1;
-    }
+        print_error2(ft_strdup("cd: "), ft_strjoin(node->cmd[1], ": No such file or directory\n"), 1);
 }
 
 void ft_cd(t_node *node)
@@ -57,15 +51,9 @@ void ft_cd(t_node *node)
 
     old_pwd = getcwd(0, PATH_MAX);
     if (node->cmd[1] == NULL)
-        ft_cd_home(node->envp);
-    else
-    {
-        if (chdir(node->cmd[1]) == -1)
-        {
-            printf("cd: %s: no such file or directory\n", node->cmd[1]);
-            g_stat = 1;
-        }
-    }
+        ft_cd_home(node);
+    else if (chdir(node->cmd[1]) == -1)
+        print_error2(ft_strdup("cd: "), ft_strjoin(node->cmd[1], ": No such file or directory\n"), 1);
     pwd = getcwd(0, PATH_MAX);
     node->envp = update_env(node->envp, "OLDPWD", old_pwd);
     node->envp = update_env(node->envp, "PWD", pwd);

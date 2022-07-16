@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/15 14:15:52 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/16 15:45:46 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,11 +208,11 @@ void update_envp(t_node *node)
         sep = find_sep(node->cmd[i], '=');
         if (sep == 0)
         {
-            printf_invalid_identifier(ft_strdup(node->cmd[i]));
+            print_error2(ft_strdup("export : `"), ft_strjoin(node->cmd[i], "': not a valid identifier\n"), 1);
             continue;
         }
         key = ft_substr(node->cmd[i], 0, sep);
-        if (is_invalid_key(key) || sep == ft_strlen(node->cmd[i]))
+        if (is_invalid_key("export", key) || sep == ft_strlen(node->cmd[i]))
             continue;
         value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
         node->envp = ft_set(node->envp, key, value);

@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/16 12:03:37 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 13:54:52 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ int main(int ac, char **av, char **env)
             node = exec_unit(&token, envp);
 
             // print_token(token, 1);
-            print_node(node);
+            // print_node(node);
             // print_heredoc(node);
             // print_tmpfiles();
             if (node)
