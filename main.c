@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/16 10:38:58 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/16 12:03:37 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ int main(int ac, char **av, char **env)
         tmp_files(NULL, DEL);
         // if (tmp_files(NULL, GET) == NULL)
         //     printf("yes\n");
-        printf("stat : %d\n", g_stat);
+        // printf("stat : %d\n", g_stat);
     }
     return (0);
 }

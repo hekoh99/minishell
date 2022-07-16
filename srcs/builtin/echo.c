@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 16:59:25 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/15 14:13:25 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/16 11:18:54 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void ft_echo(t_node *node)
 {
     int i;
     int option;
-
+    
     i = 0;
     option = 0;
     while (node->cmd[++i])
@@ -53,5 +53,4 @@ void ft_echo(t_node *node)
     }
     if (!option)
         printf("\n");
-    g_stat = 0;
 }

@@ -36,6 +36,9 @@
 #define IN 0
 #define OUT 1
 
+#define SINGLE_CMD 1
+#define MULTI_CMD 0
+
 typedef struct s_env
 {
     char *key;
@@ -90,7 +93,7 @@ void ft_execute(t_node *node);
 void ft_cd(t_node *node);
 void ft_echo(t_node *node);
 void ft_env(t_env *envp);
-void ft_exit(t_node *node);
+void ft_exit(int single_cmd, t_node *node);
 void ft_export(t_node *node);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);

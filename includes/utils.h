@@ -24,6 +24,10 @@ char *ft_itoa(int n);
 // system call
 void *ft_malloc(size_t size);
 void ft_free(void *str);
+int	ft_open(char *file, int o_flag, int mode);
+void	ft_close(int fd);
+void	ft_dup2(int fd, int fd2);
+void	ft_execve(char *file, char **argv, char **envp);
 
 // test
 char *get_next_line(int fd);
