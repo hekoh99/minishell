@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 12:09:14 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 12:15:16 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,6 @@ int has_pipe(t_node *node)
 		node = node->nxt;
 	}
 	return (0);
-}
-
-void do_execve(t_node *node)
-{
 }
 
 void ft_command(t_node *node)
