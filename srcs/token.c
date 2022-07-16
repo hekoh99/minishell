@@ -508,6 +508,24 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
     return (fd);
 }
 
+int set_input_fd(t_node *head, t_node *file_node, t_node *target)
+{
+    if (file_node->type == INPUT)
+    {
+        target->fd[IN] = open(file_node->cmd[1], O_RDONLY);
+        if (target->fd[IN] == -1)
+        {
+            printf("minishell: %s: No such file or directory\n", file_node->cmd[1]);
+            g_stat = ETC;
+            free_node_all(head); // free token??
+            return (0);
+        }
+    }
+    else
+        target->fd[IN] = get_heredoc_fd(file_node);
+    return (1);
+}
+
 t_node *get_fd(t_node *node)
 {
     t_node *tmp;
@@ -527,19 +545,8 @@ t_node *get_fd(t_node *node)
             {
                 // if (tmp->infile != -1 && tmp->infile != 0)
                 //     close(tmp->infile);
-                if (tmp->type == INPUT)
-                {
-                    tmp->fd[IN] = open(tmp->cmd[1], O_RDONLY);
-                    if (tmp->fd[IN] == -1)
-                    {
-                        printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
-                        g_stat = ETC;
-                        free_node_all(node); // free token??
-                        return (0);
-                    }
-                }
-                else
-                    tmp->fd[IN] = get_heredoc_fd(tmp);
+                if (set_input_fd(node, tmp, tmp) == 0)
+                    return (0);
                 prev = tmp;
                 tmp = tmp->nxt; // < 다음 node 위치
             }
@@ -559,20 +566,8 @@ t_node *get_fd(t_node *node)
             {
                 // if (target->infile != -1 && target->infile != 0)
                 //     close(target->infile);
-                if (tmp->type == INPUT)
-                {
-                    target->fd[IN] = open(tmp->cmd[1], O_RDONLY);
-                    printf("[%s, %d]\n", tmp->cmd[1], target->fd[IN]);
-                    if (target->fd[IN] == -1)
-                    {
-                        printf("minishell: %s: No such file or directory\n", tmp->cmd[1]);
-                        g_stat = ETC;
-                        free_node_all(node); // free token??
-                        return (0);
-                    }
-                }
-                else
-                    target->fd[IN] = get_heredoc_fd(tmp);
+                if (set_input_fd(node, tmp, target) == 0)
+                    return (0);
                 prev = tmp;
                 tmp = tmp->nxt;
             } // INPUT 다음
@@ -589,7 +584,7 @@ t_node *get_fd(t_node *node)
                 if (tmp && tmp->type == PIPE) // > 또는 >> 이후에 바로 파이프가 나오면 파이프에 쓰지 않음
                     continue ;
             }
-            if (tmp && tmp->type == PIPE) // pipe 앞 단 cmd의 out을 pipe 쓰는 쪽으로
+            if (prev && (prev->type != TRUNC && prev->type != APPEND) && tmp && tmp->type == PIPE) // pipe 앞 단 cmd의 out을 pipe 쓰는 쪽으로 이전 타입이 >, >> 가 아닐 경우만
             {
                 pipe(tmp->fd);
                 target->fd[OUT] = tmp->fd[1];

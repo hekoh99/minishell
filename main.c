@@ -194,7 +194,7 @@ int main(int ac, char **av, char **env)
             node = exec_unit(&token, envp);
 
             // print_token(token, 1);
-            // print_node(node);
+            print_node(node);
             // print_heredoc(node);
             // print_tmpfiles();
             if (node)
