@@ -253,6 +253,39 @@ char *search_env(t_env *env, char *target)
     return (real_val);
 }
 
+void  set_expanded_value(t_token *token, char *replaced, int start, int *index)
+{
+    char *head;
+    char *tail;
+
+    if (token->value[start] == '?') // status 나중에 실제값으로 대체
+    {
+        int status = 0;
+        replaced = ft_strdup(ft_itoa(status));
+        (*index) = start + 1;
+    }
+    if (replaced != NULL)
+    {
+        head = ft_substr(token->value, 0, start - 1);
+        tail = ft_substr(token->value, *index, ft_strlen(token->value));
+        free(token->value);
+        token->value = ft_strjoin(head, replaced);
+        token->value = ft_strjoin(token->value, tail);
+        free(replaced);
+        free(head);
+        free(tail);
+    }
+    else // NULL 일 때 - 못 찾았을 때
+    {
+        head = ft_substr(token->value, 0, start - 1);
+        tail = ft_substr(token->value, *index, ft_strlen(token->value));
+        free(token->value);
+        token->value = ft_strjoin(head, tail);
+        free(head);
+        free(tail);
+    }
+}
+
 t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은 무시
 {
     int i;
@@ -261,9 +294,6 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
     int start;
     char *target;
     char *replaced;
-    char *sep = "$ ~\'\"";
-    char *head;
-    char *tail;
     t_token *tmp;
 
     tmp = token;
@@ -275,56 +305,28 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
         while (tmp->value[i] != '\0')
         {
             check_quote(tmp->value[i], &squote, &dquote);
-            if (tmp->value[i] == '$' && squote == 0)
+            if (tmp->value[i] == '$' && tmp->value[i + 1] != '\0' && squote == 0)
             {
                 start = i + 1;
                 i++;
-                while (ft_strchr(sep, tmp->value[i]) == 0 && tmp->value[i] != '\0')
+                while ((ft_isalpha(tmp->value[i]) == 1 || ft_isdigit(tmp->value[i])) && tmp->value[i] != '\0')
                     i++;
                 target = ft_substr(tmp->value, start, i - start);
                 replaced = search_env(env, target);
                 free(target);
-
-                if (tmp->value[start] == '?') // status 나중에 실제값으로 대체
-                {
-                    int status = 0;
-                    replaced = ft_strdup(ft_itoa(status));
-                    i = start + 1;
-                }
-                if (replaced != NULL)
-                {
-                    head = ft_substr(tmp->value, 0, start - 1);
-                    tail = ft_substr(tmp->value, i, ft_strlen(tmp->value));
-                    free(tmp->value);
-                    tmp->value = ft_strjoin(head, replaced);
-                    tmp->value = ft_strjoin(tmp->value, tail);
-                    free(replaced);
-                    free(head);
-                    free(tail);
-                }
-                else // NULL 일 때 - 못 찾았을 때
-                {
-                    head = ft_substr(tmp->value, 0, start - 1);
-                    tail = ft_substr(tmp->value, i, ft_strlen(tmp->value));
-                    free(tmp->value);
-                    tmp->value = ft_strjoin(head, tail);
-                    free(head);
-                    free(tail);
-                }
-                i--; // 반복문 후 i는 구분자 위치 또는 문자열의 끝에 위치
+                set_expanded_value(tmp, replaced, start, &i);
+                // i--; // 반복문 후 i는 구분자 위치 또는 문자열의 끝에 위치
             }
-            if (tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
+            else if (i == 0 && tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
             {
                 replaced = search_env(env, "HOME");
                 if (!replaced) // HOME 없을 때
                     replaced = ft_strdup(getenv("HOME"));
-                tail = ft_substr(tmp->value, i + 1, ft_strlen(tmp->value));
-                free(tmp->value);
-                tmp->value = ft_strjoin(replaced, tail);
-                free(tail);
-                free(replaced);
+                i++;
+                set_expanded_value(tmp, replaced, 1, &i);
             }
-            i++;
+            else 
+                i++;
         }
         tmp = tmp->nxt;
     }
