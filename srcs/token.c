@@ -260,8 +260,7 @@ void  set_expanded_value(t_token *token, char *replaced, int start, int *index)
 
     if (token->value[start] == '?') // status 나중에 실제값으로 대체
     {
-        int status = 0;
-        replaced = ft_strdup(ft_itoa(status));
+        replaced = ft_strdup(ft_itoa(g_stat));
         (*index) = start + 1;
     }
     if (replaced != NULL)

@@ -53,5 +53,5 @@ void ft_echo(t_node *node)
     }
     if (!option)
         printf("\n");
-    g_stat = 0;
+    // g_stat = 0;
 }

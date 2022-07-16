@@ -176,7 +176,7 @@ int main(int ac, char **av, char **env)
             printf("\033[11C"); // 10만큼 앞으로
             printf("exit\n");
             free_env_all(envp);
-            exit(0);
+            exit(g_stat);
         }
         else if (*str == '\0')
         {
@@ -197,15 +197,16 @@ int main(int ac, char **av, char **env)
             // print_node(node);
             // print_heredoc(node);
             // print_tmpfiles();
-            ft_execute(node);
+            if (node)
+                ft_execute(node);
             // print_token(token, 1);
             // print_node(mini.node);
             // print_heredoc(node);
             // print_tmpfiles();
+            free_token_all(token);
+            free_node_all(node);
+            tmp_files(NULL, DEL);
         }
-        free_token_all(token);
-        free_node_all(node);
-        tmp_files(NULL, DEL);
         // if (tmp_files(NULL, GET) == NULL)
         //     printf("yes\n");
         printf("stat : %d\n", g_stat);
