@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/15 13:50:57 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 15:35:56 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,8 @@ void ft_unset(t_node *node)
     i = 0;
     while (node && node->cmd && node->cmd[++i])
     {
-        if (is_invalid_key(ft_strdup(node->cmd[i])))
+        if (is_invalid_key("unset", ft_strdup(node->cmd[i])))
             continue;
-        printf("%s\n", node->cmd[i]);
         node->envp = ft_unset_env(node->envp, node->cmd[i]);
     }
 }

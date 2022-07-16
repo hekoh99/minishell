@@ -24,7 +24,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_atoi.c \
 	$(UTILS)/ft_split.c \
 	$(UTILS)/free_matrix.c \
-	$(UTILS)/error_exit.c \
+	$(UTILS)/error.c \
 	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \
@@ -54,25 +54,26 @@ READLINE_INC	= -I${HOME}/.brew/opt/readline/include
 READLINE_HAKO_LIB = -lreadline -L/opt/homebrew/opt/readline/lib
 READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 
-.PHONY		:	all
-all			:	$(NAME)
+.PHONY	:all
+all		:$(NAME)
 
-$(NAME)		:	$(OBJS)
-		$(CC) -o $(NAME) -fsanitize=address -g main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+$(NAME)	:$(OBJS)
+	$(CC) -o $(NAME) -fsanitize=address -g main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
-$(HAKO)		:	$(OBJS)
-		$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
+$(HAKO)	:$(OBJS)
+	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
 
-.PHONY		:	clean
-clean		:
-		rm -f $(OBJS)
+.PHONY	:clean
+clean	:
+	rm -f $(OBJS)
 
-.PHONY		:	fclean
-fclean		:	clean
-		rm -f $(NAME)
+.PHONY	:fclean
+fclean	:clean
+	rm -f $(NAME)
 
-.PHONY		:	re
-re			:	fclean all
+.PHONY	:re
+re		:$(MAKE) fclean
+	$(MAKE) all

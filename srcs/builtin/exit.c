@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 13:00:56 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/16 12:07:40 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 13:57:44 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void validate_exit_code(char *code)
 {
     int i;
 
-    i = 0;
-    if (code[i] == '-' || code[i] == '+')
+    i = -1;
+    if (code[0] == '-' || code[0] == '+')
         ++i;
     while (code && code[++i])
     {
