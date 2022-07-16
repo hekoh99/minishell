@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/16 12:22:23 by yubchoi           #+#    #+#             */
+/*   Updated: 2022/07/16 12:22:24 by yubchoi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/utils.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char *ft_strjoin(char const *s1, char const *s2)
 {
-	char	*str;
-	size_t	s1_len;
-	size_t	s2_len;
+	char *str;
+	size_t s1_len;
+	size_t s2_len;
 
 	if (!s1 || !s2)
 		return (0);

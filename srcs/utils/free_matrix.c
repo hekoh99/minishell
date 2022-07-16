@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_exit.c                                       :+:      :+:    :+:   */
+/*   free_matrix.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/14 12:12:30 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 11:03:43 by yubchoi          ###   ########.fr       */
+/*   Created: 2022/07/16 12:38:37 by yubchoi           #+#    #+#             */
+/*   Updated: 2022/07/16 12:39:39 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/utils.h"
 
-extern int g_stat;
-
-void error_exit(char *msg, int status)
+void free_matrix(char **matrix)
 {
-    perror(msg);
-    g_stat = status;    
-    exit(status);
+    int i;
+
+    i = -1;
+    while (matrix[++i])
+        ft_free(matrix[i]);
+    ft_free(matrix);
 }
