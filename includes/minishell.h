@@ -60,6 +60,7 @@ typedef struct s_node
     int fd[2];
     t_env *envp;
     struct s_node *nxt;
+    struct s_node *prev;
 } t_node;
 
 typedef struct s_list

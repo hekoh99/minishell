@@ -77,6 +77,12 @@ void ft_command(t_node *node)
 			ft_close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
 			ft_close(node->fd[OUT]);
+		if (node->prev && node->prev->type == PIPE)
+		{
+			printf("%d %d\n", node->prev->fd[OUT], node->prev->fd[IN]);
+			close(node->prev->fd[IN]);
+			close(node->prev->fd[OUT]);
+		}
 	}
 }
 
