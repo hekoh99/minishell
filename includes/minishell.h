@@ -78,21 +78,21 @@ void delete_files();
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
 void free_token_all(t_token *head);
-void free_node_all (t_node *head);
+void free_node_all(t_node *head);
 void free_env_all(t_env *head);
 void free_node_all(t_node *head);
 
 // execute
-// void ft_execute(t_mini *mini);
+void ft_execute(t_node *node);
 
 // builtin
-// t_env *ft_cd(t_mini *mini);
-// void ft_echo(t_mini *mini);
-// void ft_env(t_env *envp);
-// void ft_exit(t_node *node);
-// t_env *ft_export(t_mini *mini);
+void ft_cd(t_node *node);
+void ft_echo(t_node *node);
+void ft_env(t_env *envp);
+void ft_exit(t_node *node);
+void ft_export(t_node *node);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
-t_env *ft_unset(t_node *node, t_env *envp);
+void ft_unset(t_node *node);
 
 #endif
