@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/15 13:23:01 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 10:38:58 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ int main(int ac, char **av, char **env)
     av += 0;
 
     envp = init_env(env);
+    g_stat = 0;
     /* // env init check
     while (envp){
         printf("%s = %s\n", envp->key, envp->value);
@@ -160,7 +161,6 @@ int main(int ac, char **av, char **env)
     // */
     while (1)
     {
-        g_stat = 0;
         token = NULL;
         node = NULL;
         signal(SIGINT, sig_int);
@@ -192,12 +192,12 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token, envp);
-           
-            //print_token(token, 1);
-            print_node(node);
-            //print_heredoc(node);
-            //print_tmpfiles();
-            // ft_execute(node); // node ? &node ?
+
+            // print_token(token, 1);
+            // print_node(node);
+            // print_heredoc(node);
+            // print_tmpfiles();
+            ft_execute(node);
             // print_token(token, 1);
             // print_node(mini.node);
             // print_heredoc(node);

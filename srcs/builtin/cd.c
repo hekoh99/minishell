@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 14:33:24 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 14:12:05 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,24 +50,23 @@ void ft_cd_home(t_env *envp)
     }
 }
 
-t_env *ft_cd(t_mini *mini)
+void ft_cd(t_node *node)
 {
     char *old_pwd;
     char *pwd;
 
     old_pwd = getcwd(0, PATH_MAX);
-    if (mini->node->cmd[1] == NULL)
-        ft_cd_home(mini->envp);
+    if (node->cmd[1] == NULL)
+        ft_cd_home(node->envp);
     else
     {
-        if (chdir(mini->node->cmd[1]) == -1)
+        if (chdir(node->cmd[1]) == -1)
         {
-            printf("cd: %s: no such file or directory\n", mini->node->cmd[1]);
+            printf("cd: %s: no such file or directory\n", node->cmd[1]);
             g_stat = 1;
         }
     }
     pwd = getcwd(0, PATH_MAX);
-    mini->envp = update_env(mini->envp, "OLDPWD", old_pwd);
-    mini->envp = update_env(mini->envp, "PWD", pwd);
-    return (mini->envp);
+    node->envp = update_env(node->envp, "OLDPWD", old_pwd);
+    node->envp = update_env(node->envp, "PWD", pwd);
 }
