@@ -29,7 +29,6 @@
 // exit status
 #define SYNTAX 258
 #define CMD_NOT_FOUND 127
-#define INTERRUPT 130
 #define PERM 126
 #define ETC 1
 
