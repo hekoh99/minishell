@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/15 14:41:45 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/16 10:37:50 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int has_pipe(t_node *node)
 
 void ft_execve(t_node *node)
 {
+	return;
 }
 
 void ft_command(t_node *node)
@@ -75,8 +76,9 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		close(node->fd[IN]);
-		if (node->nxt)
+		if (node->fd[IN] != 0)
+			close(node->fd[IN]);
+		if (node->fd[OUT] != 1)
 			close(node->fd[OUT]);
 	}
 }
