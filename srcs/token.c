@@ -569,7 +569,7 @@ t_node *get_fd(t_node *node)
         if (tmp->type == CMD)
         {
             cmd = tmp;
-            if (prev)
+            if (prev && prev->type > CMD)
             {
                 tmp->fd[IN] = prev->fd[IN];
                 tmp->fd[OUT] = prev->fd[OUT];
@@ -581,9 +581,17 @@ t_node *get_fd(t_node *node)
         {
             cmd->fd[IN] = tmp->fd[IN];
         }
-        if (cmd && (tmp->type == TRUNC || tmp->type == APPEND))
+        if (tmp->type == TRUNC || tmp->type == APPEND)
         {
-            cmd->fd[OUT] = tmp->fd[OUT];
+            if (tmp->nxt && tmp->nxt->type == PIPE)
+			{
+			    ft_close(tmp->nxt->fd[OUT]);
+				// printf("-->> %d\n", tmp->nxt->fd[OUT]);
+			}
+            if (cmd)
+            {
+                cmd->fd[OUT] = tmp->fd[OUT];
+            }
         }
         if (prev && tmp->type == PIPE)
         {
