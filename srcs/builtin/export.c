@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/14 14:35:53 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 14:15:52 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ t_env *ft_set(t_env *envp, char *key, char *value)
     return (envp);
 }
 
-t_env *update_envp(t_mini *mini)
+void update_envp(t_node *node)
 {
     int i;
     int sep;
@@ -203,28 +203,26 @@ t_env *update_envp(t_mini *mini)
 
     i = 0;
     sep = 1;
-    while (mini->node->cmd[++i])
+    while (node->cmd[++i])
     {
-        sep = find_sep(mini->node->cmd[i], '=');
+        sep = find_sep(node->cmd[i], '=');
         if (sep == 0)
         {
-            printf_invalid_identifier(ft_strdup(mini->node->cmd[i]));
+            printf_invalid_identifier(ft_strdup(node->cmd[i]));
             continue;
         }
-        key = ft_substr(mini->node->cmd[i], 0, sep);
-        if (is_invalid_key(key) || sep == ft_strlen(mini->node->cmd[i]))
+        key = ft_substr(node->cmd[i], 0, sep);
+        if (is_invalid_key(key) || sep == ft_strlen(node->cmd[i]))
             continue;
-        value = ft_substr(mini->node->cmd[i], sep + 1, ft_strlen(mini->node->cmd[i]));
-        mini->envp = ft_set(mini->envp, key, value);
+        value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
+        node->envp = ft_set(node->envp, key, value);
     }
-    return (mini->envp);
 }
 
-t_env *ft_export(t_mini *mini)
+void ft_export(t_node *node)
 {
-    if (mini->node->cmd[1] == NULL)
-        print_sorted_envp(mini->envp);
+    if (node->cmd[1] == NULL)
+        print_sorted_envp(node->envp);
     else
-        mini->envp = update_envp(mini);
-    return (mini->envp);
+        update_envp(node);
 }

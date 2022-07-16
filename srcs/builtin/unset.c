@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/14 14:48:41 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/15 13:50:57 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_env *ft_unset_env(t_env *envp, char *key)
     return (envp);
 }
 
-t_env *ft_unset(t_node *node, t_env *envp)
+void ft_unset(t_node *node)
 {
     int i;
 
@@ -50,7 +50,6 @@ t_env *ft_unset(t_node *node, t_env *envp)
         if (is_invalid_key(ft_strdup(node->cmd[i])))
             continue;
         printf("%s\n", node->cmd[i]);
-        envp = ft_unset_env(envp, node->cmd[i]);
+        node->envp = ft_unset_env(node->envp, node->cmd[i]);
     }
-    return (envp);
 }
