@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_exit.c                                       :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 12:12:30 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 14:08:29 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/16 14:36:08 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/utils.h"
 
 extern int g_stat;
+
+void print_error(char *msg, int status)
+{
+    write(2, "minishell: ", 11);
+    write(2, msg, ft_strlen(msg));
+    g_stat = status;
+    ft_free(msg);
+}
 
 void error_exit(char *msg, int status)
 {

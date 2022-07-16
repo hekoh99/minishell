@@ -24,7 +24,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_atoi.c \
 	$(UTILS)/ft_split.c \
 	$(UTILS)/free_matrix.c \
-	$(UTILS)/error_exit.c \
+	$(UTILS)/error.c \
 	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \

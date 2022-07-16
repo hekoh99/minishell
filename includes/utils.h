@@ -16,6 +16,8 @@ size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char *ft_strjoin(char const *s1, char const *s2);
 int ft_atoi(const char *str);
 long long ft_atoll(const char *str);
+
+void print_error(char *msg, int status);
 void error_exit(char *msg, int status);
 void free_matrix(char **matrix);
 
