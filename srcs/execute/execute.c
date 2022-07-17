@@ -53,6 +53,31 @@ int has_pipe(t_node *node)
 	return (0);
 }
 
+void close_pipe(t_node *node)
+{
+	t_node *tmp;
+	
+	if (node->prev && node->prev->type == PIPE)
+	{
+		if (tmp->fd[IN] > 2)
+			ft_close(tmp->fd[IN]);
+		if (tmp->fd[OUT] > 2)
+			ft_close(tmp->fd[OUT]);
+	}
+	tmp = node->nxt;
+	while (tmp)
+	{
+		if (tmp->type == PIPE)
+		{
+			if (tmp->fd[IN] > 2)
+				ft_close(tmp->fd[IN]);
+			if (tmp->fd[OUT] > 2)
+				ft_close(tmp->fd[OUT]);
+		}
+		tmp = tmp->nxt;
+	}
+}
+
 void ft_command(t_node *node)
 {
 	pid_t pid;
@@ -65,6 +90,13 @@ void ft_command(t_node *node)
 		g_stat = 0;
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
+		close_pipe(node);
+		/* // 
+		if (node->fd[IN] != 0)
+			ft_close(node->fd[IN]);
+		if (node->fd[OUT] != 1)
+			ft_close(node->fd[OUT]);
+		// */
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
@@ -77,12 +109,6 @@ void ft_command(t_node *node)
 			ft_close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
 			ft_close(node->fd[OUT]);
-		// if (node->prev && node->prev->type == PIPE)
-		// {
-		// 	printf("%d %d\n", node->prev->fd[OUT], node->prev->fd[IN]);
-		// 	close(node->prev->fd[IN]);
-		// 	close(node->prev->fd[OUT]);
-		// }
 	}
 }
 

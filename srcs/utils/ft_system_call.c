@@ -46,6 +46,7 @@ int	ft_open(char *file, int o_flag, int mode)
 
 void	ft_close(int fd)
 {
+	// printf("close fd : %d\n", fd);
 	if (close(fd) == -1)
 		error_exit("close failed", 1);
 }
