@@ -56,23 +56,17 @@ int has_pipe(t_node *node)
 void close_pipe(t_node *node)
 {
 	t_node *tmp;
-	
-	if (node->prev && node->prev->type == PIPE)
-	{
-		if (tmp->fd[IN] > 2)
-			ft_close(tmp->fd[IN]);
-		if (tmp->fd[OUT] > 2)
-			ft_close(tmp->fd[OUT]);
-	}
+
 	tmp = node->nxt;
 	while (tmp)
 	{
 		if (tmp->type == PIPE)
 		{
+			if (tmp->prev->type == CMD)
+				if (tmp->fd[OUT] > 2)
+					ft_close(tmp->fd[OUT]);
 			if (tmp->fd[IN] > 2)
 				ft_close(tmp->fd[IN]);
-			if (tmp->fd[OUT] > 2)
-				ft_close(tmp->fd[OUT]);
 		}
 		tmp = tmp->nxt;
 	}
