@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/18 14:55:14 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 15:06:02 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,10 @@ int is_builtin(t_node *node)
 	return (0);
 }
 
-int has_pipe(t_node *node)
+int is_single_cmd(t_node *node)
 {
-	while (node)
-	{
-		if (ft_strcmp(node->cmd[0], "|") == 0)
-			return (1);
-		node = node->nxt;
-	}
+	if (!node->nxt)
+		return (1);
 	return (0);
 }
 
@@ -85,12 +81,6 @@ void ft_command(t_node *node)
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
 		close_pipe(node);
-		/* //
-		if (node->fd[IN] != 0)
-			ft_close(node->fd[IN]);
-		if (node->fd[OUT] != 1)
-			ft_close(node->fd[OUT]);
-		// */
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
@@ -112,7 +102,7 @@ void ft_execute(t_node *node)
 	int tmp;
 
 	// g_stat = 0;
-	if (!has_pipe(node) && is_builtin(node))
+	if (is_single_cmd(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else
 	{
