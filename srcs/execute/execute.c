@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/18 15:06:02 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 16:19:19 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,18 @@ void ft_command(t_node *node)
 	}
 }
 
+void ft_redirection(t_node *node)
+{
+	t_node *tmp;
+
+	tmp = node->nxt;
+	if (tmp && tmp->type == CMD)
+	{
+		tmp->fd[OUT] = node->fd[OUT];
+		tmp->fd[IN] = node->fd[IN];
+	}
+}
+
 void ft_execute(t_node *node)
 {
 	pid_t pid;
@@ -110,6 +122,8 @@ void ft_execute(t_node *node)
 		{
 			if (node->type == CMD)
 				ft_command(node);
+			else if (node->type == TRUNC || node->type == APPEND)
+				ft_redirection(node);
 			node = node->nxt;
 		}
 		while (wait(&tmp) != -1)
@@ -119,5 +133,6 @@ void ft_execute(t_node *node)
 			else
 				g_stat = WTERMSIG(tmp);
 		}
+		// sigint일 경우 ^C 출력
 	}
 }
