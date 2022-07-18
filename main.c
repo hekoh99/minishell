@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/18 15:03:55 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 19:09:28 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,28 @@ void print_tmpfiles()
     }
 }
 
+void check_redirection(t_node *node)
+{
+    t_node *tmp;
+
+    while (node)
+    {
+        if (node->type == TRUNC || node->type == APPEND)
+        {
+            tmp = node->nxt;
+            while (tmp)
+            {
+                if (tmp->type == PIPE)
+                    break;
+                if (tmp->type == CMD)
+                    tmp->fd[OUT] = node->fd[OUT];
+                tmp = tmp->nxt;
+            }
+        }
+        node = node->nxt;
+    }
+}
+
 int main(int ac, char **av, char **env)
 {
     // t_mini mini;
@@ -192,9 +214,9 @@ int main(int ac, char **av, char **env)
             token = expand(token, envp);
             token = trim_quote(token);
             node = exec_unit(&token, envp);
-
+            // check_redirection(node); // echo hello > tmp 1 echo ABC 잘 된다면 얘 삭제해도 됨
             // print_token(token, 1);
-            // print_node(node);
+            print_node(node);
             // print_heredoc(node);
             // print_tmpfiles();
             if (node)

@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/18 16:19:19 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 19:06:05 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,15 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		if (node->fd[IN] != 0)
-			ft_close(node->fd[IN]);
-		if (node->fd[OUT] != 1)
-			ft_close(node->fd[OUT]);
+		if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
+			;
+		else
+		{
+			if (node->fd[IN] != 0)
+				ft_close(node->fd[IN]);
+			if (node->fd[OUT] != 1)
+				ft_close(node->fd[OUT]);
+		}
 	}
 }
 
