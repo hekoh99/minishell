@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/18 19:06:05 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 20:43:47 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,14 @@ void ft_execute(t_node *node)
 			if (WIFEXITED(tmp))
 				g_stat = WEXITSTATUS(tmp);
 			else
+			{
 				g_stat = WTERMSIG(tmp);
+				if (g_stat == SIGINT)
+					write(2, "^C\n", 3);
+				else if (g_stat == SIGQUIT)
+					write(2, "^\\Quit: 3", 13);
+				g_stat += 128;
+			}
 		}
-		// sigint일 경우 ^C 출력
 	}
 }

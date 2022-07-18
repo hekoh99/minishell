@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/18 19:09:28 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/18 19:33:03 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,7 @@ int main(int ac, char **av, char **env)
             node = exec_unit(&token, envp);
             // check_redirection(node); // echo hello > tmp 1 echo ABC 잘 된다면 얘 삭제해도 됨
             // print_token(token, 1);
-            print_node(node);
+            // print_node(node);
             // print_heredoc(node);
             // print_tmpfiles();
             if (node)
