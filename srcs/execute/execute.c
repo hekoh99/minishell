@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 15:23:13 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/18 14:09:38 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int has_pipe(t_node *node)
 void close_pipe(t_node *node)
 {
 	t_node *tmp;
-	
+
 	if (node->prev && node->prev->type == PIPE)
 	{
 		if (tmp->fd[IN] > 2)
@@ -91,7 +91,7 @@ void ft_command(t_node *node)
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
 		close_pipe(node);
-		/* // 
+		/* //
 		if (node->fd[IN] != 0)
 			ft_close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
@@ -117,7 +117,7 @@ void ft_execute(t_node *node)
 	pid_t pid;
 	int tmp;
 
-	g_stat = 0;
+	// g_stat = 0;
 	if (!has_pipe(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else
