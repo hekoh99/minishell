@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 15:19:38 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/19 17:13:00 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,16 +91,10 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		// if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
-		// 	;
-		// else
-		// {
-		// ft_close_in_parent(node);
-		if (node->fd[IN] > 0)
+		if (node->fd[IN] != 0)
 			ft_close(node->fd[IN]);
-		if (node->fd[OUT] > 1)
+		if (node->fd[OUT] != 1)
 			ft_close(node->fd[OUT]);
-		// }
 	}
 }
 
@@ -127,6 +121,7 @@ void ft_execute(t_node *node)
 	{
 		while (node)
 		{
+			signal(SIGINT, child_sig_int);
 			if (node->type == CMD)
 				ft_command(node);
 			// else if (node->type == TRUNC || node->type == APPEND)
@@ -136,17 +131,7 @@ void ft_execute(t_node *node)
 		while (wait(&tmp) != -1)
 			;
 		g_stat = WEXITSTATUS(tmp);
-		if (WIFEXITED(tmp))
-			;
-		else if (WTERMSIG(tmp) == SIGINT)
-		{
-			write(2, "^C\n", 3);
+		if (WTERMSIG(tmp) == SIGINT)
 			g_stat = WTERMSIG(tmp) + 128;
-		}
-		else if (WTERMSIG(tmp) == SIGQUIT)
-		{
-			write(2, "^\\Quit: 3", 13);
-			g_stat = WTERMSIG(tmp) + 128;
-		}
 	}
 }
