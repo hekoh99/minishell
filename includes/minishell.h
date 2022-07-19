@@ -106,6 +106,7 @@ void ft_export(t_node *node);
 t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
 void ft_unset(t_node *node);
-char	**ft_split(char *s, char c);
+char **ft_split(char *s, char c);
+void print_all_envp(t_env *envp, int has_prefix);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 13:25:07 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 14:30:34 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ void close_pipe(t_node *node)
 	{
 		if (tmp->type == PIPE)
 		{
-			if (tmp->prev->type == CMD)
+			if (tmp->prev && tmp->prev->type == CMD)
+			{
 				if (tmp->fd[OUT] > 2)
 					ft_close(tmp->fd[OUT]);
-			if (tmp->fd[IN] > 2)
-				ft_close(tmp->fd[IN]);
+				if (tmp->fd[IN] > 2)
+					ft_close(tmp->fd[IN]);
+			}
 		}
 		tmp = tmp->nxt;
 	}
@@ -89,15 +91,16 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
-			;
-		else
-		{
-			if (node->fd[IN] != 0)
-				ft_close(node->fd[IN]);
-			if (node->fd[OUT] != 1)
-				ft_close(node->fd[OUT]);
-		}
+		// if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
+		// 	;
+		// else
+		// {
+		// ft_close_in_parent(node);
+		if (node->fd[IN] > 0)
+			ft_close(node->fd[IN]);
+		if (node->fd[OUT] > 1)
+			ft_close(node->fd[OUT]);
+		// }
 	}
 }
 
@@ -118,7 +121,6 @@ void ft_execute(t_node *node)
 	pid_t pid;
 	int tmp;
 
-	// g_stat = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else
@@ -136,18 +138,15 @@ void ft_execute(t_node *node)
 		g_stat = WEXITSTATUS(tmp);
 		if (WIFEXITED(tmp))
 			;
-		else
+		else if (WTERMSIG(tmp) == SIGINT)
 		{
-			if (WTERMSIG(tmp) == SIGINT)
-			{
-				write(2, "^C\n", 3);
-				g_stat = WTERMSIG(tmp) + 128;
-			}
-			else if (WTERMSIG(tmp) == SIGQUIT)
-			{
-				write(2, "^\\Quit: 3", 13);
-				g_stat = WTERMSIG(tmp) + 128;
-			}
+			write(2, "^C\n", 3);
+			g_stat = WTERMSIG(tmp) + 128;
+		}
+		else if (WTERMSIG(tmp) == SIGQUIT)
+		{
+			write(2, "^\\Quit: 3", 13);
+			g_stat = WTERMSIG(tmp) + 128;
 		}
 	}
 }
