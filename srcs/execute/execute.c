@@ -89,15 +89,10 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
-			;
-		else
-		{
-			if (node->fd[IN] != 0)
-				ft_close(node->fd[IN]);
-			if (node->fd[OUT] != 1)
-				ft_close(node->fd[OUT]);
-		}
+		if (node->fd[IN] != 0)
+			ft_close(node->fd[IN]);
+		if (node->fd[OUT] != 1)
+			ft_close(node->fd[OUT]);
 	}
 }
 
@@ -125,6 +120,7 @@ void ft_execute(t_node *node)
 	{
 		while (node)
 		{
+			signal(SIGINT, child_sig_int);
 			if (node->type == CMD)
 				ft_command(node);
 			// else if (node->type == TRUNC || node->type == APPEND)
@@ -140,12 +136,6 @@ void ft_execute(t_node *node)
 		{
 			if (WTERMSIG(tmp) == SIGINT)
 			{
-				write(2, "^C\n", 3);
-				g_stat = WTERMSIG(tmp) + 128;
-			}
-			else if (WTERMSIG(tmp) == SIGQUIT)
-			{
-				write(2, "^\\Quit: 3", 13);
 				g_stat = WTERMSIG(tmp) + 128;
 			}
 		}
