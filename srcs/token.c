@@ -4,7 +4,7 @@ extern int g_stat;
 
 t_list *tmp_files(char *filename, int cmd)
 {
-    static t_list* head;
+    static t_list *head;
 
     if (cmd == GET)
         return (head);
@@ -45,7 +45,7 @@ t_list *add_files(t_list *head, char *filename)
 void delete_files(t_list *head)
 {
     t_list *target;
-    t_list  *tmp;
+    t_list *tmp;
 
     tmp = head;
     while (tmp)
@@ -61,7 +61,7 @@ void delete_files(t_list *head)
 void check_quote(char target, int *sq, int *dq)
 {
     if (target == '\'' && *sq == 0 && *dq == 0)
-            *sq = 1;
+        *sq = 1;
     else if (target == '\"' && *sq == 0 && *dq == 0)
         *dq = 1;
     else if (target == '\'' && *sq == 1)
@@ -78,6 +78,7 @@ t_token *add_token(t_token *head, char *value)
     new = (t_token *)malloc(sizeof(t_token));
     new->value = value;
     new->nxt = NULL;
+    new->prev = NULL;
     if (head == NULL)
     {
         head = new;
@@ -253,7 +254,7 @@ char *search_env(t_env *env, char *target)
     return (real_val);
 }
 
-void  set_expanded_value(t_token *token, char *replaced, int start, int *index)
+void set_expanded_value(t_token *token, char *replaced, int start, int *index)
 {
     char *head;
     char *tail;
@@ -329,7 +330,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
                 i++;
                 set_expanded_value(tmp, replaced, 1, &i);
             }
-            else 
+            else
                 i++;
         }
         tmp = tmp->nxt;
@@ -539,7 +540,7 @@ int set_input_fd(t_node *head, t_node *file_node, t_node *target)
     return (1);
 }
 
- // get_fd 최신
+// get_fd 최신
 t_node *get_fd(t_node *node)
 {
     t_node *tmp;
@@ -558,7 +559,7 @@ t_node *get_fd(t_node *node)
         else if (tmp->type == TRUNC || tmp->type == APPEND) // >, >> node의 int에 파일 fd set
         {
             if (tmp->type == APPEND)
-                tmp->fd[OUT] =  open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+                tmp->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
             else if (tmp->type == TRUNC)
                 tmp->fd[OUT] = open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
         }
@@ -595,10 +596,10 @@ t_node *get_fd(t_node *node)
         if (tmp->type == TRUNC || tmp->type == APPEND)
         {
             if (tmp->nxt && tmp->nxt->type == PIPE)
-			{
-			    ft_close(tmp->nxt->fd[OUT]);
-				// printf("-->> %d\n", tmp->nxt->fd[OUT]);
-			}
+            {
+                ft_close(tmp->nxt->fd[OUT]);
+                // printf("-->> %d\n", tmp->nxt->fd[OUT]);
+            }
             if (cmd)
             {
                 cmd->fd[OUT] = tmp->fd[OUT];
@@ -710,6 +711,66 @@ t_node *get_fd(t_node *node)
     }
     return (node);
 } // */
+
+t_token *reorder_token(t_token *token)
+{
+    t_token *tmp;
+    t_token *arg_start;
+    t_token *arg_end;
+    t_token *cmd;
+    t_token *redir;
+    t_token *file;
+
+    tmp = token;
+    cmd = NULL;
+    while (tmp)
+    {
+        if (tmp->type == CMD) // 명령어
+            cmd = tmp;
+        else if (tmp->type == PIPE || tmp->type == END)
+            cmd = NULL;
+        else // redir 일 때
+        {
+            redir = tmp;
+            file = tmp->nxt;
+            if (file->nxt && file->nxt->type == CMD) // redir 뒷 단이 cmd면
+            {
+                arg_start = file->nxt;
+                tmp = arg_start;
+                while (tmp && tmp->type == CMD)
+                {
+                    arg_end = tmp;
+                    tmp = tmp->nxt;
+                }
+                if (cmd)
+                {
+                    file->nxt = tmp; // redir의 뒷단을 tmp에 연결
+                    if (tmp)
+                        tmp->prev = file;
+                    arg_end->nxt = redir;
+                    redir->prev = arg_end;
+                    cmd->nxt = arg_start;
+                    arg_start->prev = cmd;
+                }
+                else // cmd가 null 일때
+                {
+                    file->nxt = tmp;
+                    if (tmp)
+                        tmp->prev = file;
+                    if (!redir->prev)
+                        token = arg_start;
+                    else
+                        redir->prev->nxt = arg_start;
+                    arg_end->nxt = redir;
+                    redir->prev = arg_end;
+                }
+                tmp = arg_end;
+            }
+        }
+        tmp = tmp->nxt;
+    }
+    return (token);
+}
 
 t_node *exec_unit(t_token **token, t_env *envp)
 {

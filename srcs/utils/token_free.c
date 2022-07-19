@@ -17,6 +17,7 @@ t_token *ft_dellist(t_token *head, char *target)
                 free(tmp->value);
                 free(tmp);
                 tmp = head;
+                tmp->prev = NULL;
             }
             else if (tmp->nxt == NULL)
             {
@@ -46,7 +47,7 @@ void free_token_all(t_token *head)
     t_token *target;
 
     if (!head)
-        return ;
+        return;
     tmp = head;
     while (tmp)
     {
@@ -60,14 +61,14 @@ void free_token_all(t_token *head)
     }
 }
 
-void free_node_all (t_node *head)
+void free_node_all(t_node *head)
 {
     t_node *tmp;
     t_node *target;
     int i;
 
     if (!head)
-        return ;
+        return;
 
     tmp = head;
     while (tmp)
@@ -98,8 +99,8 @@ void free_env_all(t_env *head)
     t_env *target;
 
     if (!head)
-        return ;
-    
+        return;
+
     tmp = head;
     while (tmp)
     {
