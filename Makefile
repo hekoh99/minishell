@@ -36,6 +36,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(EXECUTE)/execute.c \
 	$(EXECUTE)/execve.c \
 	srcs/token.c \
+	srcs/signal.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
