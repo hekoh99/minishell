@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/18 22:13:13 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 13:23:43 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,15 +133,21 @@ void ft_execute(t_node *node)
 		}
 		while (wait(&tmp) != -1)
 			;
+		g_stat = WEXITSTATUS(tmp);
 		if (WIFEXITED(tmp))
-			g_stat = WEXITSTATUS(tmp);
+			;
 		else
 		{
 			if (WTERMSIG(tmp) == SIGINT)
+			{
 				write(2, "^C\n", 3);
-			else
+				g_stat = WTERMSIG(tmp) + 128;
+			}
+			else if (WTERMSIG(tmp) == SIGQUIT)
+			{
 				write(2, "^\\Quit: 3", 13);
-			g_stat = 128 + WTERMSIG(tmp);
+				g_stat = WTERMSIG(tmp) + 128;
+			}
 		}
 	}
 }
