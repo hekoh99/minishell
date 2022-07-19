@@ -9,10 +9,7 @@ t_list *tmp_files(char *filename, int cmd)
     if (cmd == GET)
         return (head);
     else if (cmd == ADD)
-    {
-        // printf("---> %s\n", filename);
         head = add_files(head, filename);
-    }
     else if (cmd == DEL)
     {
         delete_files(head);
@@ -93,19 +90,29 @@ t_token *add_token(t_token *head, char *value)
         tmp->nxt = new;
         new->prev = tmp;
     }
-
     return (head);
+}
+
+t_token *open_quote_err(t_token *head)
+{
+    printf("minishell: open quotation syntax error\n");
+    g_stat = SYNTAX;
+    free_token_all(head);
+    return (NULL);
 }
 
 t_token *trim_space(char *line)
 {
     t_token *head;
-    int squote = 0;
-    int dquote = 0;
+    int squote;
+    int dquote;
     int start;
-    int i = 0;
+    int i;
 
     start = 0;
+    i = 0;
+    dquote = 0;
+    squote = 0;
     head = NULL;
     while ((line[i] != '\0' || i - start > 0))
     {
@@ -124,12 +131,7 @@ t_token *trim_space(char *line)
             break;
     }
     if (squote == 1 || dquote == 1)
-    {
-        printf("minishell: open quotation syntax error\n");
-        g_stat = SYNTAX;
-        free_token_all(head);
-        head = NULL;
-    }
+        return (open_quote_err(head));
     return (head);
 }
 
@@ -153,82 +155,108 @@ int check_duple_sep(char *token, int pos)
     return (size);
 }
 
-t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size) // tmp, sep_size, i, strlen
+t_token *join_list_center(t_token *pos, int sep_size, int *index, int size)
 {
     t_token *seperated;
 
     seperated = malloc(sizeof(t_token) * sep_size);
     seperated->value = ft_substr(pos->value, *index, sep_size);
 
+    seperated->nxt = pos->nxt;
+    pos->nxt->prev = seperated;
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    pos = pos->nxt; // 구분자 블록
+    
+    seperated = malloc(sizeof(t_token));
+    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    seperated->nxt = pos->nxt;
+    pos->nxt->prev = seperated;
+    pos->nxt = seperated;
+    seperated->prev = pos;
+
+    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+    if (sep_size == 2)
+        (*index)++;
+    return (pos);
+}
+
+t_token *join_list_back(t_token *pos, int sep_size, int *index, int size)
+{
+    t_token *seperated;
+
+    seperated = malloc(sizeof(t_token) * sep_size);
+    seperated->value = ft_substr(pos->value, *index, sep_size);
+
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    seperated->nxt = NULL;
+    pos = pos->nxt;
+    seperated = malloc(sizeof(t_token));
+    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    seperated->nxt = NULL;
+
+    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+    if (sep_size == 2)
+        (*index)++;
+    return (pos);
+}
+
+t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size)
+{
     if (pos->nxt != NULL)
     {
-        // 첫번째 구분자 복사 후 리스트 병합
-        seperated->nxt = pos->nxt;
-        pos->nxt->prev = seperated;
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        pos = pos->nxt; // 구분자 블록
-        // 구분자 후단
-        seperated = malloc(sizeof(t_token));
-        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-        seperated->nxt = pos->nxt;
-        pos->nxt->prev = seperated;
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        // 구분자 전단
-        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-        if (sep_size == 2)
-            (*index)++;
+        pos = join_list_center(pos, sep_size, index, size);
     }
     else
     {
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        seperated->nxt = NULL;
-        pos = pos->nxt;
-        seperated = malloc(sizeof(t_token));
-        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        seperated->nxt = NULL;
-        // 구분자 전단
-        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-        if (sep_size == 2)
-            (*index)++;
+        pos = join_list_back(pos, sep_size, index, size);
     }
     return (pos);
+}
+
+t_token *split_target_token(t_token *token, t_token *tmp, int *squote, int *dquote)
+{
+    int i;
+    char *sep = ";|><";
+    int sep_size;
+    int size;
+
+    i = 0;
+    size = ft_strlen(tmp->value);
+    while (tmp->value[i] != '\0')
+    {
+        check_quote(tmp->value[i], squote, dquote);
+        if (ft_strchr(sep, tmp->value[i]) != 0 && *squote == 0 && *dquote == 0)
+        {
+            sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
+            if (sep_size == 0)
+            {
+                free_token_all(token);
+                return (NULL);
+            }
+            tmp = do_split_by_seps(tmp, sep_size, &i, size);
+        }
+        i++;
+    }
+    return (tmp);
 }
 
 t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
 {
     int i;
     t_token *tmp;
-    int size;
-    char *sep = ";|><";
     int squote = 0;
     int dquote = 0;
-    int sep_size;
 
     tmp = token;
     while (tmp)
     {
-        i = 0;
-        size = ft_strlen(tmp->value);
-        while (tmp->value[i] != '\0')
-        {
-            check_quote(tmp->value[i], &squote, &dquote);
-            if (ft_strchr(sep, tmp->value[i]) != 0 && squote == 0 && dquote == 0)
-            {
-                sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
-                if (sep_size == 0)
-                {
-                    free_token_all(token);
-                    return (NULL);
-                }
-                tmp = do_split_by_seps(tmp, sep_size, &i, size);
-            }
-            i++;
-        }
+        tmp = split_target_token(token, tmp, &squote, &dquote);
+        if (!tmp)
+            return (NULL);
         tmp = tmp->nxt;
     }
     token = ft_dellist(token, "");
@@ -264,30 +292,20 @@ void set_expanded_value(t_token *token, char *replaced, int start, int *index)
         replaced = ft_strdup(ft_itoa(g_stat));
         (*index) = start + 1;
     }
-    if (replaced != NULL)
+    if (!replaced)
+        replaced = ft_strdup("");
+    head = ft_substr(token->value, 0, start - 1);
+    tail = ft_substr(token->value, *index, ft_strlen(token->value));
+    free(token->value);
+    token->value = ft_strjoin(head, replaced);
+    token->value = ft_strjoin(token->value, tail);
+    free(replaced);
+    free(head);
+    free(tail);
+    if (ft_strlen(token->value) == 0) // 환경변수가 없으며 출력할 문자도 없을 때
     {
-        head = ft_substr(token->value, 0, start - 1);
-        tail = ft_substr(token->value, *index, ft_strlen(token->value));
         free(token->value);
-        token->value = ft_strjoin(head, replaced);
-        token->value = ft_strjoin(token->value, tail);
-        free(replaced);
-        free(head);
-        free(tail);
-    }
-    else // NULL 일 때 - 못 찾았을 때
-    {
-        head = ft_substr(token->value, 0, start - 1);
-        tail = ft_substr(token->value, *index, ft_strlen(token->value));
-        free(token->value);
-        token->value = ft_strjoin(head, tail);
-        free(head);
-        free(tail);
-        if (ft_strlen(token->value) == 0) // 환경변수가 없으며 출력할 문자도 없을 때
-        {
-            free(token->value);
-            token->value = NULL;
-        }
+        token->value = NULL;
     }
 }
 
@@ -393,8 +411,6 @@ t_token *trim_quote(t_token *token)
 {
     t_token *tmp;
     int i;
-    char *head;
-    char *tail;
     char *str;
     int squote;
     int dquote;
@@ -518,10 +534,7 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
     write(fd, here_str, ft_strlen(here_str));
     close(fd);
     fd = open(file, O_RDONLY, 0666);
-    tmp_files(file, ADD); // need to delete
-    /* // test code
-    printf("--- heredoc  \n%s", here_str);
-    // */
+    tmp_files(file, ADD);
     free(here_str);
     return (fd);
 }
