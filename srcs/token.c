@@ -258,7 +258,7 @@ void  set_expanded_value(t_token *token, char *replaced, int start, int *index)
     char *head;
     char *tail;
 
-    if (token->value[start] == '?') // status 나중에 실제값으로 대체
+    if (token->value[start] == '?') // status 실제값으로 대체 완
     {
         replaced = ft_strdup(ft_itoa(g_stat));
         (*index) = start + 1;
@@ -282,6 +282,11 @@ void  set_expanded_value(t_token *token, char *replaced, int start, int *index)
         token->value = ft_strjoin(head, tail);
         free(head);
         free(tail);
+        if (ft_strlen(token->value) == 0) // 환경변수가 없으며 출력할 문자도 없을 때
+        {
+            free(token->value);
+            token->value = NULL;
+        }
     }
 }
 
@@ -301,7 +306,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
         i = 0;
         squote = 0;
         dquote = 0;
-        while (tmp->value[i] != '\0')
+        while (tmp->value && tmp->value[i] != '\0')
         {
             check_quote(tmp->value[i], &squote, &dquote);
             if (tmp->value[i] == '$' && tmp->value[i + 1] != '\0' && squote == 0)
@@ -401,7 +406,7 @@ t_token *trim_quote(t_token *token)
         squote = 0;
         dquote = 0;
         start = 0;
-        while (tmp->value[i] != '\0')
+        while (tmp->value && tmp->value[i] != '\0')
         {
             if (tmp->value[i] == '\'' && squote == 0 && dquote == 0)
             {
@@ -433,6 +438,7 @@ t_token *trim_quote(t_token *token)
 t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
 {
     int i = 0;
+    int j = 0;
     t_node *new;
     t_node *tmp;
 
@@ -447,10 +453,15 @@ t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
     new->envp = envp;
     while (i < iter)
     {
-        new->cmd[i] = ft_strdup(target->value);
+        if (target->value != NULL)
+        {
+            new->cmd[j] = ft_strdup(target->value);
+            j++;
+        }
         target = target->nxt;
         i++;
     }
+    new->cmd[j] = NULL;
     if (head == NULL)
         head = new;
     else
