@@ -3,22 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   execve.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 12:40:34 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/18 14:01:13 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char **find_path(t_env *envp)
+static char **find_path(t_node *node)
 {
     int i;
     char **path;
+    t_env *envp;
 
     i = -1;
     path = NULL;
+    envp = node->envp;
     while (envp)
     {
         if (ft_strncmp(envp->key, "PATH", 4) == 0)
@@ -29,7 +31,6 @@ static char **find_path(t_env *envp)
         envp = envp->nxt;
     }
     free_matrix(path);
-    error_exit("PATH not found", 127);
     return (NULL);
 }
 
@@ -91,7 +92,7 @@ void init_arg(t_node *node, t_exec_arg *arg)
 {
     char **paths;
 
-    paths = find_path(node->envp);
+    paths = find_path(node);
     arg->argv = node->cmd;
     arg->file = find_cmd_path(arg->argv[0], paths);
     arg->envp = init_envp_arr(node->envp);
