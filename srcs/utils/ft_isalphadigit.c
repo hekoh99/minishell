@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isalphadigit.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 20:33:42 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/11 20:34:19 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 18:40:02 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int ft_isalpha(int c)
+int	ft_isalpha(int c)
 {
-    return (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
+	return (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'));
 }
 
-int ft_isdigit(int c)
+int	ft_isdigit(int c)
 {
-    return ('0' <= c && c <= '9');
+	return ('0' <= c && c <= '9');
 }
