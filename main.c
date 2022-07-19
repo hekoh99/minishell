@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/18 19:33:03 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 15:11:58 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,7 @@ int main(int ac, char **av, char **env)
             add_history(str);
             // printf("parrot : %s\n", str);
             token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
+            free(str);
             token = split_by_sep(token);
             token = add_type(token);
             token = expand(token, envp);
