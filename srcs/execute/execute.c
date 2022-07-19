@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 15:23:13 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/19 13:25:07 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,10 @@ int is_builtin(t_node *node)
 	return (0);
 }
 
-int has_pipe(t_node *node)
+int is_single_cmd(t_node *node)
 {
-	while (node)
-	{
-		if (ft_strcmp(node->cmd[0], "|") == 0)
-			return (1);
-		node = node->nxt;
-	}
+	if (!node->nxt)
+		return (1);
 	return (0);
 }
 
@@ -85,12 +81,6 @@ void ft_command(t_node *node)
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
 		close_pipe(node);
-		/* // 
-		if (node->fd[IN] != 0)
-			ft_close(node->fd[IN]);
-		if (node->fd[OUT] != 1)
-			ft_close(node->fd[OUT]);
-		// */
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
@@ -99,10 +89,27 @@ void ft_command(t_node *node)
 	}
 	else
 	{
-		if (node->fd[IN] != 0)
-			ft_close(node->fd[IN]);
-		if (node->fd[OUT] != 1)
-			ft_close(node->fd[OUT]);
+		if (node->nxt && (node->nxt->type == TRUNC || node->nxt->type == APPEND))
+			;
+		else
+		{
+			if (node->fd[IN] != 0)
+				ft_close(node->fd[IN]);
+			if (node->fd[OUT] != 1)
+				ft_close(node->fd[OUT]);
+		}
+	}
+}
+
+void ft_redirection(t_node *node)
+{
+	t_node *tmp;
+
+	tmp = node->nxt;
+	if (tmp && tmp->type == CMD)
+	{
+		tmp->fd[OUT] = node->fd[OUT];
+		tmp->fd[IN] = node->fd[IN];
 	}
 }
 
@@ -111,8 +118,8 @@ void ft_execute(t_node *node)
 	pid_t pid;
 	int tmp;
 
-	g_stat = 0;
-	if (!has_pipe(node) && is_builtin(node))
+	// g_stat = 0;
+	if (is_single_cmd(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else
 	{
@@ -120,14 +127,27 @@ void ft_execute(t_node *node)
 		{
 			if (node->type == CMD)
 				ft_command(node);
+			// else if (node->type == TRUNC || node->type == APPEND)
+			// 	ft_redirection(node);
 			node = node->nxt;
 		}
 		while (wait(&tmp) != -1)
+			;
+		g_stat = WEXITSTATUS(tmp);
+		if (WIFEXITED(tmp))
+			;
+		else
 		{
-			if (WIFEXITED(tmp))
-				g_stat = WEXITSTATUS(tmp);
-			else
-				g_stat = WTERMSIG(tmp);
+			if (WTERMSIG(tmp) == SIGINT)
+			{
+				write(2, "^C\n", 3);
+				g_stat = WTERMSIG(tmp) + 128;
+			}
+			else if (WTERMSIG(tmp) == SIGQUIT)
+			{
+				write(2, "^\\Quit: 3", 13);
+				g_stat = WTERMSIG(tmp) + 128;
+			}
 		}
 	}
 }
