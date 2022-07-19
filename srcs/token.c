@@ -596,6 +596,10 @@ t_node *get_fd(t_node *node)
         if (prev && tmp->type == PIPE)
         {
             prev->fd[OUT] = tmp->fd[OUT];
+            if (cmd->fd[OUT] == 1) // out이 정해지지 않은 상태에서 파이프를 만나면
+            {
+                cmd->fd[OUT] = tmp->fd[OUT];
+            }
             cmd = NULL;
         }
         prev = tmp;
