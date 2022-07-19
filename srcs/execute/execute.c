@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 13:23:43 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 13:25:07 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,8 +127,8 @@ void ft_execute(t_node *node)
 		{
 			if (node->type == CMD)
 				ft_command(node);
-			else if (node->type == TRUNC || node->type == APPEND)
-				ft_redirection(node);
+			// else if (node->type == TRUNC || node->type == APPEND)
+			// 	ft_redirection(node);
 			node = node->nxt;
 		}
 		while (wait(&tmp) != -1)
