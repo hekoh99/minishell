@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:01:12 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/19 18:53:36 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ t_token	*expand(t_token *token, t_env *env);
 t_token	*trim_quote(t_token *token);
 t_token	*add_type(t_token *token);
 t_node	*exec_unit(t_token **token, t_env *envp);
-t_list	*tmp_files(void);
+t_list	*tmp_files(char *filename, int cmd);
 t_list	*add_files(t_list *head, char *filename);
-void	delete_files(void);
+void	delete_files(t_list *head);
 t_token	*reorder_token(t_token *token);
 
 // token utils
@@ -105,7 +105,6 @@ void	free_token_all(t_token *head);
 void	free_node_all(t_node *head);
 void	free_env_all(t_env *head);
 void	free_node_all(t_node *head);
-
 // execute
 void	ft_execute(t_node *node);
 void	do_execve(t_node *node);
@@ -123,5 +122,15 @@ char	**ft_split(char *s, char c);
 void	print_all_envp(t_env *envp, int has_prefix);
 void	child_sig_int(int signal);
 void	heredoc_sig_int(int signal);
+void	print_sorted_envp(t_env *envp);
+t_env	*update_env(t_env *envp, char *key, char *value);
+int		is_duplicate_envp(t_env *envp, char *key);
+int		find_sep(char *str, int sep);
+void	ft_buitlin(int single_cmd, t_node *node);
+int		is_builtin(t_node *node);
+int		is_single_cmd(t_node *node);
+void	close_pipe(t_node *node);
+char	**find_path(t_node *node);
+char	*find_cmd_path(char *cmd, char **paths);
 
 #endif
