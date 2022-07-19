@@ -9,7 +9,7 @@ t_token *ft_dellist(t_token *head, char *target)
     tmp = head;
     while (tmp)
     {
-        if (ft_strncmp(tmp->value, target, ft_strlen(target) + 1) == 0)
+        if (ft_strcmp(tmp->value, target) == 0)
         {
             if (tmp->prev == NULL)
             {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 13:25:07 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/19 17:13:00 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ void close_pipe(t_node *node)
 	{
 		if (tmp->type == PIPE)
 		{
-			if (tmp->prev->type == CMD)
+			if (tmp->prev && tmp->prev->type == CMD)
+			{
 				if (tmp->fd[OUT] > 2)
 					ft_close(tmp->fd[OUT]);
-			if (tmp->fd[IN] > 2)
-				ft_close(tmp->fd[IN]);
+				if (tmp->fd[IN] > 2)
+					ft_close(tmp->fd[IN]);
+			}
 		}
 		tmp = tmp->nxt;
 	}
@@ -113,7 +115,6 @@ void ft_execute(t_node *node)
 	pid_t pid;
 	int tmp;
 
-	// g_stat = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
 	else
@@ -130,14 +131,7 @@ void ft_execute(t_node *node)
 		while (wait(&tmp) != -1)
 			;
 		g_stat = WEXITSTATUS(tmp);
-		if (WIFEXITED(tmp))
-			;
-		else
-		{
-			if (WTERMSIG(tmp) == SIGINT)
-			{
-				g_stat = WTERMSIG(tmp) + 128;
-			}
-		}
+		if (WTERMSIG(tmp) == SIGINT)
+			g_stat = WTERMSIG(tmp) + 128;
 	}
 }

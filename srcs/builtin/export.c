@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/16 15:45:46 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/19 14:41:17 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,13 @@ void print_all_envp(t_env *envp, int has_prefix)
 {
     while (envp)
     {
-        if (ft_strlen(envp->key) == 1 && envp->key[0] == '_' && has_prefix)
-        {
+        if (has_prefix && !ft_strcmp("_", envp->key))
             envp = envp->nxt;
-            continue;
-        }
-        if (has_prefix)
+        else if (has_prefix && envp->value && *envp->value)
             printf("declare -x %s=\"%s\"\n", envp->key, envp->value);
-        else
+        else if (has_prefix)
+            printf("declare -x %s\n", envp->key);
+        else if (envp->value && *envp->value)
             printf("%s=%s\n", envp->key, envp->value);
         envp = envp->nxt;
     }
@@ -212,7 +211,7 @@ void update_envp(t_node *node)
             continue;
         }
         key = ft_substr(node->cmd[i], 0, sep);
-        if (is_invalid_key("export", key) || sep == ft_strlen(node->cmd[i]))
+        if (is_invalid_key("export", key))
             continue;
         value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
         node->envp = ft_set(node->envp, key, value);

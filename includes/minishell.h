@@ -108,7 +108,7 @@ t_env *update_env(t_env *envp, char *key, char *value);
 void ft_pwd(void);
 void ft_unset(t_node *node);
 char **ft_split(char *s, char c);
-
+void print_all_envp(t_env *envp, int has_prefix);
 void child_sig_int(int signal);
 void heredoc_sig_int(int signal);
 
