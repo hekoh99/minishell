@@ -1,0 +1,16 @@
+total 248
+drwxr-xr-x  15 hako  2021_seoul     510 Jul 19 15:47 .
+drwxr-xr-x  75 hako  2021_seoul    2618 Jul 19 15:47 ..
+drwxr-xr-x  15 hako  2021_seoul     510 Jul 19 14:08 .git
+drwxr-xr-x   3 hako  2021_seoul     102 Jul  7 13:15 .github
+-rw-r--r--   1 hako  2021_seoul     457 Jul 14 14:55 .gitignore
+drwxr-xr-x   3 hako  2021_seoul     102 Jul 14 14:55 .vscode
+-rw-r--r--   1 hako  2021_seoul    1713 Jul 19 13:28 Makefile
+-rw-r--r--   1 hako  2021_seoul      11 Jul  7 13:15 README.md
+drwxr-xr-x   4 hako  2021_seoul     136 Jul 19 13:11 includes
+drwxr-xr-x  38 hako  2021_seoul    1292 Jul  7 16:44 libft
+-rw-r--r--   1 hako  2021_seoul    6203 Jul 19 15:47 main.c
+-rwxr-xr-x   1 hako  2021_seoul  106096 Jul 19 15:47 minishell
+drwxr-xr-x   3 hako  2021_seoul     102 Jul 13 13:18 minishell.dSYM
+-rw-r--r--   1 hako  2021_seoul       0 Jul 19 15:47 outfile
+drwxr-xr-x   7 hako  2021_seoul     238 Jul 19 15:47 srcs

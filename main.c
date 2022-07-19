@@ -214,6 +214,7 @@ int main(int ac, char **av, char **env)
             token = add_type(token);
             token = expand(token, envp);
             token = trim_quote(token);
+            token = reorder_token(token);
             node = exec_unit(&token, envp);
             // check_redirection(node); // echo hello > tmp 1 echo ABC 잘 된다면 얘 삭제해도 됨
             // print_token(token, 1);

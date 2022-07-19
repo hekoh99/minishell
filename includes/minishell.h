@@ -85,6 +85,7 @@ t_node *exec_unit(t_token **token, t_env *envp);
 t_list *tmp_files();
 t_list *add_files(t_list *head, char *filename);
 void delete_files();
+t_token *reorder_token(t_token *token);
 
 // token utils
 t_token *ft_dellist(t_token *head, char *target);

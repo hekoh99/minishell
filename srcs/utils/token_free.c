@@ -17,6 +17,7 @@ t_token *ft_dellist(t_token *head, char *target)
                 free(tmp->value);
                 free(tmp);
                 tmp = head;
+                tmp->prev = NULL;
             }
             else if (tmp->nxt == NULL)
             {
