@@ -505,7 +505,9 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
             free(str);
             break;
         }
+        tmp = str;
         str = ft_strjoin(str, "\n");
+        free(tmp);
         tmp = here_str;
         here_str = ft_strjoin(tmp, str);
         free(tmp);
