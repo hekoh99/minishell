@@ -31,10 +31,14 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(BUILTIN)/env.c \
 	$(BUILTIN)/exit.c \
 	$(BUILTIN)/export.c \
+	$(BUILTIN)/export_util.c \
+	$(BUILTIN)/export_util2.c \
 	$(BUILTIN)/pwd.c \
 	$(BUILTIN)/unset.c \
 	$(EXECUTE)/execute.c \
+	$(EXECUTE)/execute_util.c \
 	$(EXECUTE)/execve.c \
+	$(EXECUTE)/execve_util.c \
 	srcs/token.c \
 	srcs/signal.c \
 
