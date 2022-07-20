@@ -66,7 +66,7 @@ $(NAME)	:$(OBJS)
 	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)	:$(OBJS)
-	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
+	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
