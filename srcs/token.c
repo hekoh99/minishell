@@ -179,7 +179,7 @@ t_token *join_list_center(t_token *pos, int sep_size, int *index, int size)
     pos->nxt = seperated;
     seperated->prev = pos;
     pos = pos->nxt; // 구분자 블록
-    
+
     seperated = malloc(sizeof(t_token));
     seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
     seperated->nxt = pos->nxt;
@@ -465,7 +465,7 @@ t_token *trim_quote(t_token *token)
     return (token);
 }
 
-t_node *new_node(int type, int size, t_env* envp)
+t_node *new_node(int type, int size, t_env *envp)
 {
     t_node *new;
 
