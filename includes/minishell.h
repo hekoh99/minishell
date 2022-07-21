@@ -130,6 +130,7 @@ void	ft_buitlin(int single_cmd, t_node *node);
 int		is_builtin(t_node *node);
 int		is_single_cmd(t_node *node);
 void	close_pipe(t_node *node);
+void  clean_fd(void);
 char	**find_path(t_node *node);
 char	*find_cmd_path(char *cmd, char **paths);
 

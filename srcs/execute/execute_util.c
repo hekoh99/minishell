@@ -67,3 +67,12 @@ void	close_pipe(t_node *node)
 		tmp = tmp->nxt;
 	}
 }
+
+void clean_fd(void)
+{
+  int i;
+
+  i = 3;
+  while (i < OPEN_MAX)
+    close(i++);
+}

@@ -26,7 +26,7 @@ void	ft_command(t_node *node)
 		g_stat = 0;
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
-		close_pipe(node);
+    clean_fd();
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
