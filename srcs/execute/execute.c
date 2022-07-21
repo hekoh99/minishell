@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/21 13:50:31 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 14:09:16 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	ft_command(t_node *node)
 	else if (pid == 0)
 	{
 		g_stat = 0;
-		ft_dup2(node->fd[IN], 0);
-		ft_dup2(node->fd[OUT], 1);
+		dup2(node->fd[IN], 0);
+		dup2(node->fd[OUT], 1);
 		clean_fd();
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
@@ -36,9 +36,9 @@ void	ft_command(t_node *node)
 	else
 	{
 		if (node->fd[IN] != 0)
-			ft_close(node->fd[IN]);
+			close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
-			ft_close(node->fd[OUT]);
+			close(node->fd[OUT]);
 	}
 }
 
