@@ -41,6 +41,11 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(EXECUTE)/execve_util.c \
 	srcs/token.c \
 	srcs/signal.c \
+	srcs/heredoc_tmp_files.c \
+	srcs/parse_error.c \
+	srcs/trim.c \
+	srcs/split_by_sep.c \
+	srcs/parse_check.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 

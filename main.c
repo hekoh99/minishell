@@ -14,30 +14,30 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 
-int	g_stat;
+int g_stat;
 
-void	sig_int(int signal)
+void sig_int(int signal)
 {
 	if (signal != SIGINT)
-		return ;
+		return;
 	g_stat = ETC;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
-	rl_on_new_line();	// 개행이 나온 후 수행되어야함
+	rl_on_new_line();		// 개행이 나온 후 수행되어야함
 	rl_replace_line("", 1); // 버퍼 비우고
-	// rl_redisplay();         // prompt
+							// rl_redisplay();         // prompt
 }
 
 void heredoc_sig_int(int signal)
 {
-    if (signal != SIGINT)
-        return;
-    ioctl(STDIN_FILENO, TIOCSTI, "\n");
-    rl_on_new_line();       // 개행이 나온 후 수행되어야함
-    rl_replace_line("", 1); // 버퍼 비우고
-    g_stat = ETC;
+	if (signal != SIGINT)
+		return;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_on_new_line();		// 개행이 나온 후 수행되어야함
+	rl_replace_line("", 1); // 버퍼 비우고
+	g_stat = ETC;
 }
 
-t_env	*init_env(char **env)
+t_env *init_env(char **env)
 {
 	int i = 0;
 	t_env *lst;
@@ -204,7 +204,7 @@ int main(int ac, char **av, char **env)
 		str = readline("minishell$ ");
 		if (!str)
 		{
-			printf("\033[1A");  // 커서를 위로 하나 올리기
+			printf("\033[1A");	// 커서를 위로 하나 올리기
 			printf("\033[11C"); // 10만큼 앞으로
 			printf("exit\n");
 			free_env_all(envp);
@@ -226,7 +226,6 @@ int main(int ac, char **av, char **env)
 			token = trim_quote(token);
 			token = reorder_token(token);
 			node = exec_unit(&token, envp);
-			// check_redirection(node); // echo hello > tmp 1 echo ABC 잘 된다면 얘 삭제해도 됨
 			// print_token(token, 1);
 			// print_node(node);
 			// print_heredoc(node);
