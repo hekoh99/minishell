@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:10:48 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 13:50:31 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_command(t_node *node)
 		g_stat = 0;
 		ft_dup2(node->fd[IN], 0);
 		ft_dup2(node->fd[OUT], 1);
-    clean_fd();
+		clean_fd();
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
@@ -54,10 +54,17 @@ void	ft_redirection(t_node *node)
 	}
 }
 
+void	make_status(int child)
+{
+	g_stat = WEXITSTATUS(child);
+	if (WTERMSIG(child) == SIGINT)
+		g_stat = WTERMSIG(child) + 128;
+}
+
 void	ft_execute(t_node *node)
 {
 	pid_t	pid;
-	int		tmp;
+	int		child;
 
 	if (is_single_cmd(node) && is_builtin(node))
 		ft_buitlin(SINGLE_CMD, node);
@@ -68,14 +75,10 @@ void	ft_execute(t_node *node)
 			signal(SIGINT, child_sig_int);
 			if (node->type == CMD)
 				ft_command(node);
-			// else if (node->type == TRUNC || node->type == APPEND)
-			// 	ft_redirection(node);
 			node = node->nxt;
 		}
-		while (wait(&tmp) != -1)
+		while (wait(&child) != -1)
 			;
-		g_stat = WEXITSTATUS(tmp);
-		if (WTERMSIG(tmp) == SIGINT)
-			g_stat = WTERMSIG(tmp) + 128;
+		make_status(child);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:35:12 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 13:48:43 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	do_execve(t_node *node)
 {
 	t_exec_arg	arg;
 
+	if (!node->cmd || !node->cmd[0])
+		return ;
 	init_arg(node, &arg);
 	ft_execve(arg.file, arg.argv, arg.envp);
 	free_matrix(arg.envp);

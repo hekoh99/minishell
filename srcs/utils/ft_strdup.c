@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/14 23:12:13 by hako              #+#    #+#             */
-/*   Updated: 2022/07/19 18:40:45 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 13:33:43 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_strdup(const char *src)
 	dest = (char *)malloc(ft_strlen(src) * sizeof(char) + 1);
 	if (!dest)
 		return (0);
-	while (src[index])
+	while (src && src[index])
 	{
 		dest[index] = src[index];
 		index++;
