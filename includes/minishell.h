@@ -105,6 +105,7 @@ void free_node_all(t_node *head);
 void free_env_all(t_env *head);
 void free_node_all(t_node *head);
 void check_quote(char target, int *sq, int *dq);
+int check_duple_sep(char *token, int pos);
 char *inside_quote(char *value, int start, int *mid);
 
 // execute

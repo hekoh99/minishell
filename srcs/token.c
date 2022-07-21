@@ -9,22 +9,9 @@
 /*   Updated: 2022/07/21 14:15:32 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../includes/minishell.h"
 
 extern int g_stat;
-
-void check_quote(char target, int *sq, int *dq)
-{
-    if (target == '\'' && *sq == 0 && *dq == 0)
-        *sq = 1;
-    else if (target == '\"' && *sq == 0 && *dq == 0)
-        *dq = 1;
-    else if (target == '\'' && *sq == 1)
-        *sq = 0;
-    else if (target == '\"' && *dq == 1)
-        *dq = 0;
-}
 
 t_token *add_token(t_token *head, char *value)
 {
@@ -50,134 +37,6 @@ t_token *add_token(t_token *head, char *value)
         new->prev = tmp;
     }
     return (head);
-}
-
-int check_duple_sep(char *token, int pos)
-{
-    int size;
-    char *redir = "><";
-
-    size = 1;
-    if (token[pos] == token[pos + 1])
-    {
-        if (ft_strchr(redir, token[pos]) != 0) // >> 이나 <<
-            size = 2;
-        else
-        {
-            printf("minishell: syntax error near unexpected token '%c%c'\n", token[pos], token[pos]);
-            g_stat = SYNTAX;
-            size = 0;
-        }
-    }
-    return (size);
-}
-
-t_token *join_list_center(t_token *pos, int sep_size, int *index, int size)
-{
-    t_token *seperated;
-
-    seperated = malloc(sizeof(t_token) * sep_size);
-    seperated->value = ft_substr(pos->value, *index, sep_size);
-
-    seperated->nxt = pos->nxt;
-    pos->nxt->prev = seperated;
-    pos->nxt = seperated;
-    seperated->prev = pos;
-    pos = pos->nxt; // 구분자 블록
-
-    seperated = malloc(sizeof(t_token));
-    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-    seperated->nxt = pos->nxt;
-    pos->nxt->prev = seperated;
-    pos->nxt = seperated;
-    seperated->prev = pos;
-
-    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-    if (sep_size == 2)
-        (*index)++;
-    return (pos);
-}
-
-t_token *join_list_back(t_token *pos, int sep_size, int *index, int size)
-{
-    t_token *seperated;
-
-    seperated = malloc(sizeof(t_token) * sep_size);
-    seperated->value = ft_substr(pos->value, *index, sep_size);
-
-    pos->nxt = seperated;
-    seperated->prev = pos;
-    seperated->nxt = NULL;
-    pos = pos->nxt;
-    seperated = malloc(sizeof(t_token));
-    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-    pos->nxt = seperated;
-    seperated->prev = pos;
-    seperated->nxt = NULL;
-
-    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-    if (sep_size == 2)
-        (*index)++;
-    return (pos);
-}
-
-t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size)
-{
-    if (pos->nxt != NULL)
-    {
-        pos = join_list_center(pos, sep_size, index, size);
-    }
-    else
-    {
-        pos = join_list_back(pos, sep_size, index, size);
-    }
-    return (pos);
-}
-
-t_token *split_target_token(t_token *token, t_token *tmp, int *squote, int *dquote)
-{
-    int i;
-    char *sep = ";|><";
-    int sep_size;
-    int size;
-
-    i = 0;
-    size = ft_strlen(tmp->value);
-    while (tmp->value[i] != '\0')
-    {
-        check_quote(tmp->value[i], squote, dquote);
-        if (ft_strchr(sep, tmp->value[i]) != 0 && *squote == 0 && *dquote == 0)
-        {
-            sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
-            if (sep_size == 0)
-            {
-                free_token_all(token);
-                return (NULL);
-            }
-            tmp = do_split_by_seps(tmp, sep_size, &i, size);
-        }
-        i++;
-    }
-    return (tmp);
-}
-
-t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
-{
-    int i;
-    t_token *tmp;
-    int squote = 0;
-    int dquote = 0;
-
-    tmp = token;
-    while (tmp)
-    {
-        tmp = split_target_token(token, tmp, &squote, &dquote);
-        if (!tmp)
-            return (NULL);
-        tmp = tmp->nxt;
-    }
-    token = ft_dellist(token, "");
-    return (token);
 }
 
 char *search_env(t_env *env, char *target)

@@ -44,6 +44,8 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	srcs/heredoc_tmp_files.c \
 	srcs/parse_error.c \
 	srcs/trim.c \
+	srcs/split_by_sep.c \
+	srcs/parse_check.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
@@ -73,7 +75,7 @@ READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -fsanitize=address -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)	:$(OBJS)
 	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
