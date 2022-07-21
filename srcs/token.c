@@ -319,6 +319,7 @@ void set_expanded_value(t_token *token, char *replaced, int start, int *index)
         free(token->value);
         token->value = NULL;
     }
+    (*index) = (*index) - ((*index) - start + 1);
 }
 
 t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은 무시
@@ -464,22 +465,29 @@ t_token *trim_quote(t_token *token)
     return (token);
 }
 
-t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
+t_node *new_node(int type, int size, t_env* envp)
 {
-    int i = 0;
-    int j = 0;
     t_node *new;
-    t_node *tmp;
 
     new = (t_node *)malloc(sizeof(t_node));
-    new->type = target->type;
-    new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
-    new->cmd[iter] = NULL;
+    new->type = type;
+    new->cmd = (char **)malloc(sizeof(char *) * (size + 1));
+    new->cmd[size] = NULL;
     new->nxt = NULL;
     new->prev = NULL;
     new->fd[IN] = 0;
     new->fd[OUT] = 1;
     new->envp = envp;
+    return (new);
+}
+
+t_node *add_cmd_arr(t_node *new, t_token *target, int iter)
+{
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
     while (i < iter)
     {
         if (target->value != NULL)
@@ -491,6 +499,16 @@ t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
         i++;
     }
     new->cmd[j] = NULL;
+    return (new);
+}
+
+t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
+{
+    t_node *new;
+    t_node *tmp;
+
+    new = new_node(target->type, iter, envp);
+    new = add_cmd_arr(new, target, iter);
     if (head == NULL)
         head = new;
     else
