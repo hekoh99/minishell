@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:10:11 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:11:38 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 13:35:13 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,13 @@ void	close_pipe(t_node *node)
 		}
 		tmp = tmp->nxt;
 	}
+}
+
+void	clean_fd(void)
+{
+	int	i;
+
+	i = 3;
+	while (i < OPEN_MAX)
+		close(i++);
 }
