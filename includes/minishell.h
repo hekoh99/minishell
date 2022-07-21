@@ -92,12 +92,11 @@ t_token *trim_space(char *line);
 t_token *split_by_sep(t_token *token);
 t_token *expand(t_token *token, t_env *env);
 t_token *trim_quote(t_token *token);
+void do_trim_quote(t_token *tmp);
 t_token *add_type(t_token *token);
 t_node *exec_unit(t_token **token, t_env *envp);
-t_list *tmp_files(char *filename, int cmd);
-t_list *add_files(t_list *head, char *filename);
-void delete_files(t_list *head);
 t_token *reorder_token(t_token *token);
+t_token *add_token(t_token *head, char *value);
 
 // token utils
 t_token *ft_dellist(t_token *head, char *target);
@@ -105,6 +104,9 @@ void free_token_all(t_token *head);
 void free_node_all(t_node *head);
 void free_env_all(t_env *head);
 void free_node_all(t_node *head);
+void check_quote(char target, int *sq, int *dq);
+char *inside_quote(char *value, int start, int *mid);
+
 // execute
 void ft_execute(t_node *node);
 void do_execve(t_node *node);

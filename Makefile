@@ -43,6 +43,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	srcs/signal.c \
 	srcs/heredoc_tmp_files.c \
 	srcs/parse_error.c \
+	srcs/trim.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
