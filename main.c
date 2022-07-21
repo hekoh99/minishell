@@ -27,6 +27,16 @@ void	sig_int(int signal)
 	// rl_redisplay();         // prompt
 }
 
+void heredoc_sig_int(int signal)
+{
+    if (signal != SIGINT)
+        return;
+    ioctl(STDIN_FILENO, TIOCSTI, "\n");
+    rl_on_new_line();       // 개행이 나온 후 수행되어야함
+    rl_replace_line("", 1); // 버퍼 비우고
+    g_stat = ETC;
+}
+
 t_env	*init_env(char **env)
 {
 	int i = 0;
