@@ -14,59 +14,6 @@
 
 extern int g_stat;
 
-t_list *tmp_files(char *filename, int cmd)
-{
-    static t_list *head;
-
-    if (cmd == GET)
-        return (head);
-    else if (cmd == ADD)
-        head = add_files(head, filename);
-    else if (cmd == DEL)
-    {
-        delete_files(head);
-        head = NULL;
-        return head;
-    }
-    return (head);
-}
-
-t_list *add_files(t_list *head, char *filename)
-{
-    t_list *newfile;
-    t_list *tmp;
-
-    newfile = (t_list *)malloc(sizeof(t_list));
-    newfile->value = filename;
-    newfile->nxt = NULL;
-    if (head == NULL)
-        head = newfile;
-    else
-    {
-        tmp = head;
-        while (tmp && tmp->nxt)
-            tmp = tmp->nxt;
-        tmp->nxt = newfile;
-    }
-    return (head);
-}
-
-void delete_files(t_list *head)
-{
-    t_list *target;
-    t_list *tmp;
-
-    tmp = head;
-    while (tmp)
-    {
-        target = tmp;
-        unlink(target->value);
-        free(target->value);
-        tmp = tmp->nxt;
-        free(target);
-    }
-}
-
 void check_quote(char target, int *sq, int *dq)
 {
     if (target == '\'' && *sq == 0 && *dq == 0)
@@ -103,14 +50,6 @@ t_token *add_token(t_token *head, char *value)
         new->prev = tmp;
     }
     return (head);
-}
-
-t_token *open_quote_err(t_token *head)
-{
-    printf("minishell: open quotation syntax error\n");
-    g_stat = SYNTAX;
-    free_token_all(head);
-    return (NULL);
 }
 
 t_token *trim_space(char *line)
@@ -606,9 +545,23 @@ t_node *get_fd(t_node *node)
         else if (tmp->type == TRUNC || tmp->type == APPEND) // >, >> node의 int에 파일 fd set
         {
             if (tmp->type == APPEND)
+            {
                 tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+                if (tmp->fd[OUT] == -1)
+                {
+                    free_node_all(node);
+                    return (0);
+                }
+            }
             else if (tmp->type == TRUNC)
+            {
                 tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+                if (tmp->fd[OUT] == -1)
+                {
+                    free_node_all(node);
+                    return (0);
+                }
+            }
         }
         else if (tmp->type == PIPE)
         {
@@ -645,7 +598,6 @@ t_node *get_fd(t_node *node)
             if (tmp->nxt && tmp->nxt->type == PIPE)
             {
                 ft_close(tmp->nxt->fd[OUT]);
-                // printf("-->> %d\n", tmp->nxt->fd[OUT]);
             }
             if (cmd)
             {
@@ -665,15 +617,6 @@ t_node *get_fd(t_node *node)
         tmp = tmp->nxt;
     }
     return (node);
-}
-
-t_node *print_syntax_error(t_token **token, const char *msg)
-{
-    printf("%s", msg);
-    g_stat = SYNTAX;
-    free_token_all(*token);
-    *token = NULL;
-    return (NULL);
 }
 
 void connect_cmd(t_token **head, t_token *cmd, t_token *arg_start, t_token *redir)
@@ -743,38 +686,12 @@ t_token *reorder_token(t_token *token)
     return (token);
 }
 
-t_node *error_handler(t_node *head, t_token **token, t_token **tmp)
-{
-    if ((*tmp)->type == PIPE)
-    {
-        if (!(*tmp)->prev || (*tmp)->prev->type != CMD)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `|'\n"));
-        if (!(*tmp)->nxt || (*tmp)->nxt->type == PIPE)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `|'\n"));
-    }
-    else if ((*tmp)->type == END)
-    {
-        if (!(*tmp)->prev || (*tmp)->prev->type != CMD)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `;'\n"));
-        if ((*tmp)->nxt && (*tmp)->nxt->type == END)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `;'\n"));
-    }
-    else if ((*tmp)->type == TRUNC || (*tmp)->type == APPEND || (*tmp)->type == INPUT || (*tmp)->type == HEREDOC)
-    {
-        if (!(*tmp)->nxt)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `newline'\n"));
-        if ((*tmp)->nxt->type > 1)
-            return (print_syntax_error(token, "minishell: syntax error near unexpected token `newline'\n"));
-    }
-    return (head);
-}
-
 t_node *add_node_by_type(t_node *head, t_token **token, t_token **tmp, t_env *envp)
 {
     t_token *start;
 
     start = *tmp;
-    if (head)
+    if (*token)
     {
         head = error_handler(head, token, tmp);
         if (!head)
