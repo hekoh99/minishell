@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/20 16:28:58 by hako              #+#    #+#             */
+/*   Updated: 2022/07/20 16:29:03 by hako             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 extern int g_stat;
@@ -9,10 +21,7 @@ t_list *tmp_files(char *filename, int cmd)
     if (cmd == GET)
         return (head);
     else if (cmd == ADD)
-    {
-        // printf("---> %s\n", filename);
         head = add_files(head, filename);
-    }
     else if (cmd == DEL)
     {
         delete_files(head);
@@ -93,19 +102,29 @@ t_token *add_token(t_token *head, char *value)
         tmp->nxt = new;
         new->prev = tmp;
     }
-
     return (head);
+}
+
+t_token *open_quote_err(t_token *head)
+{
+    printf("minishell: open quotation syntax error\n");
+    g_stat = SYNTAX;
+    free_token_all(head);
+    return (NULL);
 }
 
 t_token *trim_space(char *line)
 {
     t_token *head;
-    int squote = 0;
-    int dquote = 0;
+    int squote;
+    int dquote;
     int start;
-    int i = 0;
+    int i;
 
     start = 0;
+    i = 0;
+    dquote = 0;
+    squote = 0;
     head = NULL;
     while ((line[i] != '\0' || i - start > 0))
     {
@@ -124,12 +143,7 @@ t_token *trim_space(char *line)
             break;
     }
     if (squote == 1 || dquote == 1)
-    {
-        printf("minishell: open quotation syntax error\n");
-        g_stat = SYNTAX;
-        free_token_all(head);
-        head = NULL;
-    }
+        return (open_quote_err(head));
     return (head);
 }
 
@@ -153,82 +167,108 @@ int check_duple_sep(char *token, int pos)
     return (size);
 }
 
-t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size) // tmp, sep_size, i, strlen
+t_token *join_list_center(t_token *pos, int sep_size, int *index, int size)
 {
     t_token *seperated;
 
     seperated = malloc(sizeof(t_token) * sep_size);
     seperated->value = ft_substr(pos->value, *index, sep_size);
 
+    seperated->nxt = pos->nxt;
+    pos->nxt->prev = seperated;
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    pos = pos->nxt; // 구분자 블록
+    
+    seperated = malloc(sizeof(t_token));
+    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    seperated->nxt = pos->nxt;
+    pos->nxt->prev = seperated;
+    pos->nxt = seperated;
+    seperated->prev = pos;
+
+    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+    if (sep_size == 2)
+        (*index)++;
+    return (pos);
+}
+
+t_token *join_list_back(t_token *pos, int sep_size, int *index, int size)
+{
+    t_token *seperated;
+
+    seperated = malloc(sizeof(t_token) * sep_size);
+    seperated->value = ft_substr(pos->value, *index, sep_size);
+
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    seperated->nxt = NULL;
+    pos = pos->nxt;
+    seperated = malloc(sizeof(t_token));
+    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    pos->nxt = seperated;
+    seperated->prev = pos;
+    seperated->nxt = NULL;
+
+    pos->prev->value = ft_substr(pos->prev->value, 0, *index);
+    if (sep_size == 2)
+        (*index)++;
+    return (pos);
+}
+
+t_token *do_split_by_seps(t_token *pos, int sep_size, int *index, int size)
+{
     if (pos->nxt != NULL)
     {
-        // 첫번째 구분자 복사 후 리스트 병합
-        seperated->nxt = pos->nxt;
-        pos->nxt->prev = seperated;
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        pos = pos->nxt; // 구분자 블록
-        // 구분자 후단
-        seperated = malloc(sizeof(t_token));
-        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-        seperated->nxt = pos->nxt;
-        pos->nxt->prev = seperated;
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        // 구분자 전단
-        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-        if (sep_size == 2)
-            (*index)++;
+        pos = join_list_center(pos, sep_size, index, size);
     }
     else
     {
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        seperated->nxt = NULL;
-        pos = pos->nxt;
-        seperated = malloc(sizeof(t_token));
-        seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-        pos->nxt = seperated;
-        seperated->prev = pos;
-        seperated->nxt = NULL;
-        // 구분자 전단
-        pos->prev->value = ft_substr(pos->prev->value, 0, *index);
-        if (sep_size == 2)
-            (*index)++;
+        pos = join_list_back(pos, sep_size, index, size);
     }
     return (pos);
+}
+
+t_token *split_target_token(t_token *token, t_token *tmp, int *squote, int *dquote)
+{
+    int i;
+    char *sep = ";|><";
+    int sep_size;
+    int size;
+
+    i = 0;
+    size = ft_strlen(tmp->value);
+    while (tmp->value[i] != '\0')
+    {
+        check_quote(tmp->value[i], squote, dquote);
+        if (ft_strchr(sep, tmp->value[i]) != 0 && *squote == 0 && *dquote == 0)
+        {
+            sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
+            if (sep_size == 0)
+            {
+                free_token_all(token);
+                return (NULL);
+            }
+            tmp = do_split_by_seps(tmp, sep_size, &i, size);
+        }
+        i++;
+    }
+    return (tmp);
 }
 
 t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
 {
     int i;
     t_token *tmp;
-    int size;
-    char *sep = ";|><";
     int squote = 0;
     int dquote = 0;
-    int sep_size;
 
     tmp = token;
     while (tmp)
     {
-        i = 0;
-        size = ft_strlen(tmp->value);
-        while (tmp->value[i] != '\0')
-        {
-            check_quote(tmp->value[i], &squote, &dquote);
-            if (ft_strchr(sep, tmp->value[i]) != 0 && squote == 0 && dquote == 0)
-            {
-                sep_size = check_duple_sep(tmp->value, i); // 0 이면 ||, ;; -> error
-                if (sep_size == 0)
-                {
-                    free_token_all(token);
-                    return (NULL);
-                }
-                tmp = do_split_by_seps(tmp, sep_size, &i, size);
-            }
-            i++;
-        }
+        tmp = split_target_token(token, tmp, &squote, &dquote);
+        if (!tmp)
+            return (NULL);
         tmp = tmp->nxt;
     }
     token = ft_dellist(token, "");
@@ -264,31 +304,22 @@ void set_expanded_value(t_token *token, char *replaced, int start, int *index)
         replaced = ft_strdup(ft_itoa(g_stat));
         (*index) = start + 1;
     }
-    if (replaced != NULL)
+    if (!replaced)
+        replaced = ft_strdup("");
+    head = ft_substr(token->value, 0, start - 1);
+    tail = ft_substr(token->value, *index, ft_strlen(token->value));
+    free(token->value);
+    token->value = ft_strjoin(head, replaced);
+    token->value = ft_strjoin(token->value, tail);
+    free(replaced);
+    free(head);
+    free(tail);
+    if (ft_strlen(token->value) == 0) // 환경변수가 없으며 출력할 문자도 없을 때
     {
-        head = ft_substr(token->value, 0, start - 1);
-        tail = ft_substr(token->value, *index, ft_strlen(token->value));
         free(token->value);
-        token->value = ft_strjoin(head, replaced);
-        token->value = ft_strjoin(token->value, tail);
-        free(replaced);
-        free(head);
-        free(tail);
+        token->value = NULL;
     }
-    else // NULL 일 때 - 못 찾았을 때
-    {
-        head = ft_substr(token->value, 0, start - 1);
-        tail = ft_substr(token->value, *index, ft_strlen(token->value));
-        free(token->value);
-        token->value = ft_strjoin(head, tail);
-        free(head);
-        free(tail);
-        if (ft_strlen(token->value) == 0) // 환경변수가 없으며 출력할 문자도 없을 때
-        {
-            free(token->value);
-            token->value = NULL;
-        }
-    }
+    (*index) = (*index) - ((*index) - start + 1);
 }
 
 t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은 무시
@@ -393,8 +424,6 @@ t_token *trim_quote(t_token *token)
 {
     t_token *tmp;
     int i;
-    char *head;
-    char *tail;
     char *str;
     int squote;
     int dquote;
@@ -436,22 +465,29 @@ t_token *trim_quote(t_token *token)
     return (token);
 }
 
-t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
+t_node *new_node(int type, int size, t_env* envp)
 {
-    int i = 0;
-    int j = 0;
     t_node *new;
-    t_node *tmp;
 
     new = (t_node *)malloc(sizeof(t_node));
-    new->type = target->type;
-    new->cmd = (char **)malloc(sizeof(char *) * (iter + 1));
-    new->cmd[iter] = NULL;
+    new->type = type;
+    new->cmd = (char **)malloc(sizeof(char *) * (size + 1));
+    new->cmd[size] = NULL;
     new->nxt = NULL;
     new->prev = NULL;
     new->fd[IN] = 0;
     new->fd[OUT] = 1;
     new->envp = envp;
+    return (new);
+}
+
+t_node *add_cmd_arr(t_node *new, t_token *target, int iter)
+{
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
     while (i < iter)
     {
         if (target->value != NULL)
@@ -463,6 +499,16 @@ t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
         i++;
     }
     new->cmd[j] = NULL;
+    return (new);
+}
+
+t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
+{
+    t_node *new;
+    t_node *tmp;
+
+    new = new_node(target->type, iter, envp);
+    new = add_cmd_arr(new, target, iter);
     if (head == NULL)
         head = new;
     else
@@ -476,7 +522,7 @@ t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
     return (head);
 }
 
-int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
+int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아님..
 {
     int fd;
     char *here_str = ft_strdup("");
@@ -518,10 +564,7 @@ int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완
     write(fd, here_str, ft_strlen(here_str));
     close(fd);
     fd = open(file, O_RDONLY, 0666);
-    tmp_files(file, ADD); // need to delete
-    /* // test code
-    printf("--- heredoc  \n%s", here_str);
-    // */
+    tmp_files(file, ADD);
     free(here_str);
     return (fd);
 }
@@ -544,7 +587,6 @@ int set_input_fd(t_node *head, t_node *file_node, t_node *target)
     return (1);
 }
 
-// get_fd 최신
 t_node *get_fd(t_node *node)
 {
     t_node *tmp;
@@ -622,13 +664,58 @@ t_node *get_fd(t_node *node)
         tmp = tmp->nxt;
     }
     return (node);
-} // */
+}
+
+t_node *print_syntax_error(t_token **token, const char *msg)
+{
+    printf("%s", msg);
+    g_stat = SYNTAX;
+    free_token_all(*token);
+    *token = NULL;
+    return (NULL);
+}
+
+void connect_cmd(t_token **head, t_token *cmd, t_token *arg_start, t_token *redir)
+{
+    if (cmd)
+    {
+        cmd->nxt = arg_start;
+        arg_start->prev = cmd;
+    }
+    else // cmd가 null 일때
+    {
+        if (!redir->prev)
+            *head = arg_start;
+        else
+            redir->prev->nxt = arg_start;
+    }
+}
+
+t_token *do_reorder_token(t_token **head, t_token *file, t_token *redir, t_token *cmd)
+{
+    t_token *arg_start;
+    t_token *arg_end;
+    t_token *tmp;
+
+    arg_start = file->nxt;
+    tmp = arg_start;
+    while (tmp && tmp->type == CMD)
+    {
+        arg_end = tmp;
+        tmp = tmp->nxt;
+    }
+    file->nxt = tmp; // redir의 뒷단을 tmp에 연결
+    if (tmp)
+        tmp->prev = file;
+    connect_cmd(head, cmd, arg_start, redir);
+    arg_end->nxt = redir;
+    redir->prev = arg_end;
+    return (arg_end);
+}
 
 t_token *reorder_token(t_token *token)
 {
     t_token *tmp;
-    t_token *arg_start;
-    t_token *arg_end;
     t_token *cmd;
     t_token *redir;
     t_token *file;
@@ -646,141 +733,105 @@ t_token *reorder_token(t_token *token)
             redir = tmp;
             file = tmp->nxt;
             if (!file)
-            {
-                printf("minishell: syntax error near unexpected token `newline'\n");
-                g_stat = SYNTAX;
-                free_token_all(token);
-                return (0);
-            }
+                print_syntax_error(&token, "minishell: syntax error near unexpected token `newline'\n");
             if (file && file->nxt && file->nxt->type == CMD) // redir 뒷 단이 cmd면
-            {
-                arg_start = file->nxt;
-                tmp = arg_start;
-                while (tmp && tmp->type == CMD)
-                {
-                    arg_end = tmp;
-                    tmp = tmp->nxt;
-                }
-                if (cmd)
-                {
-                    file->nxt = tmp; // redir의 뒷단을 tmp에 연결
-                    if (tmp)
-                        tmp->prev = file;
-                    arg_end->nxt = redir;
-                    redir->prev = arg_end;
-                    cmd->nxt = arg_start;
-                    arg_start->prev = cmd;
-                }
-                else // cmd가 null 일때
-                {
-                    file->nxt = tmp;
-                    if (tmp)
-                        tmp->prev = file;
-                    if (!redir->prev)
-                        token = arg_start;
-                    else
-                        redir->prev->nxt = arg_start;
-                    arg_end->nxt = redir;
-                    redir->prev = arg_end;
-                }
-                tmp = arg_end;
-            }
+                tmp = do_reorder_token(&token, file, redir, cmd);
         }
         tmp = tmp->nxt;
     }
     return (token);
 }
 
+t_node *error_handler(t_node *head, t_token **token, t_token **tmp)
+{
+    if ((*tmp)->type == PIPE)
+    {
+        if (!(*tmp)->prev || (*tmp)->prev->type != CMD)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `|'\n"));
+        if (!(*tmp)->nxt || (*tmp)->nxt->type == PIPE)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `|'\n"));
+    }
+    else if ((*tmp)->type == END)
+    {
+        if (!(*tmp)->prev || (*tmp)->prev->type != CMD)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `;'\n"));
+        if ((*tmp)->nxt && (*tmp)->nxt->type == END)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `;'\n"));
+    }
+    else if ((*tmp)->type == TRUNC || (*tmp)->type == APPEND || (*tmp)->type == INPUT || (*tmp)->type == HEREDOC)
+    {
+        if (!(*tmp)->nxt)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `newline'\n"));
+        if ((*tmp)->nxt->type > 1)
+            return (print_syntax_error(token, "minishell: syntax error near unexpected token `newline'\n"));
+    }
+    return (head);
+}
+
+t_node *add_node_by_type(t_node *head, t_token **token, t_token **tmp, t_env *envp)
+{
+    t_token *start;
+
+    start = *tmp;
+    if (head)
+    {
+        head = error_handler(head, token, tmp);
+        if (!head)
+        {
+            free_node_all(head);
+            return (NULL);
+        }
+    }
+    if ((*tmp)->type == PIPE)
+        head = add_node(head, start, 1, envp);
+    else if ((*tmp)->type == END)
+        head = add_node(head, start, 1, envp);
+    else if ((*tmp)->type == TRUNC || (*tmp)->type == APPEND || (*tmp)->type == INPUT || (*tmp)->type == HEREDOC)
+    {
+        head = add_node(head, start, 2, envp);
+        (*tmp) = (*tmp)->nxt;
+    }
+    (*tmp) = (*tmp)->nxt;
+    return (head);
+}
+
+t_node *get_exec_unit(t_node *head, t_token **token, t_token **tmp, t_env *envp)
+{
+    int i;
+    t_token *start;
+
+    i = 0;
+    start = *tmp;
+    if ((*tmp)->type == CMD)
+    {
+        while ((*tmp) && (*tmp)->type == CMD)
+        {
+            (*tmp) = (*tmp)->nxt;
+            i++;
+        }
+        head = add_node(head, start, i, envp);
+    }
+    else
+    {
+        head = add_node_by_type(head, token, tmp, envp);
+        if (!head)
+            return (NULL);
+    }
+    return (head);
+}
+
 t_node *exec_unit(t_token **token, t_env *envp)
 {
     t_node *head;
-    t_token *token_head;
     t_token *tmp;
-    t_token *start;
-    int i = 0;
 
     head = NULL;
     tmp = *token;
-    token_head = *token;
     while (tmp)
     {
-        i = 0;
-        start = tmp;
-        if (tmp->type == CMD)
-        {
-            while (tmp && tmp->type == CMD)
-            {
-                tmp = tmp->nxt;
-                i++;
-            }
-            head = add_node(head, start, i, envp);
-        }
-        else if (tmp->type == PIPE)
-        {
-            if (!tmp->prev || tmp->prev->type != CMD)
-            {
-                printf("minishell: syntax error near unexpected token `|'\n");
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            if (!tmp->nxt || tmp->nxt->type == PIPE)
-            {
-                printf("minishell: syntax error near unexpected token `|'\n");
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            head = add_node(head, start, 1, envp);
-            tmp = tmp->nxt;
-        }
-        else if (tmp->type == END)
-        {
-            if (!tmp->prev || tmp->prev->type != CMD)
-            {
-                printf("minishell: syntax error near unexpected token `;'\n");
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            if (tmp->nxt && tmp->nxt->type == END)
-            {
-                printf("minishell: syntax error near unexpected token `;'\n");
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            head = add_node(head, start, 1, envp);
-            tmp = tmp->nxt;
-        }
-        else if (tmp->type == TRUNC || tmp->type == APPEND || tmp->type == INPUT || tmp->type == HEREDOC)
-        {
-            if (!tmp->nxt)
-            {
-                printf("minishell: syntax error near unexpected token `newline'\n");
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            if (tmp->nxt->type > 1)
-            {
-                printf("minishell: syntax error near unexpected token `%s'\n", tmp->nxt->value);
-                g_stat = SYNTAX;
-                free_token_all(token_head);
-                *token = NULL;
-                return (0);
-            }
-            head = add_node(head, start, 2, envp);
-            tmp = tmp->nxt;
-            tmp = tmp->nxt;
-        }
-        if (!tmp)
-            break;
+        head = get_exec_unit(head, token, &tmp, envp);
+        if (!head)
+            return (NULL);
     }
     head = get_fd(head);
     return (head);
