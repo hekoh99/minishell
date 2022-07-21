@@ -1,6 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/21 19:42:02 by yubchoi           #+#    #+#             */
+/*   Updated: 2022/07/21 19:42:02 by yubchoi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 extern int g_stat;
+
+char *ft_strjoin_free_s1(char *s1, char *s2)
+{
+    char *tmp;
+
+    tmp = s1;
+    s1 = ft_strjoin(s1, s2);
+    ft_free(tmp);
+    return (s1);
+}
 
 static void set_expanded_value(t_token *token, char *replaced, int start, int *index)
 {
@@ -9,7 +31,7 @@ static void set_expanded_value(t_token *token, char *replaced, int start, int *i
 
     if (token->value[start] == '?') // status 실제값으로 대체 완
     {
-        replaced = ft_strdup(ft_itoa(g_stat));
+        replaced = ft_itoa(g_stat);
         (*index) = start + 1;
     }
     if (!replaced)
@@ -18,7 +40,7 @@ static void set_expanded_value(t_token *token, char *replaced, int start, int *i
     tail = ft_substr(token->value, *index, ft_strlen(token->value));
     free(token->value);
     token->value = ft_strjoin(head, replaced);
-    token->value = ft_strjoin(token->value, tail);
+    token->value = ft_strjoin_free_s1(token->value, tail);
     free(replaced);
     free(head);
     free(tail);
