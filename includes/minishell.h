@@ -107,6 +107,7 @@ void free_node_all(t_node *head);
 void check_quote(char target, int *sq, int *dq);
 int check_duple_sep(char *token, int pos);
 char *inside_quote(char *value, int start, int *mid);
+char *search_env(t_env *env, char *target);
 
 // execute
 void ft_execute(t_node *node);
@@ -146,5 +147,11 @@ void delete_files(t_list *head);
 t_node *error_handler(t_node *head, t_token **token, t_token **tmp);
 t_token *open_quote_err(t_token *head);
 t_node *print_syntax_error(t_token **token, const char *msg);
+
+// fd
+t_node *get_fd(t_node *node);
+
+// node
+t_node *add_cmd_arr(t_node *new, t_token *target, int iter);
 
 #endif
