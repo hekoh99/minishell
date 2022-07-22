@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:15:38 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/19 18:09:03 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/21 16:26:46 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_env	*ft_unset_env(t_env *envp, char *key)
 	prev = NULL;
 	while (tmp)
 	{
-		if (ft_strncmp(tmp->key, key, select_longer(tmp->key, key)) == 0)
+		if (ft_strcmp(tmp->key, key) == 0)
 		{
 			if (prev)
 				prev->nxt = tmp->nxt;
@@ -47,7 +47,7 @@ void	ft_unset(t_node *node)
 	i = 0;
 	while (node && node->cmd && node->cmd[++i])
 	{
-		if (is_invalid_key("unset", ft_strdup(node->cmd[i])))
+		if (is_invalid_key("unset", node->cmd[i]))
 			continue ;
 		node->envp = ft_unset_env(node->envp, node->cmd[i]);
 	}

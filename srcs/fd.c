@@ -7,6 +7,7 @@ static int open_tmpfile()
     int fd;
     int num;
     char *file;
+    char *num_str;
 
     num = 1;
     file = ft_strdup(".tmp");
@@ -14,7 +15,9 @@ static int open_tmpfile()
     while (fd == -1)
     {
         free(file);
-        file = ft_strjoin(".tmp", ft_itoa(num));
+        num_str = ft_itoa(num);
+        file = ft_strjoin(".tmp", num_str);
+        free(num_str);
         fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
         num++;
     }
