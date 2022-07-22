@@ -25,18 +25,49 @@ static int open_tmpfile()
     return (fd);
 }
 
+static char *get_heredoc_str(char *here_str, char *readline)
+{
+    char *tmp;
+
+    tmp = readline;
+    readline = ft_strjoin(tmp, "\n");
+    free(tmp);
+    tmp = here_str;
+    here_str = ft_strjoin(tmp, readline);
+    free(tmp);
+    free(readline);
+    return (here_str);
+}
+
+static int get_heredoc_readend(int wrfd, char *here_str)
+{
+    int fd;
+    char *file;
+
+    file = tmp_files(NULL, GET)->value;
+    write(wrfd, here_str, ft_strlen(here_str));
+    close(wrfd);
+    fd = open(file, O_RDONLY, 0666);
+    free(here_str);
+    if (g_stat == ETC)
+    {
+        tmp_files(NULL, DEL);
+        close(fd);
+        return (-1);
+    }
+    return (fd);
+}
+
 static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아님..
 {
     int fd;
-    char *here_str = ft_strdup("");
+    char *here_str;
     char *str;
-    char *tmp;
-    char *file;
 
+    here_str = ft_strdup("");
     signal(SIGINT, heredoc_sig_int);
     g_stat = 0;
     fd = open_tmpfile();
-    file = tmp_files(NULL, GET)->value;
     while (g_stat != ETC)
     {
         str = readline("> ");
@@ -47,24 +78,9 @@ static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아�
             free(str);
             break;
         }
-        tmp = str;
-        str = ft_strjoin(str, "\n");
-        free(tmp);
-        tmp = here_str;
-        here_str = ft_strjoin(tmp, str);
-        free(tmp);
-        free(str);
+        here_str = get_heredoc_str(here_str, str);
     }
-    write(fd, here_str, ft_strlen(here_str));
-    close(fd);
-    fd = open(file, O_RDONLY, 0666);
-    free(here_str);
-    if (g_stat == ETC)
-    {
-        tmp_files(NULL, DEL);
-        close(fd);
-        return (-1);
-    }
+    fd = get_heredoc_readend(fd, here_str);
     return (fd);
 }
 
@@ -86,6 +102,29 @@ static int set_input_fd(t_node *head, t_node *file_node, t_node *target)
     return (1);
 }
 
+int set_output_fd(t_node *head, t_node *tmp)
+{
+    if (tmp->type == APPEND)
+    {
+        tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+        if (tmp->fd[OUT] == -1)
+        {
+            free_node_all(head);
+            return (0);
+        }
+    }
+    else if (tmp->type == TRUNC)
+    {
+        tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+        if (tmp->fd[OUT] == -1)
+        {
+            free_node_all(head);
+            return (0);
+        }
+    }
+    return (1);
+}
+
 t_node *get_fd(t_node *node)
 {
     t_node *tmp;
@@ -103,24 +142,24 @@ t_node *get_fd(t_node *node)
         }
         else if (tmp->type == TRUNC || tmp->type == APPEND) // >, >> node의 int에 파일 fd set
         {
-            if (tmp->type == APPEND)
-            {
-                tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
-                if (tmp->fd[OUT] == -1)
-                {
-                    free_node_all(node);
-                    return (0);
-                }
-            }
-            else if (tmp->type == TRUNC)
-            {
-                tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-                if (tmp->fd[OUT] == -1)
-                {
-                    free_node_all(node);
-                    return (0);
-                }
-            }
+            // if (tmp->type == APPEND)
+            // {
+            //     tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+            //     if (tmp->fd[OUT] == -1)
+            //     {
+            //         free_node_all(node);
+            //         return (0);
+            //     }
+            // }
+            // else if (tmp->type == TRUNC)
+            // {
+            //     tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+            //     if (tmp->fd[OUT] == -1)
+            //     {
+            //         free_node_all(node);
+            //         return (0);
+            //     }
+            // }
         }
         else if (tmp->type == PIPE)
         {
@@ -141,10 +180,7 @@ t_node *get_fd(t_node *node)
         {
             cmd = tmp;
             if (prev && prev->type > CMD)
-            {
                 tmp->fd[IN] = prev->fd[IN];
-                // tmp->fd[OUT] = prev->fd[OUT];
-            }
             if (tmp->nxt == NULL)
                 tmp->fd[OUT] = 1;
         }
@@ -155,21 +191,15 @@ t_node *get_fd(t_node *node)
         if (tmp->type == TRUNC || tmp->type == APPEND)
         {
             if (tmp->nxt && tmp->nxt->type == PIPE)
-            {
                 ft_close(tmp->nxt->fd[OUT]);
-            }
             if (cmd)
-            {
                 cmd->fd[OUT] = tmp->fd[OUT];
-            }
         }
         if (prev && tmp->type == PIPE)
         {
             prev->fd[OUT] = tmp->fd[OUT];
             if (cmd && cmd->fd[OUT] == 1) // out이 정해지지 않은 상태에서 파이프를 만나면
-            {
                 cmd->fd[OUT] = tmp->fd[OUT];
-            }
             if (!cmd)
                 close(tmp->fd[OUT]);
             cmd = NULL;
