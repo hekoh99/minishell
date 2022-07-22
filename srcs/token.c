@@ -39,6 +39,22 @@ t_token *add_token(t_token *head, char *value)
     return (head);
 }
 
+void add_redir_type(t_token *token)
+{
+    if (token->value[0] == '>')
+    {
+        token->type = TRUNC;
+        if (token->value[1] == '>')
+            token->type = APPEND;
+    }
+    else if (token->value[0] == '<')
+    {
+        token->type = INPUT;
+        if (token->value[1] == '<')
+            token->type = HEREDOC;
+    }
+}
+
 t_token *add_type(t_token *token)
 {
     t_token *tmp;
@@ -46,18 +62,8 @@ t_token *add_type(t_token *token)
     tmp = token;
     while (tmp)
     {
-        if (tmp->value[0] == '>')
-        {
-            tmp->type = TRUNC;
-            if (tmp->value[1] == '>')
-                tmp->type = APPEND;
-        }
-        else if (tmp->value[0] == '<')
-        {
-            tmp->type = INPUT;
-            if (tmp->value[1] == '<')
-                tmp->type = HEREDOC;
-        }
+        if (tmp->value[0] == '>' || tmp->value[0] == '<')
+            add_redir_type(tmp);
         else if (tmp->value[0] == '|')
             tmp->type = PIPE;
         else if (tmp->value[0] == ';')
