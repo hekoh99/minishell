@@ -81,7 +81,6 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
                 replaced = search_env(env, target);
                 free(target);
                 set_expanded_value(tmp, replaced, start, &i);
-                // i--; // 반복문 후 i는 구분자 위치 또는 문자열의 끝에 위치
             }
             else if (i == 0 && tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
             {

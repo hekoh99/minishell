@@ -4,22 +4,22 @@ extern int g_stat;
 
 static t_token *join_list_center(t_token *pos, int sep_size, int *index, int size)
 {
-    t_token *seperated;
+    t_token *separated;
     char *tmp;
 
-    seperated = malloc(sizeof(t_token) * sep_size);
-    seperated->value = ft_substr(pos->value, *index, sep_size);
-    seperated->nxt = pos->nxt;
-    pos->nxt->prev = seperated;
-    pos->nxt = seperated;
-    seperated->prev = pos;
+    separated = malloc(sizeof(t_token) * sep_size);
+    separated->value = ft_substr(pos->value, *index, sep_size);
+    separated->nxt = pos->nxt;
+    pos->nxt->prev = separated;
+    pos->nxt = separated;
+    separated->prev = pos;
     pos = pos->nxt; // 구분자 블록
-    seperated = malloc(sizeof(t_token));
-    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-    seperated->nxt = pos->nxt;
-    pos->nxt->prev = seperated;
-    pos->nxt = seperated;
-    seperated->prev = pos;
+    separated = malloc(sizeof(t_token));
+    separated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    separated->nxt = pos->nxt;
+    pos->nxt->prev = separated;
+    pos->nxt = separated;
+    separated->prev = pos;
     tmp = pos->prev->value;
     pos->prev->value = ft_substr(tmp, 0, *index);
     free(tmp);
@@ -30,20 +30,20 @@ static t_token *join_list_center(t_token *pos, int sep_size, int *index, int siz
 
 static t_token *join_list_back(t_token *pos, int sep_size, int *index, int size)
 {
-    t_token *seperated;
+    t_token *separated;
     char *tmp;
 
-    seperated = malloc(sizeof(t_token));
-    seperated->value = ft_substr(pos->value, *index, sep_size);
-    pos->nxt = seperated;
-    seperated->prev = pos;
-    seperated->nxt = NULL;
+    separated = malloc(sizeof(t_token));
+    separated->value = ft_substr(pos->value, *index, sep_size);
+    pos->nxt = separated;
+    separated->prev = pos;
+    separated->nxt = NULL;
     pos = pos->nxt;
-    seperated = malloc(sizeof(t_token));
-    seperated->value = ft_substr(pos->prev->value, *index + sep_size, size);
-    pos->nxt = seperated;
-    seperated->prev = pos;
-    seperated->nxt = NULL;
+    separated = malloc(sizeof(t_token));
+    separated->value = ft_substr(pos->prev->value, *index + sep_size, size);
+    pos->nxt = separated;
+    separated->prev = pos;
+    separated->nxt = NULL;
     tmp = pos->prev->value;
     pos->prev->value = ft_substr(tmp, 0, *index);
     free(tmp);

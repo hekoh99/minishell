@@ -84,12 +84,12 @@ static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아�
     return (fd);
 }
 
-static int set_input_fd(t_node *head, t_node *file_node, t_node *target)
+static int set_input_fd(t_node *head, t_node *file_node)
 {
     if (file_node->type == INPUT)
     {
-        target->fd[IN] = open(file_node->cmd[1], O_RDONLY);
-        if (target->fd[IN] == -1)
+        file_node->fd[IN] = open(file_node->cmd[1], O_RDONLY);
+        if (file_node->fd[IN] == -1)
         {
             printf("minishell: %s: No such file or directory\n", file_node->cmd[1]);
             g_stat = ETC;
@@ -98,25 +98,25 @@ static int set_input_fd(t_node *head, t_node *file_node, t_node *target)
         }
     }
     else
-        target->fd[IN] = get_heredoc_fd(file_node);
+        file_node->fd[IN] = get_heredoc_fd(file_node);
     return (1);
 }
 
-int set_output_fd(t_node *head, t_node *tmp)
+int set_output_fd(t_node *head, t_node *file_node)
 {
-    if (tmp->type == APPEND)
+    if (file_node->type == APPEND)
     {
-        tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
-        if (tmp->fd[OUT] == -1)
+        file_node->fd[OUT] = ft_open(file_node->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
+        if (file_node->fd[OUT] == -1)
         {
             free_node_all(head);
             return (0);
         }
     }
-    else if (tmp->type == TRUNC)
+    else if (file_node->type == TRUNC)
     {
-        tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-        if (tmp->fd[OUT] == -1)
+        file_node->fd[OUT] = ft_open(file_node->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+        if (file_node->fd[OUT] == -1)
         {
             free_node_all(head);
             return (0);
@@ -125,50 +125,66 @@ int set_output_fd(t_node *head, t_node *tmp)
     return (1);
 }
 
-t_node *get_fd(t_node *node)
+int set_separator_fd(t_node *node)
 {
     t_node *tmp;
-    t_node *prev;
-    t_node *cmd;
 
     tmp = node;
-    prev = NULL;
     while (tmp)
     {
         if (tmp->type == INPUT || tmp->type == HEREDOC)
         {
-            if (set_input_fd(node, tmp, tmp) == 0 || g_stat == ETC) // <, << node의 in에 파일 fd set
+            if (set_input_fd(node, tmp) == 0 || g_stat == ETC) // <, << node의 in에 파일 fd set
                 return (0);
         }
         else if (tmp->type == TRUNC || tmp->type == APPEND) // >, >> node의 int에 파일 fd set
         {
-            // if (tmp->type == APPEND)
-            // {
-            //     tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_APPEND, 0666);
-            //     if (tmp->fd[OUT] == -1)
-            //     {
-            //         free_node_all(node);
-            //         return (0);
-            //     }
-            // }
-            // else if (tmp->type == TRUNC)
-            // {
-            //     tmp->fd[OUT] = ft_open(tmp->cmd[1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
-            //     if (tmp->fd[OUT] == -1)
-            //     {
-            //         free_node_all(node);
-            //         return (0);
-            //     }
-            // }
+            if (set_output_fd(node, tmp) == 0)
+                return (0);
         }
         else if (tmp->type == PIPE)
         {
             pipe(tmp->fd);
             tmp->nxt->fd[IN] = tmp->fd[IN];
         }
-        prev = tmp;
         tmp = tmp->nxt;
     }
+    return (1);
+}
+
+t_node *set_cmd_pipe(t_node *prev, t_node *tmp, t_node *cmd)
+{
+    prev->fd[OUT] = tmp->fd[OUT];
+    if (cmd && cmd->fd[OUT] == 1) // out이 정해지지 않은 상태에서 파이프를 만나면
+        cmd->fd[OUT] = tmp->fd[OUT];
+    if (!cmd)
+        close(tmp->fd[OUT]);
+    return (NULL);
+}
+
+void set_cmd_output(t_node *tmp, t_node *cmd)
+{
+    if (tmp->nxt && tmp->nxt->type == PIPE)
+        ft_close(tmp->nxt->fd[OUT]);
+    if (cmd)
+        cmd->fd[OUT] = tmp->fd[OUT];
+}
+
+t_node *init_cmd(t_node *prev, t_node *cmd)
+{
+    if (prev && prev->type > CMD)
+        cmd->fd[IN] = prev->fd[IN];
+    if (cmd->nxt == NULL)
+        cmd->fd[OUT] = 1;
+    return (cmd);
+}
+
+int set_cmd_fd(t_node *node)
+{
+    t_node *tmp;
+    t_node *prev;
+    t_node *cmd;
+
     tmp = node;
     prev = NULL;
     cmd = NULL;
@@ -177,35 +193,23 @@ t_node *get_fd(t_node *node)
         if (prev && prev->type == END)
             prev = NULL;
         if (tmp->type == CMD)
-        {
-            cmd = tmp;
-            if (prev && prev->type > CMD)
-                tmp->fd[IN] = prev->fd[IN];
-            if (tmp->nxt == NULL)
-                tmp->fd[OUT] = 1;
-        }
+            cmd = init_cmd(prev, tmp);
         if (cmd && (tmp->type == INPUT || tmp->type == HEREDOC))
-        {
             cmd->fd[IN] = tmp->fd[IN];
-        }
         if (tmp->type == TRUNC || tmp->type == APPEND)
-        {
-            if (tmp->nxt && tmp->nxt->type == PIPE)
-                ft_close(tmp->nxt->fd[OUT]);
-            if (cmd)
-                cmd->fd[OUT] = tmp->fd[OUT];
-        }
+            set_cmd_output(tmp, cmd);
         if (prev && tmp->type == PIPE)
-        {
-            prev->fd[OUT] = tmp->fd[OUT];
-            if (cmd && cmd->fd[OUT] == 1) // out이 정해지지 않은 상태에서 파이프를 만나면
-                cmd->fd[OUT] = tmp->fd[OUT];
-            if (!cmd)
-                close(tmp->fd[OUT]);
-            cmd = NULL;
-        }
+            cmd = set_cmd_pipe(prev, tmp, cmd);
         prev = tmp;
         tmp = tmp->nxt;
     }
+    return (1);
+}
+
+t_node *get_fd(t_node *node)
+{
+    if (!set_separator_fd(node))
+        return (NULL);
+    set_cmd_fd(node);
     return (node);
 }
