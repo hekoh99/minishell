@@ -60,27 +60,24 @@ char *inside_quote(char *value, int start, int *mid)
 
 void do_trim_quote(t_token *tmp)
 {
-    int i;
     int squote;
     int dquote;
+    int i;
     int start;
 
     i = 0;
     squote = 0;
     dquote = 0;
-    start = -1;
+    start = 0;
     while (tmp->value && tmp->value[i] != '\0')
     {
         check_quote(tmp->value[i], &squote, &dquote);
-        if (tmp->value[i] == '\'' || tmp->value[i] == '\"')
+        if ((tmp->value[i] == '\"' || tmp->value[i] == '\'') && squote + dquote > 0 && start == -1)
+            start = i;
+        else if ((tmp->value[i] == '\"' || tmp->value[i] == '\'') && squote + dquote == 0 && start != -1)
         {
-            if ((squote == 1 || dquote == 1) && start == -1)
-                start = i;
-            else if (start != -1 && dquote == 0 && squote == 0)
-            {
-                tmp->value = inside_quote(tmp->value, start, &i);
-                start = -1;
-            }
+            tmp->value = inside_quote(tmp->value, start, &i);
+            start = -1;
         }
         i++;
     }
@@ -89,43 +86,11 @@ void do_trim_quote(t_token *tmp)
 t_token *trim_quote(t_token *token)
 {
     t_token *tmp;
-    int i;
-    char *str;
-    int squote;
-    int dquote;
-    int start;
 
     tmp = token;
     while (tmp)
     {
-        i = 0;
-        squote = 0;
-        dquote = 0;
-        start = 0;
-        while (tmp->value && tmp->value[i] != '\0')
-        {
-            if (tmp->value[i] == '\'' && squote == 0 && dquote == 0)
-            {
-                start = i;
-                squote = 1;
-            }
-            else if (tmp->value[i] == '\"' && squote == 0 && dquote == 0)
-            {
-                start = i;
-                dquote = 1;
-            }
-            else if (tmp->value[i] == '\'' && squote == 1)
-            {
-                squote = 0;
-                tmp->value = inside_quote(tmp->value, start, &i);
-            }
-            else if (tmp->value[i] == '\"' && dquote == 1)
-            {
-                dquote = 0;
-                tmp->value = inside_quote(tmp->value, start, &i);
-            }
-            i++;
-        }
+        do_trim_quote(tmp);
         tmp = tmp->nxt;
     }
     return (token);
