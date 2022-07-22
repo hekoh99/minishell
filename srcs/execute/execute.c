@@ -68,7 +68,10 @@ void	ft_execute(t_node *node)
 	int		child;
 
 	if (is_single_cmd(node) && is_builtin(node))
+	{
+		g_stat = 0;
 		ft_buitlin(SINGLE_CMD, node);
+	}
 	else
 	{
 		while (node)
