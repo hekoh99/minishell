@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   search_env.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/21 19:42:09 by yubchoi           #+#    #+#             */
+/*   Updated: 2022/07/21 19:42:09 by yubchoi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 extern int g_stat;
@@ -11,7 +23,7 @@ char *search_env(t_env *env, char *target)
     real_val = NULL;
     while (env)
     {
-        if (ft_strncmp(env->key, target, select_longer(env->key, target)) == 0) // 환경변수 찾음
+        if (ft_strcmp(env->key, target) == 0)
         {
             real_val = ft_substr(env->value, 0, ft_strlen(env->value));
             break;
