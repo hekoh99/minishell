@@ -2,6 +2,14 @@
 
 extern int g_stat;
 
+t_token *do_trim_space(t_token *head, char *line, int *start, int i)
+{
+    if (i - (*start) > 0)
+        head = add_token(head, ft_substr(line, (*start), i - (*start)));
+    (*start) = i + 1;
+    return (head);
+}
+
 t_token *trim_space(char *line)
 {
     t_token *head;
@@ -15,21 +23,14 @@ t_token *trim_space(char *line)
     dquote = 0;
     squote = 0;
     head = NULL;
-    while ((line[i] != '\0' || i - start > 0))
+    while (line[i] != '\0')
     {
         check_quote(line[i], &squote, &dquote);
-        if ((line[i] == ' ' || line[i] == '\0') && (squote == 0 && dquote == 0))
-        {
-            if (i - start > 0)
-                head = add_token(head, ft_substr(line, start, i - start));
-            start = i + 1;
-            if (line[i] == '\0')
-                break;
-        }
-        if (line[i] != '\0')
-            i++;
-        if (line[i] == '\0' && squote + dquote > 0)
-            break;
+        if ((line[i] == ' ') && (squote == 0 && dquote == 0))
+            head = do_trim_space(head, line, &start, i);
+        i++;
+        if ((line[i] == '\0') && (squote == 0 && dquote == 0))
+            head = do_trim_space(head, line, &start, i);
     }
     if (squote == 1 || dquote == 1)
         return (open_quote_err(head));
