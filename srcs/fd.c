@@ -13,12 +13,12 @@ static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아�
 
     signal(SIGINT, heredoc_sig_int);
     num = 1;
-    file = ft_strdup("tmp");
+    file = ft_strdup(".tmp");
     fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
     while (fd == -1)
     {
         free(file);
-        file = ft_strjoin("tmp", ft_itoa(num));
+        file = ft_strjoin(".tmp", ft_itoa(num));
         fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
         num++;
     }

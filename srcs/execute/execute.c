@@ -26,7 +26,8 @@ void	ft_command(t_node *node)
 		g_stat = 0;
 		dup2(node->fd[IN], 0);
 		dup2(node->fd[OUT], 1);
-		clean_fd();
+		// clean_fd();
+		close_pipe(node);
 		if (is_builtin(node))
 			ft_buitlin(MULTI_CMD, node);
 		else
@@ -36,9 +37,9 @@ void	ft_command(t_node *node)
 	else
 	{
 		if (node->fd[IN] != 0)
-			close(node->fd[IN]);
+			ft_close(node->fd[IN]);
 		if (node->fd[OUT] != 1)
-			close(node->fd[OUT]);
+			ft_close(node->fd[OUT]);
 	}
 }
 
