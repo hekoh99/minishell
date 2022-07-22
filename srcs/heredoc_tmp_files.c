@@ -2,23 +2,6 @@
 
 extern int g_stat;
 
-t_list *tmp_files(char *filename, int cmd)
-{
-    static t_list *head;
-
-    if (cmd == GET)
-        return (head);
-    else if (cmd == ADD)
-        head = add_files(head, filename);
-    else if (cmd == DEL)
-    {
-        delete_files(head);
-        head = NULL;
-        return head;
-    }
-    return (head);
-}
-
 t_list *add_files(t_list *head, char *filename)
 {
     t_list *newfile;
@@ -53,4 +36,31 @@ void delete_files(t_list *head)
         tmp = tmp->nxt;
         free(target);
     }
+}
+
+t_list *get_files(t_list *head)
+{
+    t_list *tmp;
+
+    tmp = head;
+    while (tmp && tmp->nxt)
+        tmp = tmp->nxt;
+    return (tmp);
+}
+
+t_list *tmp_files(char *filename, int cmd)
+{
+    static t_list *head;
+
+    if (cmd == GET)
+        return (get_files(head));
+    else if (cmd == ADD)
+        head = add_files(head, filename);
+    else if (cmd == DEL)
+    {
+        delete_files(head);
+        head = NULL;
+        return head;
+    }
+    return (head);
 }

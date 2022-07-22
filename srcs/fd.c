@@ -2,16 +2,12 @@
 
 extern int g_stat;
 
-static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아님..
+static int open_tmpfile()
 {
     int fd;
-    char *here_str = ft_strdup("");
-    char *str;
-    char *tmp;
-    char *file;
     int num;
+    char *file;
 
-    signal(SIGINT, heredoc_sig_int);
     num = 1;
     file = ft_strdup(".tmp");
     fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
@@ -22,7 +18,22 @@ static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아�
         fd = open(file, O_WRONLY | O_CREAT | O_EXCL, 0666);
         num++;
     }
+    tmp_files(file, ADD);
+    return (fd);
+}
+
+static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아님..
+{
+    int fd;
+    char *here_str = ft_strdup("");
+    char *str;
+    char *tmp;
+    char *file;
+
+    signal(SIGINT, heredoc_sig_int);
     g_stat = 0;
+    fd = open_tmpfile();
+    file = tmp_files(NULL, GET)->value;
     while (g_stat != ETC)
     {
         str = readline("> ");
@@ -44,7 +55,6 @@ static int get_heredoc_fd(t_node *node) // 임시 파일 삭제 구현 완 아�
     write(fd, here_str, ft_strlen(here_str));
     close(fd);
     fd = open(file, O_RDONLY, 0666);
-    tmp_files(file, ADD);
     free(here_str);
     if (g_stat == ETC)
     {
@@ -130,7 +140,7 @@ t_node *get_fd(t_node *node)
             if (prev && prev->type > CMD)
             {
                 tmp->fd[IN] = prev->fd[IN];
-                tmp->fd[OUT] = prev->fd[OUT];
+                // tmp->fd[OUT] = prev->fd[OUT];
             }
             if (tmp->nxt == NULL)
                 tmp->fd[OUT] = 1;
