@@ -36,43 +36,8 @@ void heredoc_sig_int(int signal)
 	g_stat = ETC;
 }
 
-t_env *init_env(char **env)
-{
-	int i = 0;
-	t_env *lst;
-	t_env *new;
-	t_env *tmp;
-	int j;
-
-	lst = NULL;
-	tmp = lst;
-	while (env[i])
-	{
-		j = 0;
-		while (env[i][j] != '=')
-			j++;
-		new = (t_env *)malloc(sizeof(t_env));
-		new->key = ft_substr(env[i], 0, j);
-		new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
-		new->nxt = NULL;
-		if (!lst)
-		{
-			lst = new;
-			tmp = lst;
-			i++;
-			continue;
-		}
-		else
-			tmp->nxt = new;
-		tmp = tmp->nxt;
-		i++;
-	}
-	return (lst);
-}
-
 int main(int ac, char **av, char **env)
 {
-	// t_mini mini;
 	char *str;
 	t_env *envp;
 	t_token *token;
@@ -85,12 +50,6 @@ int main(int ac, char **av, char **env)
 
 	envp = init_env(env);
 	g_stat = 0;
-	/* // env init check
-	while (envp){
-		printf("%s = %s\n", envp->key, envp->value);
-		envp = envp->nxt;
-	}
-	// */
 	while (1)
 	{
 		token = NULL;

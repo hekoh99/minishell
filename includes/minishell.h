@@ -116,6 +116,7 @@ void do_execve(t_node *node);
 // builtin
 void ft_cd(t_node *node);
 void ft_echo(t_node *node);
+t_env *init_env(char **env);
 void ft_env(t_env *envp);
 void ft_exit(int single_cmd, t_node *node);
 void ft_export(t_node *node);
@@ -159,5 +160,12 @@ t_node *get_fd(t_node *node);
 
 // node
 t_node *add_cmd_arr(t_node *new, t_token *target, int iter);
+
+// test code
+void print_token(t_token *token, int flag);
+void print_node(t_node *node);
+void print_heredoc(t_node *node);
+void print_tmpfiles();
+void check_redirection(t_node *node);
 
 #endif

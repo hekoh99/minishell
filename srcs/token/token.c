@@ -6,9 +6,10 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:28:58 by hako              #+#    #+#             */
-/*   Updated: 2022/07/21 14:15:32 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/22 22:26:26 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 extern int g_stat;
