@@ -29,7 +29,6 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_split.c \
 	$(UTILS)/free_matrix.c \
 	$(UTILS)/error.c \
-	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \
 	$(BUILTIN)/env.c \
@@ -87,7 +86,7 @@ READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -fsanitize=address -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 $(HAKO)	:$(OBJS)
 	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
