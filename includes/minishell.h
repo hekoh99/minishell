@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 19:03:49 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 19:35:49 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ void	ft_buitlin(int single_cmd, t_node *node);
 int		is_builtin(t_node *node);
 int		is_single_cmd(t_node *node);
 void	close_pipe(t_node *node);
-void	clean_fd(void);
 char	**find_path(t_node *node);
 char	*find_cmd_path(char *cmd, char **paths);
 
