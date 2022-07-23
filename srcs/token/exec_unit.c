@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_unit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:25:37 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:25:39 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 14:51:57 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_node *add_node_by_type(t_node *head, t_token **token, t_token **tmp, t_env *en
     start = *tmp;
     if (*token)
     {
-        is_error = error_handler(head, token, tmp);
+        is_error = error_handler(token, tmp);
         if (is_error == -1)
         {
             free_node_all(head);
