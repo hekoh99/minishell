@@ -57,7 +57,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
-CC = cc $(DEBUG)
+CC = cc
 CFLAGS = -Werror -Wall -Wextra
 
 BREW_DIR		:= $(shell brew --prefix readline)
@@ -69,7 +69,7 @@ READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -fsanitize=address -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -g -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@

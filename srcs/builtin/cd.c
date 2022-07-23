@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/23 13:11:09 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 15:30:29 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,16 @@ void	ft_cd_home(t_node *node)
 
 	home_path = search_env_value(node->envp, "HOME");
 	if (!home_path)
+	{
 		print_error2(
 			ft_strdup("cd: "), ft_strjoin(node->cmd[1], "HOME not set\n"), 1);
+		return ;
+	}
 	else if (chdir(home_path) == -1)
 		print_error2(ft_strdup("cd: "),
 			ft_strjoin(node->cmd[1],
 				": No such file or directory\n"), 1);
+	ft_free(home_path);
 }
 
 void	ft_cd(t_node *node)
@@ -59,4 +63,6 @@ void	ft_cd(t_node *node)
 	pwd = getcwd(0, PATH_MAX);
 	node->envp = update_env(node->envp, "OLDPWD", old_pwd);
 	node->envp = update_env(node->envp, "PWD", pwd);
+	ft_free(old_pwd);
+	ft_free(pwd);
 }

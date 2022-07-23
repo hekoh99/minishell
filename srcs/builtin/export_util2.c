@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:30:05 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:30:10 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 15:14:29 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	is_duplicate_envp(t_env *envp, char *key)
 	tmp = envp;
 	while (tmp)
 	{
-		if (ft_strncmp(tmp->key, key, select_longer(tmp->key, key)) == 0)
+		if (ft_strcmp(tmp->key, key) == 0)
 			return (1);
 		tmp = tmp->nxt;
 	}
