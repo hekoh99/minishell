@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_unit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:25:37 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 15:08:32 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 18:55:24 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,14 @@ t_node	*exec_unit(t_token **token, t_env *envp)
 	{
 		head = get_exec_unit(head, token, &tmp, envp);
 		if (!head)
+		{
+			free_token_all(*token);
+			*token = NULL;
 			return (NULL);
+		}
 	}
+	free_token_all(*token);
+	*token = NULL;
 	head = get_fd(head);
 	return (head);
 }

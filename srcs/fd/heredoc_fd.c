@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_fd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 18:06:12 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 19:00:54 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ static int	get_heredoc_readend(int wrfd, char *here_str)
 
 void	cursor_up(void)
 {
-	printf("\033[1A");	// 커서를 위로 하나 올리기
-	printf("\033[2C"); // 10만큼 앞으로
+	printf("\033[1A");
+	printf("\033[2C");
 }
 
 int	get_heredoc_fd(t_node *node)
@@ -90,7 +90,10 @@ int	get_heredoc_fd(t_node *node)
 	{
 		str = readline("> ");
 		if (!str)
+		{
+			cursor_up();
 			break ;
+		}
 		if (ft_strcmp(str, node->cmd[1]) == 0)
 		{
 			free(str);

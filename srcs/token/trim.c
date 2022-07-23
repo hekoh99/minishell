@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:26:40 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 15:07:50 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 17:02:07 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +50,22 @@ t_token	*trim_space(char *line)
 
 char	*inside_quote(char *value, int start, int *mid)
 {
-    char *inside;
-    char *head;
-    char *tail;
-    char *str;
+	char	*inside;
+	char	*head;
+	char	*tail;
+	char	*str;
 
-    str = ft_substr(value, start + 1, *mid - start - 1);
-    head = ft_substr(value, 0, start);
-    tail = ft_substr(value, *mid + 1, ft_strlen(value));
-    free(value);
-    inside = ft_strjoin(head, str);
-    *mid = ft_strlen(inside) - 1;
-    inside = ft_strjoin_free_s1(inside, tail);
-    free(str);
-    free(head);
-    free(tail);
-    return (inside);
+	str = ft_substr(value, start + 1, *mid - start - 1);
+	head = ft_substr(value, 0, start);
+	tail = ft_substr(value, *mid + 1, ft_strlen(value));
+	free(value);
+	inside = ft_strjoin(head, str);
+	*mid = ft_strlen(inside) - 1;
+	inside = ft_strjoin_free_s1(inside, tail);
+	free(str);
+	free(head);
+	free(tail);
+	return (inside);
 }
 
 void	do_trim_quote(t_token *tmp)

@@ -54,7 +54,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(TOKEN)/reorder_token.c \
 	$(BUILTIN)/init_env.c \
 	$(UTILS)/define_env_category.c \
-	$(UTILS)/test_codes.c \
+	$(BUILTIN)/export_util3.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
@@ -70,7 +70,11 @@ READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
+<<<<<<< HEAD
+	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+=======
 	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+>>>>>>> main
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
