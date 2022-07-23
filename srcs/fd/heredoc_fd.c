@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 16:58:16 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 19:00:54 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,12 @@ static int	get_heredoc_readend(int wrfd, char *here_str)
 	return (fd);
 }
 
+void	cursor_up(void)
+{
+	printf("\033[1A");
+	printf("\033[2C");
+}
+
 int	get_heredoc_fd(t_node *node)
 {
 	int		fd;
@@ -85,8 +91,7 @@ int	get_heredoc_fd(t_node *node)
 		str = readline("> ");
 		if (!str)
 		{
-			printf("\033[1A");
-			printf("\033[2C");
+			cursor_up();
 			break ;
 		}
 		if (ft_strcmp(str, node->cmd[1]) == 0)
