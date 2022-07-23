@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 16:53:53 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 17:00:13 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**init_envp_arr(t_env *envp)
 	i = -1;
 	envp_arr = (char **)malloc(sizeof(char *) * (count_envp(envp) + 1));
 	if (!envp_arr)
-			return (NULL);
+		return (NULL);
 	while (envp)
 	{
 		envp_arr[++i] = ft_strjoin(envp->key, "=");

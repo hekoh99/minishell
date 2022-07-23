@@ -70,7 +70,7 @@ READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -g -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
