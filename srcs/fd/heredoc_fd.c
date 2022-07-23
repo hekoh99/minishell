@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 16:25:06 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 16:55:36 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ int	get_heredoc_fd(t_node *node)
 		str = readline("> ");
 		if (!str)
 		{
-			printf("\033[1A");	// 커서를 위로 하나 올리기
-			printf("\033[2C"); // 10만큼 앞으로
+			printf("\033[1A");
+			printf("\033[2C");
 			break ;
 		}
 		if (ft_strcmp(str, node->cmd[1]) == 0)
@@ -96,6 +96,5 @@ int	get_heredoc_fd(t_node *node)
 		}
 		here_str = get_heredoc_str(here_str, str);
 	}
-	fd = get_heredoc_readend(fd, here_str);
-	return (fd);
+	return (get_heredoc_readend(fd, here_str));
 }
