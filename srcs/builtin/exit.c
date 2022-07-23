@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 13:00:56 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/23 13:23:47 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 16:02:38 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	validate_exit_code(char *code)
 	{
 		if (!ft_isdigit(code[i]))
 		{
-			print_error2(ft_strjoin("exit: ", code), ft_strdup(": numeric argument required\n"), 255);
+			print_error2(ft_strjoin("exit: ", code),
+				ft_strdup(": numeric argument required\n"), 255);
 			exit(255);
 		}
 	}
