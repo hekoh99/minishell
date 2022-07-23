@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:53:36 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/22 22:31:01 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 
 #include "utils.h"
 

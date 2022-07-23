@@ -95,7 +95,7 @@ t_token *expand(t_token *token, t_env *env) // parse $ ~ 작은 따옴표 안은
         while (tmp->value && tmp->value[i] != '\0')
         {
             check_quote(tmp->value[i], &squote, &dquote);
-            if (tmp->value[i] == '$' && tmp->value[i + 1] != '\0' && squote == 0)
+            if (tmp->value[i] == '$' && (ft_isalpha(tmp->value[i + 1]) || ft_isdigit(tmp->value[i + 1])) && squote == 0)
                 expand_env_var(tmp, env, &i);
             else if (i == 0 && tmp->value[i] == '~' && (ft_strlen(tmp->value) == 1 || tmp->value[i + 1] == '/') && squote == 0)
                 expand_home_var(tmp, env, &i);

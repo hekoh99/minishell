@@ -11,13 +11,18 @@
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
-#include <sys/ioctl.h>
-#include <termios.h>
 
 int g_stat;
 
 void sig_int(int signal)
 {
+	struct termios attributes;
+	struct termios saved;
+
+	tcgetattr(STDIN_FILENO, &saved);
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag &= (~ECHOCTL);
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
 	if (signal != SIGINT)
 		return ;
 	g_stat = ETC;
@@ -42,8 +47,6 @@ int main(int ac, char **av, char **env)
 	t_env *envp;
 	t_token *token;
 	t_node *node;
-	struct termios attributes;
-	struct termios saved;
 
 	ac += 0;
 	av += 0;
@@ -56,10 +59,6 @@ int main(int ac, char **av, char **env)
 		node = NULL;
 		signal(SIGINT, sig_int);
 		signal(SIGQUIT, SIG_IGN);
-		tcgetattr(STDIN_FILENO, &saved);
-		tcgetattr(STDIN_FILENO, &attributes);
-		attributes.c_lflag &= (~ECHOCTL);
-		tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
 		str = readline("minishell$ ");
 		if (!str)
 		{
@@ -70,14 +69,11 @@ int main(int ac, char **av, char **env)
 			exit(g_stat);
 		}
 		else if (*str == '\0')
-		{
 			free(str);
-		}
 		else
 		{
 			add_history(str);
-			// printf("parrot : %s\n", str);
-			token = trim_space(str); // 따옴표 검사까지 token 값 0 이면 error
+			token = trim_space(str);
 			free(str);
 			token = split_by_sep(token);
 			token = add_type(token);
@@ -94,7 +90,7 @@ int main(int ac, char **av, char **env)
 			// print_token(token, 1);
 			// print_heredoc(node);
 			// print_tmpfiles();
-			free_token_all(token);
+			free_token_all(token); // 나중에 exec_unit 안에 넣기
 			free_node_all(node);
 			tmp_files(NULL, DEL);
 		}
