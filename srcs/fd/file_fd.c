@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:54 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 12:47:35 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 13:11:05 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,12 @@ int	set_separator_fd(t_node *node)
 		{
 			if (set_input_fd(node, tmp) == 0 || g_stat == ETC)
 				return (0);
-        }
-        else if (tmp->type == TRUNC || tmp->type == APPEND)
-        {
+		}
+		else if (tmp->type == TRUNC || tmp->type == APPEND)
+		{
 			if (set_output_fd(node, tmp) == 0)
 				return (0);
-        }
+		}
 		else if (tmp->type == PIPE)
 		{
 			pipe(tmp->fd);
