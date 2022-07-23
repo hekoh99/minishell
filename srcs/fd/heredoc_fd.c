@@ -90,7 +90,12 @@ int	get_heredoc_fd(t_node *node)
 	{
 		str = readline("> ");
 		if (g_stat == ETC)
-			break ;
+		{
+			free(str);
+			free(here_str);
+			tmp_files(NULL, DEL);
+			return (0);
+		}
 		if (!str)
 		{
 			cursor_up();

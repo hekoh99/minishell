@@ -30,6 +30,8 @@ int	set_input_fd(t_node *head, t_node *file_node)
 	}
 	else
 		file_node->fd[IN] = get_heredoc_fd(file_node);
+	if (g_stat == ETC)
+		free_node_all(head);
 	return (1);
 }
 
