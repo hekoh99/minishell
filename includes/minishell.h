@@ -127,7 +127,6 @@ void ft_pwd(void);
 void ft_unset(t_node *node);
 char **ft_split(char *s, char c);
 void print_all_envp(t_env *envp, int has_prefix);
-void child_sig_int(int signal);
 void print_sorted_envp(t_env *envp);
 t_env *update_env(t_env *envp, char *key, char *value);
 int is_duplicate_envp(t_env *envp, char *key);
@@ -145,7 +144,6 @@ t_list *tmp_files(char *filename, int cmd);
 t_list *add_files(t_list *head, char *filename);
 void delete_files(t_list *head);
 int get_heredoc_fd(t_node *node);
-void heredoc_sig_int(int signal);
 
 // fd
 int set_input_fd(t_node *head, t_node *file_node);
@@ -169,5 +167,9 @@ void print_node(t_node *node);
 void print_heredoc(t_node *node);
 void print_tmpfiles();
 void check_redirection(t_node *node);
+
+void sig_int(int signal);
+void child_sig_int(int signal);
+void heredoc_sig_int(int signal);
 
 #endif
