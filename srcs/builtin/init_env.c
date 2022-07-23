@@ -6,16 +6,16 @@
 /*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:19 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:20:25 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 12:31:08 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_env *env_block(char **env, int i)
+t_env	*env_block(char **env, int i)
 {
-	int j;
-	t_env *new;
+	int		j;
+	t_env	*new;
 
 	j = 0;
 	while (env[i][j] != '=')
@@ -27,12 +27,12 @@ t_env *env_block(char **env, int i)
 	return (new);
 }
 
-t_env *init_env(char **env)
+t_env	*init_env(char **env)
 {
-	int i;
-	t_env *lst;
-	t_env *new;
-	t_env *tmp;
+	int		i;
+	t_env	*lst;
+	t_env	*new;
+	t_env	*tmp;
 
 	lst = NULL;
 	tmp = lst;
@@ -45,7 +45,7 @@ t_env *init_env(char **env)
 			lst = new;
 			tmp = lst;
 			i++;
-			continue;
+			continue ;
 		}
 		else
 			tmp->nxt = new;
