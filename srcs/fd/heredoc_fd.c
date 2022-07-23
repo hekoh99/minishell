@@ -72,8 +72,8 @@ static int	get_heredoc_readend(int wrfd, char *here_str)
 
 void	cursor_up(void)
 {
-	printf("\033[1A");
-	printf("\033[2C");
+	write(1, "\033[1A", 4);
+	write(1, "\033[2C", 4);
 }
 
 int	get_heredoc_fd(t_node *node)
@@ -86,9 +86,11 @@ int	get_heredoc_fd(t_node *node)
 	signal(SIGINT, heredoc_sig_int);
 	g_stat = 0;
 	fd = open_tmpfile();
-	while (g_stat != ETC)
+	while (1)
 	{
 		str = readline("> ");
+		if (g_stat == ETC)
+			break ;
 		if (!str)
 		{
 			cursor_up();

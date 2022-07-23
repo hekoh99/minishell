@@ -16,9 +16,9 @@ int	g_stat;
 
 void	handle_eof_exit(t_env *envp)
 {
-	printf("\033[1A");
-	printf("\033[11C");
-	printf("exit\n");
+	write(1, "\033[1A", 4);
+	write(1, "\033[11C", 5);
+	write(1, "exit\n", 5);
 	free_env_all(envp);
 	exit(g_stat);
 }
