@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:33:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 16:44:14 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 19:34:46 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char	*find_cmd_path(char *cmd, char **paths)
 	int		i;
 	char	*cmd_path;
 	char	*tmp_cmd;
+	int		fd;
 
 	i = -1;
 	if (ft_strchr(cmd, '/'))
@@ -49,11 +50,14 @@ char	*find_cmd_path(char *cmd, char **paths)
 	{
 		tmp_cmd = ft_strjoin("/", cmd);
 		cmd_path = ft_strjoin(paths[i], tmp_cmd);
-		if (access(cmd_path, X_OK) == 0)
+		fd = open(cmd_path, O_EXCL);
+		if (fd > 0)
 		{
+			close(fd);
 			free(tmp_cmd);
 			return (cmd_path);
 		}
+		close(fd);
 		free(tmp_cmd);
 		free(cmd_path);
 	}
