@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 17:03:10 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 19:03:49 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,12 +152,6 @@ int		print_syntax_error(t_token **token, const char *msg);
 t_node	*get_fd(t_node *node);
 
 t_node	*add_cmd_arr(t_node *new, t_token *target, int iter);
-
-void	print_token(t_token *token, int flag);
-void	print_node(t_node *node);
-void	print_heredoc(t_node *node);
-void	print_tmpfiles(void);
-void	check_redirection(t_node *node);
 
 void	sig_int(int signal);
 void	child_sig_int(int signal);
