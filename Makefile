@@ -1,8 +1,4 @@
 NAME = minishell
-HAKO = hako
-
-HAKO = hako
-YUB = yub
 
 UTILS = srcs/utils
 BUILTIN = srcs/builtin
@@ -61,35 +57,18 @@ SRCS		= $(UTILS)/ft_strdup.c \
 OBJS		= $(SRCS:%.c=%.o)
 
 CC = cc $(DEBUG)
-# CFLAGS = -Werror -Wall -Wextra
-SAN = -fsanitize=address -g3
-DEBUG = -g
+CFLAGS = -Werror -Wall -Wextra
 
-# todo: use this
 BREW_DIR		:= $(shell brew --prefix readline)
 READLINE_LIB	:= $(addprefix $(BREW_DIR)/, lib)
 READLINE_INC	:= -I $(addprefix $(BREW_DIR)/, include)
 READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
-
-
-# 맥북환경
-# READLINE_LIB 	= -lreadline -L/opt/homebrew/opt/readline/lib
-# READLINE_INC	= -I/opt/homebrew/opt/readline/include
-# 클러스터환경
-# READLINE_LIB 	= -lreadline -L${HOME}/.brew/opt/readline/lib
-# READLINE_INC	= -I${HOME}/.brew/opt/readline/include
-
-READLINE_HAKO_LIB = -lreadline -L/opt/homebrew/opt/readline/lib
-READLINE_HAKO_INC = -I/opt/homebrew/opt/readline/include
 
 .PHONY	:all
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
 	$(CC) -fsanitize=address -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
-
-$(HAKO)	:$(OBJS)
-	$(CC) -fsanitize=address -g -o $(NAME) main.c $(OBJS) $(READLINE_HAKO_LIB) $(READLINE_HAKO_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@

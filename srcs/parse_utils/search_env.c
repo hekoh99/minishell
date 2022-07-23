@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   search_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:24:41 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:24:49 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 13:13:24 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ extern int g_stat;
 char *search_env(t_env *env, char *target)
 {
     char *real_val;
-    int i;
-    int find;
 
     real_val = NULL;
     while (env)

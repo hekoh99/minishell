@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 13:00:56 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/19 18:06:13 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 13:23:47 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,9 @@ void	validate_exit_code(char *code)
 	{
 		if (!ft_isdigit(code[i]))
 		{
-			printf("exit: %s: numeric argument required\n", code);
+			print_error2(ft_strjoin("exit: ", code), ft_strdup(": numeric argument required\n"), 255);
 			exit(255);
 		}
-	}
-}
-
-void	validate_argc(char **argv)
-{
-	if (argv[2] != NULL)
-	{
-		printf("exit: too many arguments\n");
-		g_stat = 1;
 	}
 }
 
@@ -53,7 +44,7 @@ void	ft_exit(int single_cmd, t_node *node)
 	g_stat = status_ll % 256 + 256 * (status_ll < 0);
 	if (node->cmd[2] != NULL)
 	{
-		printf("exit: too many arguments\n");
+		print_error(ft_strdup("exit: too many arguments\n"), 1);
 		g_stat = 1;
 	}
 	else

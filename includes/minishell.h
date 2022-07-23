@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/22 22:31:01 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 14:51:26 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ int set_output_fd(t_node *head, t_node *file_node);
 int set_separator_fd(t_node *node);
 
 // parse error
-int error_handler(t_node *head, t_token **token, t_token **tmp);
+int error_handler(t_token **token, t_token **tmp);
 t_token *open_quote_err(t_token *head);
 int print_syntax_error(t_token **token, const char *msg);
 

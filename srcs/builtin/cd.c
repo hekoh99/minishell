@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 14:18:06 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/19 18:28:28 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 13:11:09 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ extern int	g_stat;
 char	*search_env_value(t_env *env, char *target)
 {
 	char	*value;
-	int		i;
-	int		find;
 
 	value = NULL;
 	while (env)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_error.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:46 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 14:44:33 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 14:51:12 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	print_syntax_error(t_token **token, const char *msg)
 	return (-1);
 }
 
-int	error_handler(t_node *head, t_token **token, t_token **tmp)
+int	error_handler(t_token **token, t_token **tmp)
 {
 	if ((*tmp)->type == PIPE)
 	{
