@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:53:36 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/22 22:31:01 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 
 #include "utils.h"
 
@@ -116,6 +118,7 @@ void do_execve(t_node *node);
 // builtin
 void ft_cd(t_node *node);
 void ft_echo(t_node *node);
+t_env *init_env(char **env);
 void ft_env(t_env *envp);
 void ft_exit(int single_cmd, t_node *node);
 void ft_export(t_node *node);
@@ -125,7 +128,6 @@ void ft_unset(t_node *node);
 char **ft_split(char *s, char c);
 void print_all_envp(t_env *envp, int has_prefix);
 void child_sig_int(int signal);
-void heredoc_sig_int(int signal);
 void print_sorted_envp(t_env *envp);
 t_env *update_env(t_env *envp, char *key, char *value);
 int is_duplicate_envp(t_env *envp, char *key);
@@ -142,6 +144,13 @@ char *find_cmd_path(char *cmd, char **paths);
 t_list *tmp_files(char *filename, int cmd);
 t_list *add_files(t_list *head, char *filename);
 void delete_files(t_list *head);
+int get_heredoc_fd(t_node *node);
+void heredoc_sig_int(int signal);
+
+// fd
+int set_input_fd(t_node *head, t_node *file_node);
+int set_output_fd(t_node *head, t_node *file_node);
+int set_separator_fd(t_node *node);
 
 // parse error
 t_node *error_handler(t_node *head, t_token **token, t_token **tmp);
@@ -153,5 +162,12 @@ t_node *get_fd(t_node *node);
 
 // node
 t_node *add_cmd_arr(t_node *new, t_token *target, int iter);
+
+// test code
+void print_token(t_token *token, int flag);
+void print_node(t_node *node);
+void print_heredoc(t_node *node);
+void print_tmpfiles();
+void check_redirection(t_node *node);
 
 #endif

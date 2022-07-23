@@ -51,6 +51,11 @@ void	close_pipe(t_node *node)
 {
 	t_node	*tmp;
 
+	if (node->prev && node->prev->type == PIPE)
+	{
+		if (node->prev->fd[IN] > 2)
+			ft_close(node->prev->fd[IN]);
+	}
 	tmp = node->nxt;
 	while (tmp)
 	{

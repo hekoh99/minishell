@@ -1,22 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   search_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/20 16:29:32 by hako              #+#    #+#             */
-/*   Updated: 2022/07/20 16:29:34 by hako             ###   ########.fr       */
+/*   Created: 2022/07/22 22:24:41 by hako              #+#    #+#             */
+/*   Updated: 2022/07/22 22:24:49 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include <sys/ioctl.h>
-#include <termios.h>
+#include "../../includes/minishell.h"
 
 extern int g_stat;
 
-void child_sig_int(int signal)
+char *search_env(t_env *env, char *target)
 {
-    write(2, "^C\n", 3);
+    char *real_val;
+    int i;
+    int find;
+
+    real_val = NULL;
+    while (env)
+    {
+        if (ft_strcmp(env->key, target) == 0)
+        {
+            real_val = ft_substr(env->value, 0, ft_strlen(env->value));
+            break;
+        }
+        env = env->nxt;
+    }
+    return (real_val);
 }

@@ -7,6 +7,10 @@ YUB = yub
 UTILS = srcs/utils
 BUILTIN = srcs/builtin
 EXECUTE = srcs/execute
+SIGNALS = srcs/signals
+FD = srcs/fd
+TOKEN = srcs/token
+PARSE = srcs/parse_utils
 
 SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_strlen.c \
@@ -39,17 +43,21 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(EXECUTE)/execute_util.c \
 	$(EXECUTE)/execve.c \
 	$(EXECUTE)/execve_util.c \
-	srcs/token.c \
-	srcs/signal.c \
-	srcs/heredoc_tmp_files.c \
-	srcs/parse_error.c \
-	srcs/trim.c \
-	srcs/split_by_sep.c \
-	srcs/parse_check.c \
-	srcs/expand.c \
-	srcs/search_env.c \
-	srcs/fd.c \
-	srcs/exec_unit.c \
+	$(TOKEN)/token.c \
+	$(SIGNALS)/signal.c \
+	$(FD)/heredoc_tmp_files.c \
+	$(PARSE)/parse_error.c \
+	$(TOKEN)/trim.c \
+	$(TOKEN)/split_by_sep.c \
+	$(PARSE)/parse_check.c \
+	$(TOKEN)/expand.c \
+	$(PARSE)/search_env.c \
+	$(FD)/fd.c \
+	$(TOKEN)/exec_unit.c \
+	$(FD)/heredoc_fd.c \
+	$(FD)/file_fd.c \
+	$(TOKEN)/reorder_token.c \
+	$(BUILTIN)/init_env.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
