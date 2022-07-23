@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:30:15 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 15:34:27 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ void	update_envp(t_node *node)
 		}
 		key = ft_substr(node->cmd[i], 0, sep);
 		if (is_invalid_key("export", key))
+		{
+			ft_free(key);
 			continue ;
+		}
 		value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
 		node->envp = ft_set(node->envp, key, value);
 	}
