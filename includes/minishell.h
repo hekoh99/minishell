@@ -151,9 +151,9 @@ int set_output_fd(t_node *head, t_node *file_node);
 int set_separator_fd(t_node *node);
 
 // parse error
-t_node *error_handler(t_node *head, t_token **token, t_token **tmp);
+int error_handler(t_node *head, t_token **token, t_token **tmp);
 t_token *open_quote_err(t_token *head);
-t_node *print_syntax_error(t_token **token, const char *msg);
+int print_syntax_error(t_token **token, const char *msg);
 
 // fd
 t_node *get_fd(t_node *node);
