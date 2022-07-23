@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 14:51:26 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 16:50:08 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,5 +174,8 @@ void heredoc_sig_int(int signal);
 
 int is_general_env_var(char *target, int squote);
 int is_home_env_var(char *target, int squote);
+
+t_env *dup_env(t_env *env);
+t_env *dup_envp(t_env *env);
 
 #endif
