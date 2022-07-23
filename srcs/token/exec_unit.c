@@ -53,13 +53,13 @@ t_node *add_node(t_node *head, t_token *target, int iter, t_env *envp)
 t_node *add_node_by_type(t_node *head, t_token **token, t_token **tmp, t_env *envp)
 {
     t_token *start;
-    t_node *return_head;
+    int is_error;
 
     start = *tmp;
     if (*token)
     {
-        return_head = error_handler(head, token, tmp);
-        if (head && !return_head)
+        is_error = error_handler(head, token, tmp);
+        if (is_error == -1)
         {
             free_node_all(head);
             return (NULL);

@@ -25,7 +25,6 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(UTILS)/ft_split.c \
 	$(UTILS)/free_matrix.c \
 	$(UTILS)/error.c \
-	$(UTILS)/gnl.c \
 	$(BUILTIN)/cd.c \
 	$(BUILTIN)/echo.c \
 	$(BUILTIN)/env.c \
@@ -69,7 +68,7 @@ READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -fsanitize=address -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@

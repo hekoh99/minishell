@@ -6,16 +6,15 @@
 /*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:27:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:27:05 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 13:32:29 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// test code
-void print_token(t_token *token, int flag)
+void	print_token(t_token *token, int flag)
 {
-	char type[7][10] = {"CMD", "PIPE", "TRUNC", "APPEND", "INPUT", "HEREDOC", "END"};
+	char	type[7][10] = {"CMD", "PIPE", "TRUNC", "APPEND", "INPUT", "HEREDOC", "END"};
 	while (token && flag == 1)
 	{
 		printf("[%s : %s]", token->value, type[token->type - 1]);
@@ -29,8 +28,7 @@ void print_token(t_token *token, int flag)
 	printf("\n");
 }
 
-// test code
-void print_node(t_node *node)
+void	print_node(t_node *node)
 {
 	int i;
 	char type[7][10] = {"CMD", "PIPE", "TRUNC", "APPEND", "INPUT", "HEREDOC", "END"};
@@ -50,35 +48,7 @@ void print_node(t_node *node)
 	}
 }
 
-// test code
-void print_heredoc(t_node *node)
-{
-	char *line;
-
-	if (!node)
-		return;
-
-	while (node)
-	{
-		if (node->type == HEREDOC)
-		{
-			line = get_next_line(node->fd[IN]);
-			printf("%d\n", node->fd[IN]);
-			printf("------- heredoc -------\n");
-			while (line)
-			{
-				printf("line : %s\n", line);
-				free(line);
-				line = get_next_line(node->fd[IN]);
-			}
-		}
-		if (node)
-			node = node->nxt;
-	}
-}
-
-// test code
-void print_tmpfiles()
+void	print_tmpfiles(void)
 {
 	t_list *tmp = tmp_files(NULL, GET);
 	printf("------ tmps files ------\n");
@@ -89,7 +59,7 @@ void print_tmpfiles()
 	}
 }
 
-void check_redirection(t_node *node)
+void	check_redirection(t_node *node)
 {
 	t_node *tmp;
 
