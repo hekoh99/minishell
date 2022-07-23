@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:33:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 15:46:40 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 16:44:14 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	**find_path(t_node *node)
 		envp = envp->nxt;
 	}
 	print_error2(ft_strdup(node->cmd[0]),
-			ft_strdup(": No such file or directory\n"), 127);
+		ft_strdup(": No such file or directory\n"), 127);
 	free_matrix(path);
 	return (NULL);
 }
