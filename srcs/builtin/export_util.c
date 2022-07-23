@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:29:18 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:29:47 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 13:11:23 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ t_env	*sort_envp(t_env *envp)
 
 void	print_sorted_envp(t_env *envp)
 {
-	t_env	*sorted_envp;
 	t_env	*tmp;
 
 	tmp = dup_envp(envp);

@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/21 14:09:16 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 13:11:47 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	make_status(int child)
 
 void	ft_execute(t_node *node)
 {
-	pid_t	pid;
 	int		child;
 
 	if (is_single_cmd(node) && is_builtin(node))
