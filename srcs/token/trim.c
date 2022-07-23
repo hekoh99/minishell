@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:26:40 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:26:43 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 15:07:50 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char *inside_quote(char *value, int start, int *mid)
     free(value);
     inside = ft_strjoin(head, str);
     *mid = ft_strlen(inside) - 1;
-    inside = ft_strjoin(inside, tail);
+    inside = ft_strjoin_free_s1(inside, tail);
     free(str);
     free(head);
     free(tail);

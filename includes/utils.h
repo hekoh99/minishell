@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:01:46 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/19 18:03:06 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 15:08:26 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void print_error(char *msg, int status);
 void print_error2(char *function, char *msg, int status);
 void error_exit(char *msg, int status);
 void free_matrix(char **matrix);
+char *ft_strjoin_free_s1(char *s1, char *s2);
 
 int ft_isdigit(int c);
 int ft_isalpha(int c);
