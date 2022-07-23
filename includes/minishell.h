@@ -172,4 +172,7 @@ void sig_int(int signal);
 void child_sig_int(int signal);
 void heredoc_sig_int(int signal);
 
+int is_general_env_var(char *target, int squote);
+int is_home_env_var(char *target, int squote);
+
 #endif

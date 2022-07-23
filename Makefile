@@ -53,6 +53,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(FD)/file_fd.c \
 	$(TOKEN)/reorder_token.c \
 	$(BUILTIN)/init_env.c \
+	$(UTILS)/define_env_category.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 

@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:46 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 14:51:12 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/23 16:28:09 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,21 @@ int	error_handler(t_token **token, t_token **tmp)
 		if ((!(*tmp)->prev || (*tmp)->prev->type != CMD)
 			|| (!(*tmp)->nxt || (*tmp)->nxt->type == PIPE))
 			return (print_syntax_error(token,
-									   "syntax error near unexpected token `|'\n"));
+					"syntax error near unexpected token `|'\n"));
 	}
 	else if ((*tmp)->type == END)
 	{
 		if ((!(*tmp)->prev || (*tmp)->prev->type != CMD)
 			|| ((*tmp)->nxt && (*tmp)->nxt->type == END))
 			return (print_syntax_error(token,
-									   "syntax error near unexpected token `;'\n"));
+					"syntax error near unexpected token `;'\n"));
 	}
 	else if ((*tmp)->type == TRUNC || (*tmp)->type == APPEND
 		|| (*tmp)->type == INPUT || (*tmp)->type == HEREDOC)
 	{
 		if ((!(*tmp)->nxt) || ((*tmp)->nxt->type > 1))
 			return (print_syntax_error(token,
-									   "syntax error near unexpected token `newline'\n"));
+					"syntax error near unexpected token `newline'\n"));
 	}
 	return (1);
 }
