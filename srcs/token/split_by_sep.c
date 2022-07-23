@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_by_sep.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:26:08 by hako              #+#    #+#             */
-/*   Updated: 2022/07/22 22:26:10 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 13:12:58 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ static t_token *split_target_token(t_token *token, t_token *tmp, int *squote, in
 
 t_token *split_by_sep(t_token *token) // 연속된 구분자도 체크 완
 {
-    int i;
     t_token *tmp;
     int squote = 0;
     int dquote = 0;

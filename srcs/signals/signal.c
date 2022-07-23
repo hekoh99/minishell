@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:29:32 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 13:24:11 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/23 14:50:03 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ extern int	g_stat;
 
 void	child_sig_int(int signal)
 {
-	write(2, "^C\n", 3);
+    if (signal == SIGINT)
+	    write(2, "^C\n", 3);
 }
 
 void	sig_int(int signal)
