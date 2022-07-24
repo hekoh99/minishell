@@ -83,11 +83,11 @@ int	get_heredoc_fd(t_node *node)
 	char	*str;
 
 	here_str = ft_strdup("");
-	signal(SIGINT, heredoc_sig_int);
 	g_stat = 0;
 	fd = open_tmpfile();
 	while (1)
 	{
+		signal(SIGINT, heredoc_sig_int);
 		str = readline("> ");
 		if (g_stat == ETC)
 		{
