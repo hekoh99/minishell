@@ -73,9 +73,7 @@ void	free_token_all(t_token *head)
 	{
 		target = tmp;
 		if (target->value)
-		{
 			free(target->value);
-		}
 		tmp = tmp->nxt;
 		free(target);
 	}

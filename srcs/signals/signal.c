@@ -16,8 +16,9 @@ extern int	g_stat;
 
 void	child_sig_int(int signal)
 {
-	if (signal == SIGINT)
-		write(2, "^C\n", 3);
+	if (signal != SIGINT)
+		return ;
+	write(2, "^C\n", 3);
 }
 
 void	sig_int(int signal)
@@ -39,6 +40,13 @@ void	sig_int(int signal)
 
 void	heredoc_sig_int(int signal)
 {
+	struct termios	attributes;
+	struct termios	saved;
+
+	tcgetattr(STDIN_FILENO, &saved);
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag &= (~ECHOCTL);
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
 	if (signal != SIGINT)
 		return ;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
