@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve_util.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:33:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 19:34:46 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/24 22:36:27 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 char	**find_path(t_node *node)
 {
-	int		i;
 	char	**path;
 	t_env	*envp;
 
-	i = -1;
 	path = NULL;
 	envp = node->envp;
 	while (envp)
