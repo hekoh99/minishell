@@ -24,8 +24,8 @@ int	set_input_fd(t_node *head, t_node *file_node)
 			printf("minishell: %s: No such file or directory\n",
 				file_node->cmd[1]);
 			g_stat = ETC;
-			free_node_all(head);
-			return (0);
+			// free_node_all(head);
+			return (1); // 뒤에 파이프 있을 경우 그건 진행해야하니까
 		}
 	}
 	else
@@ -63,13 +63,15 @@ int	set_output_fd(t_node *head, t_node *file_node)
 int	set_separator_fd(t_node *node)
 {
 	t_node	*tmp;
+	int		type;
 
 	tmp = node;
 	while (tmp)
 	{
 		if (tmp->type == INPUT || tmp->type == HEREDOC)
 		{
-			if (set_input_fd(node, tmp) == 0 || g_stat == ETC)
+			type = tmp->type;
+			if (set_input_fd(node, tmp) == 0 || (type == HEREDOC && g_stat == ETC))
 				return (0);
 		}
 		else if (tmp->type == TRUNC || tmp->type == APPEND)

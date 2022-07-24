@@ -17,7 +17,7 @@ t_node	*set_cmd_pipe(t_node *prev, t_node *tmp, t_node *cmd)
 	prev->fd[OUT] = tmp->fd[OUT];
 	if (cmd && cmd->fd[OUT] == 1)
 		cmd->fd[OUT] = tmp->fd[OUT];
-	if (!cmd)
+	if (!cmd || cmd->type == FAIL)
 		close(tmp->fd[OUT]);
 	return (NULL);
 }
@@ -55,7 +55,11 @@ int	set_cmd_fd(t_node *node)
 		if (tmp->type == CMD)
 			cmd = init_cmd(prev, tmp);
 		if (cmd && (tmp->type == INPUT || tmp->type == HEREDOC))
+		{
+			if (tmp->fd[IN] == -1)
+				cmd->type = FAIL;
 			cmd->fd[IN] = tmp->fd[IN];
+		}
 		if (tmp->type == TRUNC || tmp->type == APPEND)
 			set_cmd_output(tmp, cmd);
 		if (prev && tmp->type == PIPE)

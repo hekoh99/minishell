@@ -35,6 +35,7 @@
 # define INPUT 5
 # define HEREDOC 6
 # define END 7
+# define FAIL 8
 
 # define GET 0
 # define ADD 1
