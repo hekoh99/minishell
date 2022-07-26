@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 19:35:49 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/26 17:42:18 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ char	*search_env(t_env *env, char *target);
 
 void	ft_execute(t_node *node);
 void	do_execve(t_node *node);
+void	make_status(int child);
 
 void	ft_cd(t_node *node);
 void	ft_echo(t_node *node);

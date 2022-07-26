@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:29:32 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 16:31:03 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/26 17:35:47 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,5 @@ void	heredoc_sig_int(int signal)
 	rl_on_new_line();
 	rl_replace_line("", 1);
 	g_stat = ETC;
+	exit(g_stat);
 }

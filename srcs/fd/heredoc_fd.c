@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_fd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 19:00:54 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/26 17:57:45 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,32 +81,49 @@ int	get_heredoc_fd(t_node *node)
 	int		fd;
 	char	*here_str;
 	char	*str;
+	pid_t	pid;
+	int		child;
 
 	here_str = ft_strdup("");
-	g_stat = 0;
 	fd = open_tmpfile();
-	while (1)
+	pid = fork();
+	if (pid == -1)
+		error_exit("fork error", 1);
+	else if (pid == 0)
 	{
+		signal(SIGINT, SIG_IGN);
 		signal(SIGINT, heredoc_sig_int);
-		str = readline("> ");
+		g_stat = 0;
+		while (1)
+		{
+			str = readline("> ");
+			if (!str)
+			{
+				cursor_up();
+				exit(0);
+			}
+			if (ft_strcmp(str, node->cmd[1]) == 0)
+			{
+				free(str);
+				exit(0);
+			}
+			here_str = get_heredoc_str(here_str, str);
+		}
+	}
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		while (wait(&child) != -1)
+			;
+		make_status(child);
+		signal(SIGINT, sig_int);
 		if (g_stat == ETC)
 		{
-			free(str);
+			// free(str);
 			free(here_str);
 			tmp_files(NULL, DEL);
 			return (0);
 		}
-		if (!str)
-		{
-			cursor_up();
-			break ;
-		}
-		if (ft_strcmp(str, node->cmd[1]) == 0)
-		{
-			free(str);
-			break ;
-		}
-		here_str = get_heredoc_str(here_str, str);
 	}
 	return (get_heredoc_readend(fd, here_str));
 }
