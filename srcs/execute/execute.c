@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 14:50:02 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/26 16:11:11 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	ft_execute(t_node *node)
 {
 	int		child;
 
+	child = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 	{
 		g_stat = 0;
@@ -69,6 +70,7 @@ void	ft_execute(t_node *node)
 		}
 		while (wait(&child) != -1)
 			;
-		make_status(child);
+		if (child != 0)
+			make_status(child);
 	}
 }
