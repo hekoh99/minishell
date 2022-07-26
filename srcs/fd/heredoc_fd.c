@@ -74,6 +74,7 @@ void	cursor_up(void)
 {
 	write(1, "\033[1A", 4);
 	write(1, "\033[2C", 4);
+	write(1, "\033[s", 3);
 }
 
 int	get_heredoc_fd(t_node *node)
