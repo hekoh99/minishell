@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:30:05 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 22:36:07 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 00:47:04 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,10 @@ t_env	*add_env(t_env *envp, t_env *env)
 {
 	t_env	*tmp;
 
+	if (!envp)
+		return (env);
 	tmp = envp;
-	while (tmp->nxt) // todo SIGSEV when NULL envp
+	while (tmp->nxt)
 		tmp = tmp->nxt;
 	tmp->nxt = env;
 	return (envp);
