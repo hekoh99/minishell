@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:28:58 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 15:19:37 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 13:03:39 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_token	*add_token(t_token *head, char *value)
 	t_token	*new;
 	t_token	*tmp;
 
-	new = (t_token *)malloc(sizeof(t_token));
+	new = (t_token *)ft_malloc(sizeof(t_token));
 	new->value = value;
 	new->nxt = NULL;
 	new->prev = NULL;

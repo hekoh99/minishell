@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_by_sep.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:26:08 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 15:53:15 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 13:03:32 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ static t_token	*join_list_center(t_token *pos,
 	t_token	*separated;
 	char	*tmp;
 
-	separated = malloc(sizeof(t_token) * sep_size);
+	separated = ft_malloc(sizeof(t_token) * sep_size);
 	separated->value = ft_substr(pos->value, *index, sep_size);
 	separated->nxt = pos->nxt;
 	pos->nxt->prev = separated;
 	pos->nxt = separated;
 	separated->prev = pos;
 	pos = pos->nxt;
-	separated = malloc(sizeof(t_token));
+	separated = ft_malloc(sizeof(t_token));
 	separated->value = ft_substr(pos->prev->value, *index + sep_size, size);
 	separated->nxt = pos->nxt;
 	pos->nxt->prev = separated;
@@ -45,13 +45,13 @@ static t_token	*join_list_back(t_token *pos,
 	t_token	*separated;
 	char	*tmp;
 
-	separated = malloc(sizeof(t_token));
+	separated = ft_malloc(sizeof(t_token));
 	separated->value = ft_substr(pos->value, *index, sep_size);
 	pos->nxt = separated;
 	separated->prev = pos;
 	separated->nxt = NULL;
 	pos = pos->nxt;
-	separated = malloc(sizeof(t_token));
+	separated = ft_malloc(sizeof(t_token));
 	separated->value = ft_substr(pos->prev->value, *index + sep_size, size);
 	pos->nxt = separated;
 	separated->prev = pos;

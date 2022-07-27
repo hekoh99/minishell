@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 17:00:13 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 13:03:05 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	**init_envp_arr(t_env *envp)
 	char	**envp_arr;
 
 	i = -1;
-	envp_arr = (char **)malloc(sizeof(char *) * (count_envp(envp) + 1));
+	envp_arr = (char **)ft_malloc(sizeof(char *) * (count_envp(envp) + 1));
 	if (!envp_arr)
 		return (NULL);
 	while (envp)
