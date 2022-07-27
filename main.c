@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/27 14:50:53 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 15:00:53 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,18 @@ void	minishell(t_env *envp)
 	}
 }
 
+void	print_lemon(void)
+{
+	char	buf[500001];
+	int		length;
+	int		fd;
+
+	fd = open("lemon", O_RDONLY);
+	length = read(fd, buf, 500000);
+	write(1, buf, length);
+	close(fd);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char	*str;
@@ -75,6 +87,7 @@ int	main(int ac, char **av, char **env)
 	av += 0;
 	envp = init_env(env);
 	g_stat = 0;
+	print_lemon();
 	while (1)
 	{
 		signal(SIGINT, sig_int);
