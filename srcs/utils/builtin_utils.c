@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:44:10 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/27 22:29:45 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 00:59:07 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,6 @@ void	print_all_envp(t_env *envp, int has_prefix)
 {
 	while (envp)
 	{
-		if (has_prefix && !envp->value) {
-			(void)envp;
-		}
 		if (has_prefix && !ft_strcmp("_", envp->key))
 			envp = envp->nxt;
 		else if (has_prefix && envp->value && *envp->value)
@@ -62,7 +59,7 @@ void	print_all_envp(t_env *envp, int has_prefix)
 			printf("declare -x %s=\"\"\n", envp->key);
 		else if (has_prefix)
 			printf("declare -x %s\n", envp->key);
-		else if (envp->value && *envp->value)
+		else if (envp->value && envp->value)
 			printf("%s=%s\n", envp->key, envp->value);
 		envp = envp->nxt;
 	}
