@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 12:27:58 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/27 13:04:17 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ void	make_status(int child)
 void	ft_execute(t_node *node)
 {
 	int		child;
+	int		nchild;
 
+	nchild = 0;
 	child = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 	{
@@ -64,16 +66,13 @@ void	ft_execute(t_node *node)
 		while (node)
 		{
 			signal(SIGINT, child_sig_int);
-			if (node->type == CMD)
-			{
-				++child;
+			if (node->type == CMD && ++nchild)
 				ft_command(node);
-			}
 			node = node->nxt;
 		}
-		while (wait(0) != -1)
+		while (wait(&child) != -1)
 			;
-		if (child != 0)
+		if (nchild > 0)
 			make_status(child);
 	}
 }
