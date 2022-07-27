@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:54 by hako              #+#    #+#             */
-/*   Updated: 2022/07/27 11:40:38 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 12:11:13 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	set_input_fd(t_node *head, t_node *file_node)
 	}
 	else
 		file_node->fd[IN] = get_heredoc_fd(file_node);
-	if (g_stat == ETC)
+	if (file_node->type == HEREDOC && g_stat == ETC)
 		free_node_all(head);
 	return (1);
 }
