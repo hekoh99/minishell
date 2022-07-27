@@ -33,9 +33,11 @@ void	sig_int(int signal)
 	if (signal != SIGINT)
 		return ;
 	g_stat = ETC;
+	write(1, "\033[u", 3);
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 1);
+	write(1, "\033[s", 3);
 }
 
 void	heredoc_sig_int(int signal)

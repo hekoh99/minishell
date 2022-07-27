@@ -46,6 +46,8 @@ void	minishell(t_env *envp)
 
 	token = NULL;
 	node = NULL;
+	write(1, "\033[s", 3);
+	write(1, "\033[u", 3);
 	str = readline("minishell$ ");
 	if (!str)
 		handle_eof_exit(envp);
@@ -71,6 +73,8 @@ int	main(int ac, char **av, char **env)
 
 	ac += 0;
 	av += 0;
+	write(1, "\033[s", 3);
+	write(1, "\033[u", 3);
 	envp = init_env(env);
 	g_stat = 0;
 	while (1)
