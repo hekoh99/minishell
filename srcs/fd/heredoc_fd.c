@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:21:04 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 19:00:54 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 11:25:32 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,6 @@ static int	get_heredoc_readend(int wrfd, char *here_str)
 	return (fd);
 }
 
-void	cursor_up(void)
-{
-	write(1, "\033[1A", 4);
-	write(1, "\033[2C", 4);
-	write(1, "\033[s", 3);
-}
-
 int	get_heredoc_fd(t_node *node)
 {
 	int		fd;
@@ -91,17 +84,9 @@ int	get_heredoc_fd(t_node *node)
 		signal(SIGINT, heredoc_sig_int);
 		str = readline("> ");
 		if (g_stat == ETC)
-		{
-			free(str);
-			free(here_str);
-			tmp_files(NULL, DEL);
-			return (0);
-		}
-		if (!str)
-		{
-			cursor_up();
+			return (at_heredoc_sigint(str, here_str));
+		if (!str && cursor_up())
 			break ;
-		}
 		if (ft_strcmp(str, node->cmd[1]) == 0)
 		{
 			free(str);

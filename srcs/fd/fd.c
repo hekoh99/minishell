@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:42 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 12:36:57 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 11:38:31 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,35 +39,22 @@ t_node	*init_cmd(t_node *prev, t_node *cmd)
 	return (cmd);
 }
 
-int	set_cmd_fd(t_node *node)
+void	do_set_cmd_fd(t_node **cmd, t_node *prev, t_node *tmp)
 {
-	t_node	*tmp;
-	t_node	*prev;
-	t_node	*cmd;
-
-	tmp = node;
-	prev = NULL;
-	cmd = NULL;
-	while (tmp)
+	if (prev && prev->type == END)
+		prev = NULL;
+	if (tmp->type == CMD)
+		*cmd = init_cmd(prev, tmp);
+	if (*cmd && (tmp->type == INPUT || tmp->type == HEREDOC))
 	{
-		if (prev && prev->type == END)
-			prev = NULL;
-		if (tmp->type == CMD)
-			cmd = init_cmd(prev, tmp);
-		if (cmd && (tmp->type == INPUT || tmp->type == HEREDOC))
-		{
-			if (tmp->fd[IN] == -1)
-				cmd->type = FAIL;
-			cmd->fd[IN] = tmp->fd[IN];
-		}
-		if (tmp->type == TRUNC || tmp->type == APPEND)
-			set_cmd_output(tmp, cmd);
-		if (prev && tmp->type == PIPE)
-			cmd = set_cmd_pipe(prev, tmp, cmd);
-		prev = tmp;
-		tmp = tmp->nxt;
+		if (tmp->fd[IN] == -1)
+			(*cmd)->type = FAIL;
+		(*cmd)->fd[IN] = tmp->fd[IN];
 	}
-	return (1);
+	if (tmp->type == TRUNC || tmp->type == APPEND)
+		set_cmd_output(tmp, *cmd);
+	if (prev && tmp->type == PIPE)
+		(*cmd) = set_cmd_pipe(prev, tmp, *cmd);
 }
 
 t_node	*get_fd(t_node *node)

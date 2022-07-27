@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 19:35:49 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/27 11:41:29 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ int		get_heredoc_fd(t_node *node);
 int		set_input_fd(t_node *head, t_node *file_node);
 int		set_output_fd(t_node *head, t_node *file_node);
 int		set_separator_fd(t_node *node);
+void	do_set_cmd_fd(t_node **cmd, t_node *prev, t_node *tmp);	
+int		set_cmd_fd(t_node *node);
 
 int		error_handler(t_token **token, t_token **tmp);
 t_token	*open_quote_err(t_token *head);
@@ -162,5 +164,8 @@ int		is_home_env_var(char *target, int squote);
 
 t_env	*dup_env(t_env *env);
 t_env	*dup_envp(t_env *env);
+
+int		at_heredoc_sigint(char *str, char *here_str);
+int		cursor_up(void);
 
 #endif
