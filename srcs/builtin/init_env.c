@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:19 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 12:31:08 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 13:02:38 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_env	*env_block(char **env, int i)
 	j = 0;
 	while (env[i][j] != '=')
 		j++;
-	new = (t_env *)malloc(sizeof(t_env));
+	new = (t_env *)ft_malloc(sizeof(t_env));
 	new->key = ft_substr(env[i], 0, j);
 	new->value = ft_substr(env[i], j + 1, ft_strlen(env[i]));
 	new->nxt = NULL;
