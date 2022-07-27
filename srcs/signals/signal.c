@@ -14,6 +14,14 @@
 
 extern int	g_stat;
 
+void	sigquit(int signal)
+{
+	if (signal != SIGQUIT)
+		return ;
+	g_stat = 2;
+	write(2, "Quite: 3\n", 9);
+}
+
 void	child_sig_int(int signal)
 {
 	if (signal != SIGINT)
