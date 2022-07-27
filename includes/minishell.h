@@ -159,6 +159,7 @@ t_node	*add_cmd_arr(t_node *new, t_token *target, int iter);
 void	sig_int(int signal);
 void	child_sig_int(int signal);
 void	heredoc_sig_int(int signal);
+void	sigquit(int signal);
 
 int		is_general_env_var(char *target, int squote);
 int		is_home_env_var(char *target, int squote);

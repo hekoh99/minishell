@@ -47,6 +47,8 @@ void	make_status(int child)
 	g_stat = WEXITSTATUS(child);
 	if (WTERMSIG(child) == SIGINT)
 		g_stat = WTERMSIG(child) + 128;
+	if (WTERMSIG(child) == SIGQUIT)
+		g_stat = WTERMSIG(child) + 128;
 }
 
 void	ft_execute(t_node *node)
@@ -66,6 +68,7 @@ void	ft_execute(t_node *node)
 		while (node)
 		{
 			signal(SIGINT, child_sig_int);
+			signal(SIGQUIT, sigquit);
 			if (node->type == CMD && ++nchild)
 				ft_command(node);
 			node = node->nxt;
