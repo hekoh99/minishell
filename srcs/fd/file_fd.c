@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_fd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42seoul.kr>             +#+  +:+       +#+        */
+/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/22 22:20:54 by hako              #+#    #+#             */
-/*   Updated: 2022/07/23 13:11:05 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 11:40:38 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ int	set_input_fd(t_node *head, t_node *file_node)
 			printf("minishell: %s: No such file or directory\n",
 				file_node->cmd[1]);
 			g_stat = ETC;
-			// free_node_all(head);
-			return (1); // 뒤에 파이프 있을 경우 그건 진행해야하니까
+			return (1);
 		}
 	}
 	else
@@ -71,19 +70,36 @@ int	set_separator_fd(t_node *node)
 		if (tmp->type == INPUT || tmp->type == HEREDOC)
 		{
 			type = tmp->type;
-			if (set_input_fd(node, tmp) == 0 || (type == HEREDOC && g_stat == ETC))
+			if (set_input_fd(node, tmp) == 0
+				|| (type == HEREDOC && g_stat == ETC))
 				return (0);
 		}
-		else if (tmp->type == TRUNC || tmp->type == APPEND)
-		{
-			if (set_output_fd(node, tmp) == 0)
-				return (0);
-		}
+		else if ((tmp->type == TRUNC || tmp->type == APPEND)
+			&& set_output_fd(node, tmp) == 0)
+			return (0);
 		else if (tmp->type == PIPE)
 		{
 			pipe(tmp->fd);
 			tmp->nxt->fd[IN] = tmp->fd[IN];
 		}
+		tmp = tmp->nxt;
+	}
+	return (1);
+}
+
+int	set_cmd_fd(t_node *node)
+{
+	t_node	*tmp;
+	t_node	*prev;
+	t_node	*cmd;
+
+	tmp = node;
+	prev = NULL;
+	cmd = NULL;
+	while (tmp)
+	{
+		do_set_cmd_fd(&cmd, prev, tmp);
+		prev = tmp;
 		tmp = tmp->nxt;
 	}
 	return (1);

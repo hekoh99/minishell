@@ -55,6 +55,7 @@ SRCS		= $(UTILS)/ft_strdup.c \
 	$(BUILTIN)/init_env.c \
 	$(UTILS)/define_env_category.c \
 	$(BUILTIN)/export_util3.c \
+	$(FD)/heredoc_util.c \
 
 OBJS		= $(SRCS:%.c=%.o)
 
