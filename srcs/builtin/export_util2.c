@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:30:05 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 00:47:04 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 00:54:30 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ t_env	*update_env(t_env *envp, char *key, char *value)
 	{
 		if (ft_strcmp(tmp->key, key) == 0)
 		{
+			if (!value)
+				break;
 			if (tmp->value)
 				ft_free(tmp->value);
-			if (!value)
-				tmp->value = NULL;
 			else
 				tmp->value = ft_strdup(value);
 			break ;

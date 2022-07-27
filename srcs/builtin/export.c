@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 22:36:50 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 00:53:57 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	update_envp(t_node *node)
 			continue ;
 		}
 		value = set_value(node->cmd[i], sep);
-		// value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
 		node->envp = ft_set(node->envp, key, value);
 	}
 }
