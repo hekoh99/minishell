@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 12:23:10 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/27 12:27:58 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,13 @@ void	ft_execute(t_node *node)
 		{
 			signal(SIGINT, child_sig_int);
 			if (node->type == CMD)
+			{
+				++child;
 				ft_command(node);
+			}
 			node = node->nxt;
 		}
-		while (wait(&child) != -1)
+		while (wait(0) != -1)
 			;
 		if (child != 0)
 			make_status(child);
