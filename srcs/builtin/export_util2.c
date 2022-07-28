@@ -77,11 +77,10 @@ t_env	*update_env(t_env *envp, char *key, char *value)
 		if (ft_strcmp(tmp->key, key) == 0)
 		{
 			if (!value)
-				break;
+				break ;
 			if (tmp->value)
-				ft_free(tmp->value);
-			else
-				tmp->value = ft_strdup(value);
+				free(tmp->value);
+			tmp->value = ft_strdup(value);
 			break ;
 		}
 		tmp = tmp->nxt;
