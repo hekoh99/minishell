@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 12:59:20 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/28 18:10:12 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,5 +169,6 @@ t_env	*dup_envp(t_env *env);
 
 int		at_heredoc_sigint(char *str, char *here_str);
 int		cursor_up(void);
+void	handle_eof_exit(t_env *envp);
 
 #endif
