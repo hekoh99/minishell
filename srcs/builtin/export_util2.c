@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_util2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:30:05 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 00:54:30 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 13:09:43 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,10 @@ t_env	*update_env(t_env *envp, char *key, char *value)
 		if (ft_strcmp(tmp->key, key) == 0)
 		{
 			if (!value)
-				break;
+				break ;
 			if (tmp->value)
-				ft_free(tmp->value);
-			else
-				tmp->value = ft_strdup(value);
+				free(tmp->value);
+			tmp->value = ft_strdup(value);
 			break ;
 		}
 		tmp = tmp->nxt;
