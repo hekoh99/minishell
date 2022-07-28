@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 13:44:10 by yubin             #+#    #+#             */
-/*   Updated: 2022/07/19 18:36:15 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/28 00:59:07 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,11 @@ void	print_all_envp(t_env *envp, int has_prefix)
 			envp = envp->nxt;
 		else if (has_prefix && envp->value && *envp->value)
 			printf("declare -x %s=\"%s\"\n", envp->key, envp->value);
+		else if (has_prefix && envp->value)
+			printf("declare -x %s=\"\"\n", envp->key);
 		else if (has_prefix)
 			printf("declare -x %s\n", envp->key);
-		else if (envp->value && *envp->value)
+		else if (envp->value && envp->value)
 			printf("%s=%s\n", envp->key, envp->value);
 		envp = envp->nxt;
 	}

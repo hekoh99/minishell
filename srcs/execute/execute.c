@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 13:04:17 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/27 23:01:10 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void	ft_execute(t_node *node)
 	child = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 	{
-		g_stat = 0;
+		if (ft_strcmp(node->cmd[0], "exit"))
+			g_stat = 0;
 		ft_buitlin(SINGLE_CMD, node);
 	}
 	else
@@ -73,7 +74,7 @@ void	ft_execute(t_node *node)
 				ft_command(node);
 			node = node->nxt;
 		}
-		while (wait(&child) != -1)
+		while (wait(&child) != -1)	// todo : last child exit status
 			;
 		if (nchild > 0)
 			make_status(child);

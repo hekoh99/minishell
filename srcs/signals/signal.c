@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 16:29:32 by hako              #+#    #+#             */
-/*   Updated: 2022/07/27 11:46:07 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/28 01:03:59 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	sigquit(int signal)
 	if (signal != SIGQUIT)
 		return ;
 	g_stat = 2;
-	write(2, "Quite: 3\n", 9);
+	write(2, "^\\Quit: 3\n", 10);
 }
 
 void	child_sig_int(int signal)

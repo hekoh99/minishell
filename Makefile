@@ -74,7 +74,7 @@ $(NAME)	:$(OBJS)
 	$(CC) -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
+	$(CC) -g3 $(CFLAGS) $(READLINE_INC) -c $< -o $@
 
 .PHONY	:clean
 clean	:

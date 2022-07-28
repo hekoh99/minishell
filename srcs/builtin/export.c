@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 17:01:53 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 15:34:27 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/28 00:53:57 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,16 @@ t_env	*ft_set(t_env *envp, char *key, char *value)
 	ft_free(key);
 	ft_free(value);
 	return (envp);
+}
+
+char	*set_value(char *str, int sep)
+{
+	char	*value;
+
+	if (!ft_strchr(str, '='))
+		return (NULL);
+	value = ft_substr(str, sep + 1, ft_strlen(str));
+	return (value);
 }
 
 void	update_envp(t_node *node)
@@ -44,7 +54,7 @@ void	update_envp(t_node *node)
 			ft_free(key);
 			continue ;
 		}
-		value = ft_substr(node->cmd[i], sep + 1, ft_strlen(node->cmd[i]));
+		value = set_value(node->cmd[i], sep);
 		node->envp = ft_set(node->envp, key, value);
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_util2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 18:30:05 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/23 15:14:29 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/28 00:54:30 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ t_env	*make_env(char *key, char *value)
 
 	env = (t_env *)ft_malloc(sizeof(t_env));
 	env->key = ft_strdup(key);
-	env->value = ft_strdup(value);
+	if (!value)
+		env->value = NULL;
+	else
+		env->value = ft_strdup(value);
 	env->nxt = NULL;
 	return (env);
 }
@@ -41,6 +44,8 @@ t_env	*add_env(t_env *envp, t_env *env)
 {
 	t_env	*tmp;
 
+	if (!envp)
+		return (env);
 	tmp = envp;
 	while (tmp->nxt)
 		tmp = tmp->nxt;
@@ -71,8 +76,12 @@ t_env	*update_env(t_env *envp, char *key, char *value)
 	{
 		if (ft_strcmp(tmp->key, key) == 0)
 		{
-			ft_free(tmp->value);
-			tmp->value = ft_strdup(value);
+			if (!value)
+				break;
+			if (tmp->value)
+				ft_free(tmp->value);
+			else
+				tmp->value = ft_strdup(value);
 			break ;
 		}
 		tmp = tmp->nxt;
