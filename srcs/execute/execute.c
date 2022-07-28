@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 15:00:43 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 17:35:36 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,30 @@ void	make_status(int child)
 		g_stat = WTERMSIG(child) + 128;
 }
 
-void	ft_execute(t_node *node)	// todo: norm 맞춰서 정리 필요~
+void	wait_child(int nchild, int pid)
 {
-	int		child;
+	int	i;
+	int	result;
+	int	child;
+
+	i = 0;
+	result = 0;
+	while (i < nchild)
+	{
+		if (wait(&child) == pid)
+			result = child;
+		i++;
+	}
+	if (nchild > 0)
+		make_status(result);
+}
+
+void	ft_execute(t_node *node)
+{
 	int		nchild;
 	pid_t	pid;
-	int		result;
-	int		i;
 
 	nchild = 0;
-	child = 0;
 	if (is_single_cmd(node) && is_builtin(node))
 	{
 		if (ft_strcmp(node->cmd[0], "exit"))
@@ -78,14 +92,6 @@ void	ft_execute(t_node *node)	// todo: norm 맞춰서 정리 필요~
 				pid = ft_command(node);
 			node = node->nxt;
 		}
-		i = 0;
-		while (i < nchild)
-		{
-			if (wait(&child) == pid)
-				result = child;
-			i++;
-		}
-		if (nchild > 0)
-			make_status(result);
+		wait_child(nchild, pid);
 	}
 }
