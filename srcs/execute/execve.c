@@ -6,7 +6,7 @@
 /*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 13:04:02 by yubchoi          ###   ########.fr       */
+/*   Updated: 2022/07/28 18:02:19 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	init_arg(t_node *node, t_exec_arg *arg)
 	{
 		print_error2(
 			ft_strdup(node->cmd[0]),
-			ft_strdup(": No such file or directory\n"), 127);
+			ft_strdup(": command not found\n"), 127);
 		return (0);
 	}
 	arg->envp = init_envp_arr(node->envp);
