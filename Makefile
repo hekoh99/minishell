@@ -72,10 +72,10 @@ READLINE_LIB	:= -lreadline -L$(READLINE_LIB)
 all		:$(NAME)
 
 $(NAME)	:$(OBJS)
-	$(CC) -g3 -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
+	$(CC) -o $(NAME) main.c $(OBJS) $(READLINE_LIB) $(READLINE_INC)
 
 %.o: %.c
-	$(CC) -g3 $(CFLAGS) $(READLINE_INC) -c $< -o $@
+	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@
 
 .PHONY	:clean
 clean	:
