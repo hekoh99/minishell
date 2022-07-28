@@ -6,7 +6,7 @@
 /*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 11:25:19 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/27 23:01:10 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 15:00:43 by yubin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int	g_stat;
 
-void	ft_command(t_node *node)
+pid_t	ft_command(t_node *node)
 {
 	pid_t	pid;
 
@@ -40,6 +40,7 @@ void	ft_command(t_node *node)
 		if (node->fd[OUT] != 1)
 			ft_close(node->fd[OUT]);
 	}
+	return (pid);
 }
 
 void	make_status(int child)
@@ -51,10 +52,13 @@ void	make_status(int child)
 		g_stat = WTERMSIG(child) + 128;
 }
 
-void	ft_execute(t_node *node)
+void	ft_execute(t_node *node)	// todo: norm 맞춰서 정리 필요~
 {
 	int		child;
 	int		nchild;
+	pid_t	pid;
+	int		result;
+	int		i;
 
 	nchild = 0;
 	child = 0;
@@ -71,12 +75,17 @@ void	ft_execute(t_node *node)
 			signal(SIGINT, child_sig_int);
 			signal(SIGQUIT, sigquit);
 			if (node->type == CMD && ++nchild)
-				ft_command(node);
+				pid = ft_command(node);
 			node = node->nxt;
 		}
-		while (wait(&child) != -1)	// todo : last child exit status
-			;
+		i = 0;
+		while (i < nchild)
+		{
+			if (wait(&child) == pid)
+				result = child;
+			i++;
+		}
 		if (nchild > 0)
-			make_status(child);
+			make_status(result);
 	}
 }
