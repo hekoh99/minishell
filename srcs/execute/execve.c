@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yubin <yubchoi@student.42>                 +#+  +:+       +#+        */
+/*   By: yubchoi <yubchoi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 12:14:26 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 00:16:55 by yubin            ###   ########.fr       */
+/*   Updated: 2022/07/28 13:04:02 by yubchoi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ int	init_arg(t_node *node, t_exec_arg *arg)
 		return (0);
 	arg->argv = node->cmd;
 	arg->file = find_cmd_path(arg->argv[0], paths);
-	if (!ft_strchr(node->cmd[0], '/') && !arg->file) {
+	if (!ft_strchr(node->cmd[0], '/') && !arg->file)
+	{
 		print_error2(
 			ft_strdup(node->cmd[0]),
 			ft_strdup(": No such file or directory\n"), 127);
