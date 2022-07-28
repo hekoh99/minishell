@@ -78,7 +78,7 @@ void	do_trim_quote(t_token *tmp)
 	i = 0;
 	squote = 0;
 	dquote = 0;
-	start = 0;
+	start = -1;
 	while (tmp->value && tmp->value[i] != '\0')
 	{
 		check_quote(tmp->value[i], &squote, &dquote);
