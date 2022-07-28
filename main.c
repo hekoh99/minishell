@@ -6,7 +6,7 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 11:31:30 by hako              #+#    #+#             */
-/*   Updated: 2022/07/27 15:00:53 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/28 18:10:01 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,21 @@
 
 int	g_stat;
 
-void	handle_eof_exit(t_env *envp)
+int	proper_order(t_token *token)
 {
-	write(1, "\033[1A", 4);
-	write(1, "\033[11C", 5);
-	write(1, "exit\n", 5);
-	free_env_all(envp);
-	exit(g_stat);
+	t_token	*tmp;
+
+	tmp = token;
+	while (tmp)
+	{
+		if ((tmp->type == TRUNC || tmp->type == APPEND))
+		{
+			if (tmp->nxt && tmp->nxt->nxt && tmp->nxt->nxt->type == CMD)
+				return (0);
+		}
+		tmp = tmp->nxt;
+	}
+	return (1);
 }
 
 t_token	*do_parse(char *str, t_env *envp)
@@ -34,7 +42,8 @@ t_token	*do_parse(char *str, t_env *envp)
 	token = add_type(token);
 	token = expand(token, envp);
 	token = trim_quote(token);
-	token = reorder_token(token);
+	while (!proper_order(token))
+		token = reorder_token(token);
 	return (token);
 }
 
