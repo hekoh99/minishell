@@ -3,6 +3,7 @@
     "libft.h": "c",
     "minishell.h": "c",
     "utils.h": "c",
-    "ostream": "c"
+    "ostream": "c",
+    "ioctl.h": "c"
   }
 }

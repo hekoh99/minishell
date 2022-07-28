@@ -6,27 +6,24 @@
 /*   By: hako <hako@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/19 17:57:51 by yubchoi           #+#    #+#             */
-/*   Updated: 2022/07/28 18:10:12 by hako             ###   ########.fr       */
+/*   Updated: 2022/07/28 18:59:19 by hako             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "utils.h"
+
 # include <signal.h>
 # include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
 # include <string.h>
 # include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <unistd.h>
 # include <fcntl.h>
 # include <sys/ioctl.h>
 # include <termios.h>
-
-# include "utils.h"
 
 # define CMD 1
 # define PIPE 2
@@ -41,7 +38,6 @@
 # define ADD 1
 # define DEL 2
 
-// exit status
 # define SYNTAX 258
 # define CMD_NOT_FOUND 127
 # define PERM 126
