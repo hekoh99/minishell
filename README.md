@@ -9,5 +9,5 @@ Yes, your little bash or zsh. You will learn a lot about processes and file desc
 
 </br>
 
-### :lemon: flow chart
+### :lemon: Flow chart
 <img src="https://user-images.githubusercontent.com/65652094/183380527-8f7e6d78-1f18-4109-afb0-9b1e4c3d300c.png">
